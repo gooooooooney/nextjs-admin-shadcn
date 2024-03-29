@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from "next/image"
 
+
 type AuthLayoutProps = {
     children: React.ReactNode
 
@@ -14,7 +15,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
             </div>
             <div className="hidden bg-muted lg:block">
                 <Image
-                    src="/placeholder.svg"
+                    src="/bg.avif"
                     alt="Image"
                     width="1920"
                     height="1080"

@@ -1,14 +1,13 @@
-import { Menu, Package2, Home, ShoppingCart, Package, Users, LineChart, Search, UserCircle } from 'lucide-react'
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import ThemeToggle from '@/components/theme-toggle'
 import { UserToggle } from './user-toggle'
+import { Icons } from '@/components/icons'
 
 export const Header = () => {
   return (
@@ -20,7 +19,7 @@ export const Header = () => {
             size="icon"
             className="shrink-0 md:hidden"
           >
-            <Menu className="h-5 w-5" />
+            <Icons.Menu className="h-5 w-5" />
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
@@ -30,21 +29,21 @@ export const Header = () => {
               href="#"
               className="flex items-center gap-2 text-lg font-semibold"
             >
-              <Package2 className="h-6 w-6" />
+              <Icons.Package2 className="h-6 w-6" />
               <span className="sr-only">Acme Inc</span>
             </Link>
             <Link
               href="#"
               className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
             >
-              <Home className="h-5 w-5" />
+              <Icons.Home className="h-5 w-5" />
               Dashboard
             </Link>
             <Link
               href="#"
               className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
             >
-              <ShoppingCart className="h-5 w-5" />
+              <Icons.ShoppingCart className="h-5 w-5" />
               Orders
               <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
                 6
@@ -54,21 +53,21 @@ export const Header = () => {
               href="#"
               className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
             >
-              <Package className="h-5 w-5" />
+              <Icons.Package className="h-5 w-5" />
               Products
             </Link>
             <Link
               href="#"
               className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
             >
-              <Users className="h-5 w-5" />
+              <Icons.Users className="h-5 w-5" />
               Customers
             </Link>
             <Link
               href="#"
               className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
             >
-              <LineChart className="h-5 w-5" />
+              <Icons.LineChart className="h-5 w-5" />
               Analytics
             </Link>
           </nav>
@@ -93,7 +92,7 @@ export const Header = () => {
       <div className="w-full flex-1">
         <form>
           <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Icons.Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search products..."

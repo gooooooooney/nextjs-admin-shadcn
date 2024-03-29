@@ -4,7 +4,6 @@ import { useTheme } from "next-themes";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun } from "lucide-react";
 
 function ThemeToggle() {
     const { setTheme, theme } = useTheme();
@@ -16,12 +15,12 @@ function ThemeToggle() {
             className="rounded-full"
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
         >
-            <Sun
+            <Icons.Sun
                 className="size-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
                 aria-hidden="true"
             />
 
-            <Moon
+            <Icons.Moon
                 className="absolute size-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
                 aria-hidden="true"
             />

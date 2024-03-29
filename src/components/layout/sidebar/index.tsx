@@ -1,7 +1,7 @@
+import { Icons } from '@/components/icons'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Package2, Bell, Home, ShoppingCart, Package, Users, LineChart } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
@@ -11,11 +11,11 @@ export const Sidebar = () => {
       <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
           <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Package2 className="h-6 w-6" />
+            <Icons.Package2 className="h-6 w-6" />
             <span className="">Acme Inc</span>
           </Link>
           <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-            <Bell className="h-4 w-4" />
+            <Icons.Bell className="h-4 w-4" />
             <span className="sr-only">Toggle notifications</span>
           </Button>
         </div>
@@ -25,14 +25,14 @@ export const Sidebar = () => {
               href="#"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
             >
-              <Home className="h-4 w-4" />
+              <Icons.Home className="h-4 w-4" />
               Dashboard
             </Link>
             <Link
               href="#"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
             >
-              <ShoppingCart className="h-4 w-4" />
+              <Icons.ShoppingCart className="h-4 w-4" />
               Orders
               <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
                 6
@@ -42,21 +42,21 @@ export const Sidebar = () => {
               href="#"
               className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
             >
-              <Package className="h-4 w-4" />
+              <Icons.Package className="h-4 w-4" />
               Products{" "}
             </Link>
             <Link
               href="#"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
             >
-              <Users className="h-4 w-4" />
+              <Icons.Users className="h-4 w-4" />
               Customers
             </Link>
             <Link
               href="#"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
             >
-              <LineChart className="h-4 w-4" />
+              <Icons.LineChart className="h-4 w-4" />
               Analytics
             </Link>
           </nav>

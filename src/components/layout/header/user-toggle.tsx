@@ -1,7 +1,7 @@
+import { Icons } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { currentUser } from '@/lib/auth'
-import { UserCircle } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
@@ -12,7 +12,7 @@ export const UserToggle = async () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" size="icon" className="rounded-full">
-            <UserCircle className="size-5" />
+            <Icons.UserCircle className="size-5" />
             <span className="sr-only">Toggle user menu</span>
           </Button>
         </DropdownMenuTrigger>
