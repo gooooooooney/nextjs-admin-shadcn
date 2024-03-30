@@ -15,7 +15,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
             </div>
             <div className="hidden bg-muted lg:block">
                 <Image
-                    src="/bg.avif"
+                    src="/home-office.svg"
                     alt="Image"
                     width="1920"
                     height="1080"
