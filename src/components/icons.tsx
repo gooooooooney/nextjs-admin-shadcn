@@ -15,4 +15,6 @@ export {
     UserCircle,
     Menu,
     Search,
+    Settings,
+    LogOut as ExitIcon  
 } from 'lucide-react'

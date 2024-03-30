@@ -3,11 +3,12 @@
 import { DEFAULT_LOGIN_REDIRECT } from "@/config/routes";
 import { action } from "@/lib/safe-action"
 import { loginSchema, signupSchema } from "@/schema/auth"
-import { signIn } from "@/server/auth";
+import { signIn, signOut } from "@/server/auth";
 import { getUserByEmail } from "@/server/data/user";
 import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs";
 import { db } from "@/server/db";
+import { revalidatePath } from "next/cache";
 
 
 export const login = action(loginSchema, async (params) => {
@@ -58,11 +59,14 @@ export const signup = action(signupSchema, async (params) => {
     },
   });
 
-  // Create user
-  // await createUser(params);
-  // await sendVerificationEmail(params.email);
-
   return {
     success: "User created"
   }
 })
+
+
+
+export const logout = async () => {
+  await signOut();
+  revalidatePath("/", "layout");
+};

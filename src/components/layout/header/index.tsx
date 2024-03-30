@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import ThemeToggle from '@/components/theme-toggle'
-import { UserToggle } from './user-toggle'
+import { UserDropdown } from './user-dropdown'
 import { Icons } from '@/components/icons'
 
 export const Header = () => {
+ 
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
@@ -102,7 +103,7 @@ export const Header = () => {
         </form>
       </div>
       <ThemeToggle />
-      <UserToggle />
+      <UserDropdown />
     </header>
   )
 }

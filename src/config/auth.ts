@@ -18,6 +18,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      email: string;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -67,7 +68,7 @@ export const authConfig = {
 
         const maybeUser = await db.user.findUnique({
           where: { email: credentials.email as string },
-          select: { id: true, email: true, password: true },
+          select: { id: true, email: true, password: true, name: true},
         });
         
 
@@ -77,7 +78,7 @@ export const authConfig = {
         // verify the input password with stored hash
         const isValid = await compare(password, maybeUser.password);
         if (!isValid) return null;
-        return { id: maybeUser.id, email: maybeUser.email };
+        return { id: maybeUser.id, email: maybeUser.email, name: maybeUser.name};
       },
     }),
   ],
