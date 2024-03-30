@@ -14,6 +14,12 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+plugin zod {
+    provider = '@core/zod'
+    output = 'src/schema/zod'
+    compile = false
+}
+
 model Post {
     id Int @id @default(autoincrement())
     name String
