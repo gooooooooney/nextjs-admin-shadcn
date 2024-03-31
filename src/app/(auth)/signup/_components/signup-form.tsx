@@ -19,6 +19,7 @@ import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-succcess"
 import { type SignupSchema, signupSchema } from "@/schema/auth"
 import { signup } from "@/action/auth"
+import { Icons } from "@/components/icons"
 
 
 
@@ -156,6 +157,7 @@ export const SignupForm = () => {
                     <FormSuccess message={success} />
                     <Button type="submit" disabled={isPending}
                         className="w-full">
+                        {isPending && <Icons.Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Create an account
                     </Button>
                     <Button variant="outline" className="w-full">

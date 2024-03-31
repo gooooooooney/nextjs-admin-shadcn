@@ -16,5 +16,6 @@ export {
     Menu,
     Search,
     Settings,
-    LogOut as ExitIcon  
+    LogOut as ExitIcon,
+    Loader2,
 } from 'lucide-react'
