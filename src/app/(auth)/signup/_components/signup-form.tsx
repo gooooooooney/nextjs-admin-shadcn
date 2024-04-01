@@ -1,7 +1,6 @@
 "use client"
 import { zodResolver } from "@hookform/resolvers/zod"
 
-import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import {
@@ -14,12 +13,13 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-succcess"
 import { type SignupSchema, signupSchema } from "@/schema/auth"
 import { signup } from "@/action/auth"
 import { Icons } from "@/components/icons"
+import { PasswordInput } from "@/components/ui/password-input"
 
 
 
@@ -28,6 +28,7 @@ export const SignupForm = () => {
 
     const [isPending, startTransition] = useTransition()
     const searchParams = useSearchParams();
+    const router = useRouter()
     // const callbackUrl = searchParams.get("callbackUrl");
 
     const urlError = searchParams.get("error") === "OAuthAccountNotLinked"
@@ -62,6 +63,7 @@ export const SignupForm = () => {
                     if (res.data?.success) {
                         form.reset();
                         setSuccess("Account created successfully");
+                        router.replace("/login")
                     }
                 })
                 .catch(() => setError("Something went wrong"));
@@ -119,12 +121,11 @@ export const SignupForm = () => {
                             <FormItem className="grid gap-2">
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
-                                    <Input
+                                    <PasswordInput
                                         disabled={isPending}
                                         id="password"
-                                        type="password"
                                         placeholder="********"
-
+                                        autoComplete="new-password"
                                         {...field}
                                     />
                                 </FormControl>
@@ -139,12 +140,11 @@ export const SignupForm = () => {
                             <FormItem className="grid gap-2">
                                 <FormLabel>Confirm password</FormLabel>
                                 <FormControl>
-                                    <Input
+                                    <PasswordInput
                                         disabled={isPending}
                                         id="password"
-                                        type="password"
                                         placeholder="********"
-
+                                        autoComplete="new-password"
                                         {...field}
                                     />
                                 </FormControl>

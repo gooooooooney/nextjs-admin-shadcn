@@ -21,6 +21,7 @@ import { FormSuccess } from "@/components/form-succcess"
 import { type LoginSchema, loginSchema } from "@/schema/auth"
 import { login } from "@/action/auth"
 import { Icons } from "@/components/icons"
+import { PasswordInput } from "@/components/ui/password-input"
 
 
 
@@ -97,12 +98,11 @@ export const LoginForm = () => {
                             <FormItem className="grid gap-2">
                                 <FormLabel>Username</FormLabel>
                                 <FormControl>
-                                    <Input
+                                    <PasswordInput
                                         disabled={isPending}
                                         id="password"
-                                        type="password"
                                         placeholder="********"
-
+                                        autoComplete="current-password"
                                         {...field}
                                     />
                                 </FormControl>
