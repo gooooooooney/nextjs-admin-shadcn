@@ -1,83 +1,61 @@
-import { Icons } from '@/components/icons'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import Link from 'next/link'
-import React from 'react'
+'use client';
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-export const Sidebar = () => {
+import { SidebarHeader } from './sidebar-header';
+import { SidebarMenu } from './sidebar-menu';
+
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/icons';
+
+export type MenuItem = {
+  label: string;
+  path?: string;
+  icon?: React.JSX.Element;
+  children?: MenuItem[];
+};
+
+export type SidebarProps = {
+  routes: MenuItem[];
+};
+
+export const Sidebar = ({ routes }: SidebarProps) => {
+  const pathname = usePathname();
+  const [collapsed, setCollapsed] = React.useState(false);
   return (
-    <div className="hidden border-r bg-muted/40 md:block">
-      <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Icons.Package2 className="h-6 w-6" />
-            <span className="">Acme Inc</span>
-          </Link>
-          <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-            <Icons.Bell className="h-4 w-4" />
-            <span className="sr-only">Toggle notifications</span>
-          </Button>
-        </div>
-        <div className="flex-1">
-          <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <Icons.Home className="h-4 w-4" />
-              Dashboard
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <Icons.ShoppingCart className="h-4 w-4" />
-              Orders
-              <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                6
-              </Badge>
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
-            >
-              <Icons.Package className="h-4 w-4" />
-              Products{" "}
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <Icons.Users className="h-4 w-4" />
-              Customers
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <Icons.LineChart className="h-4 w-4" />
-              Analytics
-            </Link>
-          </nav>
-        </div>
-        <div className="mt-auto p-4">
-          <Card>
-            <CardHeader className="p-2 pt-0 md:p-4">
-              <CardTitle>Upgrade to Pro</CardTitle>
-              <CardDescription>
-                Unlock all features and get unlimited access to our support
-                team.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-              <Button size="sm" className="w-full">
-                Upgrade
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+    <div
+      id="docs-sidebar"
+      className={cn(
+        'bg-background hidden border-e  pb-10 pt-4 transition-all lg:relative lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col ',
+        {
+          'lg:w-20': collapsed,
+        }
+      )}
+    >
+      <div className="px-6">
+        <Link
+          className="flex-none text-xl font-semibold"
+          href="#"
+          aria-label="Brand"
+        >
+          <SidebarHeader collapsed={collapsed} />
+        </Link>
       </div>
+      <SidebarMenu {...{ pathname, routes, collapsed, setCollapsed }} />
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setCollapsed(!collapsed)}
+        className="bg-background absolute -right-3 top-5 z-[61] size-6 rounded-full shadow-lg"
+      >
+        <Icons.ChevronLeft
+          className={cn('size-4 transition-transform', {
+            'rotate-180': collapsed,
+          })}
+        />
+      </Button>
     </div>
-  )
-}
+  );
+};

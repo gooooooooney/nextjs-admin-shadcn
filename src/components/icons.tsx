@@ -18,4 +18,6 @@ export {
     Settings,
     LogOut as ExitIcon,
     Loader2,
+    ChevronLeft,
+    ChevronDown,
 } from 'lucide-react'
