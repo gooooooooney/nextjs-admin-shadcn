@@ -2,17 +2,15 @@ import React from 'react';
 
 import { Separator } from '@/components/ui/separator';
 import { Icons } from '@/components/icons';
-import { Link } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export const SidebarHeader = ({ collapsed }: { collapsed: boolean }) => {
   return (
     <>
-      <div className="flex items-center">
-        {/* <Logo /> */}
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <Icons.Package2 className="h-6 w-6" />
-        </Link>
-        {!collapsed && <h1 className="ml-2">Acme Inc</h1>}
+      <div className={cn("flex items-center", collapsed && "justify-center")}>
+        <Icons.Package2 className={cn("size-6 font-semibold transition-all", collapsed && "size-5")} />
+        <h1 className={cn("ml-2 opacity-100 visible block w-auto truncate transition-all", collapsed && " invisible hidden w-0")}>Nextjs Admin</h1>
       </div>
       <Separator className="mt-4" />
     </>

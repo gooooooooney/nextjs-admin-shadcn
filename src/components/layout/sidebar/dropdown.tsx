@@ -10,10 +10,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { type MenuItem } from '.';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export type DropdownProps = React.PropsWithChildren<{
   items: MenuItem[];
   side?: 'left' | 'right' | 'top' | 'bottom';
+  currentLable?: string;
+
 }>;
 
 export type DropdownSubProps = {
@@ -25,10 +28,18 @@ export const Dropdown = ({
   children,
   side = 'right',
   items,
+  currentLable
 }: DropdownProps) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      <Tooltip delayDuration={0}>
+        <TooltipTrigger asChild>
+          <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+        </TooltipTrigger>
+        <TooltipContent side='right'>
+          {currentLable}
+        </TooltipContent>
+      </Tooltip>
       <DropdownMenuContent side={side} className="z-[61] w-56">
         {items.map((item) =>
           item.children ? (

@@ -48,7 +48,7 @@ export const Sidebar = ({ routes }: SidebarProps) => {
         variant="ghost"
         size="icon"
         onClick={() => setCollapsed(!collapsed)}
-        className="bg-background absolute -right-3 top-5 z-[61] size-6 rounded-full shadow-lg"
+        className="bg-background absolute -right-3 top-5 z-10 size-6 rounded-full shadow-lg"
       >
         <Icons.ChevronLeft
           className={cn('size-4 transition-transform', {
