@@ -3,11 +3,10 @@
 import * as React from "react"
 
 import { useDataTable } from "@/hooks/use-data-table"
-import { DataTableAdvancedToolbar } from "@/components/data-table/advanced/data-table-advanced-toolbar"
-import { DataTable } from "@/components/data-table/data-table"
-import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
+import { DataTableAdvancedToolbar } from "@/components/ui/data-table/advanced/data-table-advanced-toolbar"
+import { DataTable } from "@/components/ui/data-table/data-table"
+import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar"
 
-import { type getTasks } from "../_lib/queries"
 import {
   filterableColumns,
   getColumns,
@@ -16,6 +15,7 @@ import {
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
 import { useTasksTable } from "./tasks-table-provider"
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
+import { type getTasks } from "@/action/task"
 
 interface TasksTableProps {
   tasksPromise: ReturnType<typeof getTasks>
@@ -26,15 +26,15 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
   const { enableAdvancedFilter, showFloatingBar } = useTasksTable()
 
   // Learn more about React.use here: https://react.dev/reference/react/use
-  const { data, pageCount } = React.use(tasksPromise)
+  const { data } = React.use(tasksPromise)
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo(() => getColumns(), [])
 
   const { table } = useDataTable({
-    data,
+    data: data?.data?.data ?? [],
     columns,
-    pageCount,
+    pageCount: data?.data?.total ?? -1,
     searchableColumns,
     filterableColumns,
     enableAdvancedFilter,

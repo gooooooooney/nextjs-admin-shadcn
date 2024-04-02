@@ -1,5 +1,4 @@
 import * as React from "react"
-import { tasks, type Task } from "@/db/schema"
 import {
   ArrowUpIcon,
   CheckCircledIcon,
@@ -24,6 +23,8 @@ import {
 } from "@/components/ui/tooltip"
 
 import { deleteTasks, updateTasks } from "../_lib/mutations"
+import { type Task } from "@/types/model/task"
+import { PrioritySchema, StatusSchema } from "@/schema/zod/enums"
 
 interface TasksTableFloatingBarProps {
   table: Table<Task>
@@ -109,7 +110,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
               </Tooltip>
               <SelectContent align="center">
                 <SelectGroup>
-                  {tasks.status.enumValues.map((status) => (
+                  {StatusSchema.options.map((status) => (
                     <SelectItem
                       key={status}
                       value={status}
@@ -151,7 +152,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
               </Tooltip>
               <SelectContent align="center">
                 <SelectGroup>
-                  {tasks.priority.enumValues.map((priority) => (
+                  {PrioritySchema.options.map((priority) => (
                     <SelectItem
                       key={priority}
                       value={priority}

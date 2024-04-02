@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Provider } from "@/components/provider";
+import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { Toaster } from "@/components/ui/sonner";
 import "@/styles/globals.css";
 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body className={`font-sans ${inter.variable}`}>
         <Provider>
           {children}
+          <TailwindIndicator />
           <Toaster />
         </Provider>
       </body>

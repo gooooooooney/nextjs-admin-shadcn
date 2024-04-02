@@ -1,8 +1,8 @@
-import { type Task } from "@/db/schema"
 import { type Table } from "@tanstack/react-table"
 
 import { CreateTaskDialog } from "./create-task-dialog"
 import { DeleteTasksDialog } from "./delete-tasks-dialog"
+import { type Task } from "@/types/model/task"
 
 interface TasksTableToolbarActionsProps {
   table: Table<Task>

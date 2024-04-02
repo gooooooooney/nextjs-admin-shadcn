@@ -5,6 +5,7 @@ import { LapTimerIcon, MixIcon, SquareIcon } from "@radix-ui/react-icons"
 
 import { DateRangePicker } from "@/components/date-range-picker"
 import { ToggleButton } from "@/components/toggle-button"
+import { noop } from "@tanstack/react-table"
 
 interface TasksTableContextProps {
   enableAdvancedFilter: boolean
@@ -15,9 +16,9 @@ interface TasksTableContextProps {
 
 const TasksTableContext = React.createContext<TasksTableContextProps>({
   enableAdvancedFilter: false,
-  setEnableAdvancedFilter: () => {},
+  setEnableAdvancedFilter: noop,
   showFloatingBar: false,
-  setShowFloatingBar: () => {},
+  setShowFloatingBar: noop,
 })
 
 export function useTasksTable() {

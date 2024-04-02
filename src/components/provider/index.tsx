@@ -1,5 +1,6 @@
 import React from 'react'
 import { ThemeProvider } from './theme-provider'
+import { TooltipProvider } from '../ui/tooltip'
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -10,9 +11,12 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
                 enableSystem
                 disableTransitionOnChange
             >
-                {
-                    children
-                }
+                <TooltipProvider>
+                    {
+                        children
+                    }
+                </TooltipProvider>
+
             </ThemeProvider>
         </>
     )
