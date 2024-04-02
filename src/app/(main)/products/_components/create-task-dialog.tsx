@@ -53,9 +53,13 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
 
   const form = useForm<TaskCreate>({
     resolver: zodResolver(TaskCreateSchema),
+    defaultValues: {
+      title: "",
+    }
   })
 
   function onSubmit(input: TaskCreate) {
+    console.log("input", input)
     const anotherTaskId =
       prevTasks[Math.floor(Math.random() * prevTasks.length)]?.id
 
@@ -100,7 +104,9 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit((v) => {
+              console.log(v)
+            })}
             className="flex flex-col gap-4"
           >
             <FormField
@@ -221,7 +227,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button disabled={isCreatePending}>Submit</Button>
+              <Button type="submit" disabled={isCreatePending}>Submit</Button>
             </DialogFooter>
           </form>
         </Form>

@@ -12,6 +12,7 @@ import { faker } from "@faker-js/faker"
 import { customAlphabet } from "nanoid"
 import { LabelSchema, PrioritySchema, StatusSchema } from "@/schema/zod/enums"
 import { generateUUID } from "@/lib/utils"
+import { $Enums } from "@prisma/client"
 
 
 
@@ -92,33 +93,16 @@ export const getTasks = action<typeof getTasksSchema, ActionReturnValue<{
       if (!operator || operator === "and") {
         where.AND = [
           { title: { contains: title } },
-          { priority: { equals: priority } },
-          { status: { equals: status } },
+          { priority: { in: priority?.split(".") as $Enums.Priority[] } },
+          { status: { in: status?.split(".") as $Enums.Status[] } },
           { createdAt: { gte: fromDay, lte: toDay } },
         ]
       } else {
         where.OR = [
-          {
-            title: {
-              contains: title
-            }
-          },
-          {
-            priority: {
-              equals: priority
-            }
-          },
-          {
-            status: {
-              equals: status
-            }
-          },
-          {
-            createdAt: {
-              gte: fromDay,
-              lte: toDay
-            }
-          }
+          { title: { contains: title } },
+          { priority: { in: priority?.split(".") as $Enums.Priority[] } },
+          { status: { in: status?.split(".") as $Enums.Status[] } },
+          { createdAt: { gte: fromDay, lte: toDay } },
         ]
       }
 
