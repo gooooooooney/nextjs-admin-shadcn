@@ -38,5 +38,6 @@ yarn-error.log*
 # vercel
 .vercel
 
+/src/schema/zod/*
 # typescript
 *.tsbuildinfo

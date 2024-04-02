@@ -1,0 +1,32 @@
+
+
+enum Status {
+  todo
+  inProgress
+  done
+  canceled
+}
+
+enum Label {
+  bug
+  feature
+  enhancement
+  documentation
+}
+
+enum Priority {
+  low
+  medium
+  high
+}
+
+model Task {
+  id String @id @default(cuid())
+  code String @unique
+  title String
+  status Status @default(todo)
+  label Label @default(bug)
+  priority Priority @default(low)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
