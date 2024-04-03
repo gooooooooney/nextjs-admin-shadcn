@@ -160,9 +160,9 @@ export const SignupForm = () => {
                         {isPending && <Icons.Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Create an account
                     </Button>
-                    <Button variant="outline" className="w-full">
+                    {/* <Button variant="outline" className="w-full">
                         Sign up with GitHub
-                    </Button>
+                    </Button> */}
                 </form>
             </Form>
         </>

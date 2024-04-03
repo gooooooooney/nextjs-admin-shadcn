@@ -128,9 +128,9 @@ export const LoginForm = () => {
                         {isPending && <Icons.Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Login
                     </Button>
-                    <Button variant="outline" className="w-full">
+                    {/* <Button variant="outline" className="w-full">
                         Login with Google
-                    </Button>
+                    </Button> */}
                 </form>
             </Form>
         </>
