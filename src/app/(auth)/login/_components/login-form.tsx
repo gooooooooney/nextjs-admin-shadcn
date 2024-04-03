@@ -55,7 +55,7 @@ export const LoginForm = () => {
             login(values)
                 .then((res) => {
                     if (res.data?.error) {
-                        form.reset();
+                        // form.reset();
                         setError(res.data.error);
                     }
                 })
@@ -73,7 +73,7 @@ export const LoginForm = () => {
                         name="email"
                         render={({ field }) => (
                             <FormItem className="grid gap-2">
-                                <FormLabel>Username</FormLabel>
+                                <FormLabel>Email</FormLabel>
                                 <FormControl>
                                     <Input
                                         disabled={isPending}
@@ -107,7 +107,7 @@ export const LoginForm = () => {
                                     />
                                 </FormControl>
                                 <FormDescription>
-                                    <Link href="#" className="ml-auto inline-block text-sm underline">
+                                    <Link href="/reset-password" className="ml-auto inline-block text-sm underline">
                                         Forgot your password?
                                     </Link>
                                 </FormDescription>

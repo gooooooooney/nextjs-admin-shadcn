@@ -2,8 +2,8 @@
 
 import { getErrorMessage } from "@/lib/handle-error"
 import { action } from "@/lib/safe-action"
-import { UpdateTaskSchema, getTasksSchema } from "@/schema/data/task"
-import { TaskCreateSchema, TaskSchema } from "@/schema/zod/models"
+import { UpdateTaskSchema, createTaskSchema, getTasksSchema } from "@/schema/data/task"
+import { TaskSchema } from "@/schema/zod/models"
 import { db } from "@/server/db"
 import { type ActionReturnValue } from "@/types/actions"
 import { type Task, type TaskCreate } from "@/types/model/task"
@@ -12,14 +12,17 @@ import { faker } from "@faker-js/faker"
 import { customAlphabet } from "nanoid"
 import { LabelSchema, PrioritySchema, StatusSchema } from "@/schema/zod/enums"
 import { generateUUID } from "@/lib/utils"
-import { $Enums } from "@prisma/client"
+import { type $Enums } from "@prisma/client"
 
 
 
-export const createTask = action<typeof TaskCreateSchema, ActionReturnValue<TaskCreate>>(TaskCreateSchema, async (params) => {
+export const createTask = action<typeof createTaskSchema, ActionReturnValue<TaskCreate>>(createTaskSchema, async (params) => {
   try {
     const data = await db.task.create({
-      data: params,
+      data: {
+        ...params,
+        code: `TASK-${customAlphabet("0123456789", 4)()}`,
+      },
     })
     revalidatePath('/product')
     return { data, error: null }

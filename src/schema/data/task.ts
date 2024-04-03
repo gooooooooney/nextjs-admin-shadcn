@@ -13,6 +13,14 @@ export const UpdateTaskSchema = TaskSchema.pick({
 })
 
 
+export const createTaskSchema = TaskSchema.pick({
+  label: true,
+  priority: true,
+  status: true,
+  title: true,
+})
+
+export type CreateTask = z.infer<typeof createTaskSchema>
 
 export const searchParamsSchema = z.object({
   page: z.coerce.number().default(1),

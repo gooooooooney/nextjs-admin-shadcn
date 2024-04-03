@@ -21,7 +21,7 @@ import { toast } from "sonner"
 
 import { getErrorMessage } from "@/lib/handle-error"
 import { formatDate } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
+import { Badge, type BadgeVariant } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -114,10 +114,27 @@ export function getColumns(): ColumnDef<Task>[] {
         const label = LabelSchema.options.find(
           (label) => label === row.original.label
         )
+        let variant: BadgeVariant
+        switch (label) {
+          case "bug":
+            variant = "destructive"
+            break
+          case "feature":
+            variant = "success"
+            break
+          case "enhancement":
+            variant = "warning"
+            break
+          case "documentation":
+            variant = "secondary"
+            break
+          default:
+            variant = "default"
+        }
 
         return (
           <div className="flex space-x-2">
-            {label && <Badge variant="outline">{label}</Badge>}
+            {label && <Badge variant={variant}>{label}</Badge>}
             <span className="max-w-[500px] truncate font-medium">
               {row.getValue("title")}
             </span>

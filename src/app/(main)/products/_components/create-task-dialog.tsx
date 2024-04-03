@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { TaskCreateSchema } from "@/schema/zod/models/Task.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon } from "@radix-ui/react-icons"
 import { type Row } from "@tanstack/react-table"
@@ -41,24 +40,27 @@ import {
 
 import { LabelSchema, PrioritySchema, StatusSchema } from "@/schema/zod/enums"
 import { createTask } from "@/action/task"
-import { type Task, type TaskCreate } from "@/types/model/task"
+import { type Task, } from "@/types/model/task"
+import { type CreateTask, createTaskSchema } from "@/schema/data/task"
 
 interface CreateTaskDialogProps {
   prevTasks: Row<Task>[]
 }
 
+
+
 export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [isCreatePending, startCreateTransition] = React.useTransition()
 
-  const form = useForm<TaskCreate>({
-    resolver: zodResolver(TaskCreateSchema),
+  const form = useForm<CreateTask>({
+    resolver: zodResolver(createTaskSchema),
     defaultValues: {
       title: "",
     }
   })
 
-  function onSubmit(input: TaskCreate) {
+  function onSubmit(input: CreateTask) {
     console.log("input", input)
     const anotherTaskId =
       prevTasks[Math.floor(Math.random() * prevTasks.length)]?.id
@@ -104,9 +106,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((v) => {
-              console.log(v)
-            })}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
             <FormField
