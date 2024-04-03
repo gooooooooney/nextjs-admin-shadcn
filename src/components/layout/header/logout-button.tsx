@@ -11,7 +11,7 @@ export const LogoutButton = ({
     children
 }: LogoutButtonProps) => {
     async function signOutHandler() {
-        toast.promise(signOut, {
+        toast.promise(signOut({}), {
             loading: "Signing out...",
             success: "You have been signed out.",
             error: "Something went wrong.",

@@ -6,6 +6,7 @@ import { currentUser } from '@/lib/auth'
 import Link from 'next/link'
 import React from 'react'
 import { LogoutButton } from './logout-button'
+import { LoginButton } from './login-button'
 
 export const UserDropdown = async () => {
   const user = await currentUser()
@@ -45,11 +46,7 @@ export const UserDropdown = async () => {
         </DropdownMenuContent>
       </DropdownMenu>
     ) : (
-      <Button asChild size="sm">
-        <Link href="/login">
-          Login
-        </Link>
-      </Button>
+      <LoginButton />
     )
   )
 }

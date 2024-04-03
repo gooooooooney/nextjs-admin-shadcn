@@ -11,7 +11,7 @@ import { LoginForm } from "./_components/login-form"
 
 export default function LoginPage() {
   return (
-    <Card className="mx-auto max-w-md">
+    <Card className="mx-auto max-w-md  min-w-[90%] md:min-w-96">
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>

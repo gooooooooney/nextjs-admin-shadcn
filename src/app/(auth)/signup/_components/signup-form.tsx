@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button"
 import { useRouter, useSearchParams } from "next/navigation"
 import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-succcess"
-import { type SignupSchema, signupSchema } from "@/schema/auth"
+import {  SignupSchema } from "@/schema/auth"
 import { signup } from "@/action/auth"
 import { Icons } from "@/components/icons"
 import { PasswordInput } from "@/components/ui/password-input"
@@ -38,7 +38,7 @@ export const SignupForm = () => {
     const [success, setSuccess] = useState<string | undefined>("");
 
     const form = useForm<SignupSchema>({
-        resolver: zodResolver(signupSchema),
+        resolver: zodResolver(SignupSchema),
         defaultValues: {
             email: "",
             password: "",

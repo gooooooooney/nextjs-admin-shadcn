@@ -7,21 +7,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { SignupForm } from "./_components/signup-form"
+import { ResetPasswordForm } from "./_components/reset-form"
 
-export default function LoginPage() {
+export default function ResetPassword() {
   return (
-    <Card className="mx-auto max-w-md  min-w-[90%] md:min-w-96">
+    <Card className="mx-auto  min-w-[90%] md:min-w-96 max-w-md">
       <CardHeader>
-        <CardTitle className="text-2xl">Sign up</CardTitle>
-        <CardDescription>Enter your information to create an account</CardDescription>
+        <CardTitle className="text-2xl">Forgot your password?</CardTitle>
+        <CardDescription>
+          Enter your email below.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <SignupForm />
+        <ResetPasswordForm />
         <div className="mt-4 text-center text-sm">
-          Already have an account?
           <Link href="/login" className="underline">
-            Sign in
+            Back to login
           </Link>
         </div>
       </CardContent>

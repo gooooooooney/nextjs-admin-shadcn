@@ -2,8 +2,10 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import Link from 'next/link'
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useAction } from "next-safe-action/hooks";
+import { isExecuting } from "next-safe-action/status";
 import {
     Form,
     FormControl,
@@ -18,7 +20,7 @@ import { Button } from "@/components/ui/button"
 import { useSearchParams } from "next/navigation"
 import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-succcess"
-import { type LoginSchema, loginSchema } from "@/schema/auth"
+import { LoginSchema } from "@/schema/auth"
 import { login } from "@/action/auth"
 import { Icons } from "@/components/icons"
 import { PasswordInput } from "@/components/ui/password-input"
@@ -28,7 +30,20 @@ import { PasswordInput } from "@/components/ui/password-input"
 
 export const LoginForm = () => {
 
-    const [isPending, startTransition] = useTransition()
+    const { execute, status } = useAction(login, {
+        onSuccess: (res) => {
+            if (res?.error) {
+                // form.reset();
+                setError(res.error);
+            }
+        },
+        onError: (error) => {
+            setError("Something went wrong")
+        }
+    });
+
+    const isPending = isExecuting(status);
+
     const searchParams = useSearchParams();
     // const callbackUrl = searchParams.get("callbackUrl");
 
@@ -39,7 +54,7 @@ export const LoginForm = () => {
     const [success, setSuccess] = useState<string | undefined>("");
     // 1. Define your form.
     const form = useForm<LoginSchema>({
-        resolver: zodResolver(loginSchema),
+        resolver: zodResolver(LoginSchema),
         defaultValues: {
             email: "",
             password: "",
@@ -50,17 +65,7 @@ export const LoginForm = () => {
     function onSubmit(values: LoginSchema) {
         setError("");
         setSuccess("");
-
-        startTransition(() => {
-            login(values)
-                .then((res) => {
-                    if (res.data?.error) {
-                        // form.reset();
-                        setError(res.data.error);
-                    }
-                })
-                .catch(() => setError("Something went wrong"));
-        })
+        execute(values)
 
     }
     return (
