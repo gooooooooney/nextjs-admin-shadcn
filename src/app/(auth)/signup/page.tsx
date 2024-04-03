@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { SignupForm } from "./_components/signup-form"
+import { Suspense } from "react"
 
 export default function LoginPage() {
   return (
@@ -17,7 +18,9 @@ export default function LoginPage() {
         <CardDescription>Enter your information to create an account</CardDescription>
       </CardHeader>
       <CardContent>
-        <SignupForm />
+        <Suspense fallback={null}>
+          <SignupForm />
+        </Suspense>
         <div className="mt-4 text-center text-sm">
           Already have an account?
           <Link href="/login" className="underline">

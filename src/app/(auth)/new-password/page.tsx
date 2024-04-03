@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { NewPasswordForm } from "./_components/new-password-form"
+import { Suspense } from "react"
 
 export default function ResetPassword() {
   return (
@@ -19,7 +20,9 @@ export default function ResetPassword() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <NewPasswordForm />
+        <Suspense fallback={null}>
+          <NewPasswordForm />
+        </Suspense>
         <div className="mt-4 text-center text-sm">
           <Link href="/login" className="underline">
             Back to login

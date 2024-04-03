@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { LoginForm } from "./_components/login-form"
+import { Suspense } from "react"
 
 export default function LoginPage() {
   return (
@@ -19,7 +20,9 @@ export default function LoginPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <LoginForm />
+        <Suspense fallback={null}>
+          <LoginForm />
+        </Suspense>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{" "}
           <Link href="/signup" className="underline">
