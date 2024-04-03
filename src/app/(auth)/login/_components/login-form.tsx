@@ -37,7 +37,7 @@ export const LoginForm = () => {
                 setError(res.error);
             }
         },
-        onError: (error) => {
+        onError: () => {
             setError("Something went wrong")
         }
     });

@@ -3,7 +3,6 @@ import React from 'react';
 import { Separator } from '@/components/ui/separator';
 import { Icons } from '@/components/icons';
 import { cn } from '@/lib/utils';
-import Link from 'next/link';
 
 export const SidebarHeader = ({ collapsed }: { collapsed: boolean }) => {
   return (

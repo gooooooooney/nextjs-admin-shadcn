@@ -46,7 +46,7 @@ export const ResetPasswordForm = () => {
                 </Link>)
             }
         },
-        onError: (error) => {
+        onError: () => {
             setError("Something went wrong")
         }
     });

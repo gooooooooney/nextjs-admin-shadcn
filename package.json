@@ -10,7 +10,7 @@
     "db:studio": "prisma studio",
     "dev": "next dev",
     "db:seed": "dotenv tsx src/server/seed.ts",
-    "postinstall": "prisma generate",
+    "postinstall": "zenstack generate",
     "lint": "next lint",
     "start": "next start"
   },
