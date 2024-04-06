@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table"
 
 import { DataTablePagination } from "./data-table-pagination"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../card"
 
 interface DataTableProps<TData, TValue> {
   /**
@@ -46,8 +47,14 @@ export function DataTable<TData, TValue>({
   floatingBar = null,
 }: DataTableProps<TData, TValue>) {
   return (
-    <div className="w-full space-y-2.5 overflow-auto">
-      <div className="rounded-md border">
+    <Card>
+      <CardHeader>
+        <CardTitle>Products</CardTitle>
+        <CardDescription>
+          Manage your products and view their sales performance.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -58,9 +65,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
@@ -96,11 +103,14 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="flex flex-col gap-2.5">
-        <DataTablePagination table={table} />
-        {table.getFilteredSelectedRowModel().rows.length > 0 && floatingBar}
-      </div>
-    </div>
+      </CardContent>
+      <CardFooter>
+        <div className="flex flex-col gap-2.5 text-xs text-muted-foreground">
+          <DataTablePagination table={table} />
+          {table.getFilteredSelectedRowModel().rows.length > 0 && floatingBar}
+        </div>
+      </CardFooter>
+    </Card>
   )
 }
+
