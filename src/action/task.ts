@@ -114,15 +114,18 @@ export const getTasks = action<typeof getTasksSchema, ActionReturnValue<{
         where,
         skip: offset,
         take: per_page,
-        orderBy: column ? {
-          [column]: order,
-        } : {
-          createdAt: "desc",
-        },
+        orderBy: column ?
+          {
+            [column]: order,
+          } : {
+            id: "desc",
+          },
 
       })
       const total = await db.task.count({ where })
-      return { data, total }
+
+      const pageCount = Math.ceil(total / per_page)
+      return { data, total: pageCount }
     })
     revalidatePath('/products')
     return { data: { data, total }, error: null }
