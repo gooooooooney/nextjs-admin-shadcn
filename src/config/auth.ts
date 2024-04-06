@@ -1,4 +1,3 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import {
   type NextAuthConfig,
   type DefaultSession,
@@ -31,28 +30,6 @@ declare module "next-auth" {
 }
 
 export const authConfig = {
-  session: {
-    strategy: "jwt",
-  },
-  callbacks: {
-    session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub!;
-      }
-      return session;
-    },
-    redirect: () => "/"
-
-  },
-  events: {
-    async linkAccount({ user }) {
-      await db.user.update({
-        where: { id: user.id },
-        data: { emailVerified: new Date() }
-      })
-    }
-  },
-  adapter: PrismaAdapter(db),
   providers: [
     Credentials({
       credentials: {
