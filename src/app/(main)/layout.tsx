@@ -27,16 +27,16 @@ const routes: MenuItem[] = [
     label: 'Tasks',
     icon: <Icons.Package className='size-4' />,
   },
-  {
-    path: '/customers',
-    label: 'Customers',
-    icon: <Icons.Users className='size-4' />,
-  },
-  {
-    path: '/analytics',
-    label: "Analytics",
-    icon: <Icons.LineChart className='size-4' />,
-  }
+  // {
+  //   path: '/customers',
+  //   label: 'Customers',
+  //   icon: <Icons.Users className='size-4' />,
+  // },
+  // {
+  //   path: '/analytics',
+  //   label: "Analytics",
+  //   icon: <Icons.LineChart className='size-4' />,
+  // }
 ];
 
 const layout = ({ children }: { children: React.ReactNode }) => {
@@ -45,7 +45,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
       <Sidebar routes={routes} />
       <div className="flex flex-col flex-1">
         <Header />
-        {children}
+          {children}
       </div>
     </div>
   )

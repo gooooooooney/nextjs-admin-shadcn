@@ -24,4 +24,5 @@ export {
     Wrench,
     BellIcon,
     Palette,
+    Loader
 } from 'lucide-react'
