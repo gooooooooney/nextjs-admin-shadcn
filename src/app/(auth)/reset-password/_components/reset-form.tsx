@@ -76,7 +76,7 @@ export const ResetPasswordForm = () => {
                         name="email"
                         render={({ field }) => (
                             <FormItem className="grid gap-2">
-                                <FormLabel>Password</FormLabel>
+                                <FormLabel>Email</FormLabel>
                                 <FormControl>
                                     <Input
                                         disabled={isPending}
