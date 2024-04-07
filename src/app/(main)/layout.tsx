@@ -23,8 +23,8 @@ const routes: MenuItem[] = [
     ],
   },
   {
-    path: '/products',
-    label: 'Products',
+    path: '/tasks',
+    label: 'Tasks',
     icon: <Icons.Package className='size-4' />,
   },
   {
