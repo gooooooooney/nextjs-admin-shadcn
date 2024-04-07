@@ -136,7 +136,7 @@ const LoadingButton = ({
   return (
     <Button type={type} disabled={isPending}
       className={className}>
-      {isPending && <Icons.Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {isPending && <Icons.Loader className="mr-2 h-4 w-4 animate-spin" />}
       {children}
     </Button>
   )
