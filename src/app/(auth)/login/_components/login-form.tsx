@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import Link from 'next/link'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useAction } from "next-safe-action/hooks";
-import { isExecuting } from "next-safe-action/status";
+import { useAction } from "next-safe-action/hooks"
+import { isExecuting } from "next-safe-action/status"
 import {
     Form,
     FormControl,
@@ -16,14 +16,13 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { useSearchParams } from "next/navigation"
 import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-succcess"
 import { LoginSchema } from "@/schema/auth"
 import { login } from "@/action/auth"
-import { Icons } from "@/components/icons"
 import { PasswordInput } from "@/components/ui/password-input"
+import { LoadingButton } from "@/components/ui/button"
 
 
 
@@ -89,9 +88,6 @@ export const LoginForm = () => {
                                         {...field}
                                     />
                                 </FormControl>
-                                <FormDescription>
-                                    This is your public display name.
-                                </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -123,11 +119,10 @@ export const LoginForm = () => {
 
                     <FormError message={error ?? urlError} />
                     <FormSuccess message={success} />
-                    <Button type="submit" disabled={isPending}
+                    <LoadingButton isPending={isPending}
                         className="w-full">
-                        {isPending && <Icons.Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Login
-                    </Button>
+                    </LoadingButton>
                     {/* <Button variant="outline" className="w-full">
                         Login with Google
                     </Button> */}

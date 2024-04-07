@@ -11,7 +11,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
+import { Button, LoadingButton } from "@/components/ui/button"
 import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-succcess"
 import { ResetSchema } from "@/schema/auth"
@@ -92,11 +92,11 @@ export const ResetPasswordForm = () => {
 
                     <FormError message={error} />
                     <FormSuccess message={success} />
-                    <Button type="submit" disabled={isPending}
+                    <LoadingButton isPending={isPending}
                         className="w-full">
-                        {isPending && <Icons.Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+
                         Send reset email
-                    </Button>
+                    </LoadingButton>
                 </form>
             </Form>
         </>

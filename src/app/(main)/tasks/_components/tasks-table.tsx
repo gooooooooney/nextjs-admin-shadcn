@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import React from "react"
 
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableAdvancedToolbar } from "@/components/ui/data-table/advanced/data-table-advanced-toolbar"

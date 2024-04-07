@@ -2,13 +2,14 @@ import { Icons } from '@/components/icons'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { currentUser } from '@/lib/auth'
+import { currentUser, getLatestUser } from '@/lib/auth'
 import React from 'react'
 import { LogoutButton } from './logout-button'
 import { LoginButton } from './login-button'
+import Link from 'next/link'
 
 export const UserDropdown = async () => {
-  const user = await currentUser()
+  const user = await getLatestUser()
   return (
     user ? (
       <DropdownMenu>
@@ -30,9 +31,11 @@ export const UserDropdown = async () => {
               </p>
             </div></DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Icons.Settings className="size-4 mr-2" />
-            Settings
+          <DropdownMenuItem asChild>
+            <Link href="/settings">
+              <Icons.Settings className="size-4 mr-2" />
+              Settings
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <LogoutButton>

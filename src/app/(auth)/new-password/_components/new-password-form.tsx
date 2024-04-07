@@ -11,7 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
+import { Button, LoadingButton } from "@/components/ui/button"
 import { useSearchParams } from "next/navigation"
 import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-succcess"
@@ -106,11 +106,10 @@ export const NewPasswordForm = () => {
 
           <FormError message={error} />
           <FormSuccess message={success} />
-          <Button type="submit" disabled={isPending}
+          <LoadingButton isPending={isPending}
             className="w-full">
-            {isPending && <Icons.Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Reset password
-          </Button>
+          </LoadingButton>
         </form>
       </Form>
     </>

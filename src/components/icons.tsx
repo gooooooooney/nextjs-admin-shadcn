@@ -20,4 +20,8 @@ export {
     Loader2,
     ChevronLeft,
     ChevronDown,
+    User,
+    Wrench,
+    BellIcon,
+    Palette,
 } from 'lucide-react'

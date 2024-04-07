@@ -21,8 +21,14 @@ type SidebarItemProps = {
   pathname: string;
   collapsed: boolean;
 }
+type ItemLinkProps = {
+  item: MenuItem;
+  pathname: string;
+} & {
+  collapsed?: boolean;
+}
 
-const SidebarItemLink = ({ item, collapsed, pathname }: SidebarItemProps) => {
+export const ItemLink = ({ item, collapsed, pathname }: ItemLinkProps) => {
   return (
     <Link
       className={cn(
@@ -123,7 +129,7 @@ const SidebarItemWithAccordion = ({ item, collapsed, pathname }: SidebarItemProp
   )
 }
 
-const SidebarItemWithDropdown = ({ item }: {item: MenuItem}) => {
+const SidebarItemWithDropdown = ({ item }: { item: MenuItem }) => {
   return (
     <Dropdown currentLable={item.label} items={item.children!}>
       <Button type="button" variant="ghost" size="icon">
@@ -152,5 +158,5 @@ export const SidebarItem = ({
   return collapsed ?
     <SidebarItemWithTooltip item={item} pathname={pathname} collapsed={collapsed} />
     :
-    <SidebarItemLink item={item} pathname={pathname} collapsed={collapsed} />
+    <ItemLink item={item} pathname={pathname} collapsed={collapsed} />
 };

@@ -17,3 +17,11 @@ export const getUserById = async (id: string) => {
     return null;
   }
 };
+
+export const updateUser = async (id: string, data: { name?: string; email?: string; image?: string }) => {
+  try {
+    return await db.user.update({ where: { id }, data })
+  } catch (error) {
+    return null
+  }
+}

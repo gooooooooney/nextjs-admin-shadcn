@@ -2,6 +2,7 @@ import * as React from "react";
 import { Slot, Slottable } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { Icons } from "../icons";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -58,7 +59,7 @@ interface IconRefProps {
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
@@ -118,5 +119,27 @@ const ButtonPlain = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 ButtonPlain.displayName = "Button"
 
-export { Button, buttonVariants, ButtonPlain };
-        
+
+type LoadingButtonProps = {
+  children: React.ReactNode
+  isPending: boolean
+  className?: string
+  type?: ButtonProps['type']
+}
+
+const LoadingButton = ({
+  isPending,
+  children,
+  type = 'submit',
+  className
+}: LoadingButtonProps) => {
+  return (
+    <Button type={type} disabled={isPending}
+      className={className}>
+      {isPending && <Icons.Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {children}
+    </Button>
+  )
+}
+
+export { Button, buttonVariants, ButtonPlain, LoadingButton };

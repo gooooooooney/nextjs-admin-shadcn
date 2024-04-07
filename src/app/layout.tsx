@@ -25,7 +25,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <Provider>
           {children}
           <TailwindIndicator />
-          <Toaster />
+          <Toaster richColors />
         </Provider>
       </body>
     </html>

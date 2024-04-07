@@ -12,11 +12,11 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Button, LoadingButton } from "@/components/ui/button"
 import { useRouter, useSearchParams } from "next/navigation"
 import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-succcess"
-import {  SignupSchema } from "@/schema/auth"
+import { SignupSchema } from "@/schema/auth"
 import { signup } from "@/action/auth"
 import { Icons } from "@/components/icons"
 import { PasswordInput } from "@/components/ui/password-input"
@@ -85,7 +85,7 @@ export const SignupForm = () => {
                                     <Input
                                         disabled={isPending}
                                         id="name"
-                                        placeholder="m@example.com"
+                                        placeholder="username"
 
                                         {...field}
                                     />
@@ -155,11 +155,10 @@ export const SignupForm = () => {
 
                     <FormError message={error ?? urlError} />
                     <FormSuccess message={success} />
-                    <Button type="submit" disabled={isPending}
+                    <LoadingButton isPending={isPending}
                         className="w-full">
-                        {isPending && <Icons.Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Create an account
-                    </Button>
+                    </LoadingButton>
                     {/* <Button variant="outline" className="w-full">
                         Sign up with GitHub
                     </Button> */}
