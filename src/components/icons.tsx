@@ -24,5 +24,12 @@ export {
     Wrench,
     BellIcon,
     Palette,
-    Loader
+    Loader,
+    AudioWaveform,
+    File,
+    FileImage,
+    FolderArchive,
+    UploadCloud,
+    Video,
+    X,
 } from 'lucide-react'
