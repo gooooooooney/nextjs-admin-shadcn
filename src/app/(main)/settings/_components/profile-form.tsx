@@ -13,14 +13,15 @@ import Link from 'next/link'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { isEmpty } from 'radash'
 
 type ProfileProps = {
   initialValues: ProfileSchema
 }
 
-export const ProfileForm = ({initialValues}: ProfileProps) => {
+export const ProfileForm = ({ initialValues }: ProfileProps) => {
 
-  const {execute, status} = useAction(updateProfile, {
+  const { execute, status } = useAction(updateProfile, {
     onSuccess: (res) => {
       if (res.error) {
         toast.error(res.error)
@@ -45,7 +46,7 @@ export const ProfileForm = ({initialValues}: ProfileProps) => {
 
   const onSubmit = (data: ProfileSchema) => {
     const reqData = getUpdatedFields(initialValues, data)
-    console.log(reqData)
+    if (isEmpty(reqData)) return toast.error('No changes made')
     execute(reqData as Required<typeof reqData>)
   }
 
