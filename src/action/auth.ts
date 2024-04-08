@@ -9,12 +9,14 @@ import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs";
 import { db } from "@/server/db";
 import { revalidatePath } from "next/cache";
-import { generatePasswordResetToken } from "@/lib/tokens";
-import { env } from "@/env";
+import { generatePasswordResetToken, generateVerificationToken } from "@/lib/tokens";
 import { getPasswordResetTokenByToken } from "@/server/data/password-reset-token";
+import { sendPasswordResetEmail, sendVerificationEmail } from "@/server/mail/send-email";
+import { getVerificationTokenByToken } from "@/server/data/verification-token";
 
+type AuthResponse = { error?: string, success?: string, link?: string };
 
-export const login = action(LoginSchema, async (params: LoginSchema) => {
+export const login = action<typeof LoginSchema, AuthResponse | undefined>(LoginSchema, async (params: LoginSchema) => {
   const { email } = params;
 
   const existingUser = await getUserByEmail(email);
@@ -23,6 +25,14 @@ export const login = action(LoginSchema, async (params: LoginSchema) => {
     return {
       error: "Email does not exist"
     }
+  }
+
+  if (!existingUser.emailVerified) {
+    const verificationToken = await generateVerificationToken(existingUser.email);
+    return await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token
+    );
   }
 
   try {
@@ -44,7 +54,7 @@ export const login = action(LoginSchema, async (params: LoginSchema) => {
 })
 
 
-export const signup = action(SignupSchema, async (params) => {
+export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, async (params) => {
   const { email, password, username } = params;
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -62,13 +72,17 @@ export const signup = action(SignupSchema, async (params) => {
     },
   });
 
-  return {
-    success: "User created"
-  }
+  const verificationToken = await generateVerificationToken(email);
+
+  return await sendVerificationEmail(
+    verificationToken.email,
+    verificationToken.token
+  );
+
 })
 
 
-export const reset = action(ResetSchema, async (params) => {
+export const reset = action<typeof ResetSchema, AuthResponse>(ResetSchema, async (params) => {
   const { email } = params;
 
   const existingUser = await getUserByEmail(email);
@@ -81,11 +95,11 @@ export const reset = action(ResetSchema, async (params) => {
 
   const passwordResetToken = await generatePasswordResetToken(email);
 
-  return {
-    success: "Email sent",
-    // For now we just send the link in the response
-    link: `${env.NEXT_PUBLIC_APP_URL}/new-password?token=${passwordResetToken.token}`
-  }
+
+  return await sendPasswordResetEmail(
+    passwordResetToken.email,
+    passwordResetToken.token
+  )
 })
 
 
@@ -144,6 +158,39 @@ export const newPassword = async (params: NewPasswordSchema, token?: string) => 
     success: "Password updated!"
   }
 }
+export const newVerification = async (token: string) => {
+  const existingToken = await getVerificationTokenByToken(token);
+
+  if (!existingToken) {
+    return { error: "Token does not exist!" };
+  }
+
+  const hasExpired = new Date(existingToken.expires) < new Date();
+
+  if (hasExpired) {
+    return { error: "Token has expired!" };
+  }
+
+  const existingUser = await getUserByEmail(existingToken.email);
+
+  if (!existingUser) {
+    return { error: "Email does not exist!" };
+  }
+
+  await db.user.update({
+    where: { id: existingUser.id },
+    data: { 
+      emailVerified: new Date(),
+      email: existingToken.email,
+    }
+  });
+
+  await db.verificationToken.delete({
+    where: { id: existingToken.id }
+  });
+
+  return { success: "Email verified!" };
+};
 
 
 

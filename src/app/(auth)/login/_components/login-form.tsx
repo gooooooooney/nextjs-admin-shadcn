@@ -34,6 +34,8 @@ export const LoginForm = () => {
             if (res?.error) {
                 // form.reset();
                 setError(res.error);
+            } else if (res?.success) {
+                setSuccess(res?.success);
             }
         },
         onError: () => {
@@ -97,7 +99,7 @@ export const LoginForm = () => {
                         name="password"
                         render={({ field }) => (
                             <FormItem className="grid gap-2">
-                                <FormLabel>Username</FormLabel>
+                                <FormLabel>Password</FormLabel>
                                 <FormControl>
                                     <PasswordInput
                                         disabled={isPending}
