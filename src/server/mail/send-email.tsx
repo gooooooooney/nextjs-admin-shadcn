@@ -19,7 +19,7 @@ export async function sendVerificationEmail(
     console.log(error)
     return { error: "Email server error" }
   }
-  return { success: "Confirmation email sent!", link: env.NODE_ENV === "development" ? confirmLink : undefined }
+  return { success: "Please check your email for the confirmation link.", link: env.NODE_ENV === "development" ? confirmLink : undefined }
 
 };
 

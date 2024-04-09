@@ -1,6 +1,6 @@
 "use client"
 import { updateProfile } from '@/action/user'
-import { Button, LoadingButton } from '@/components/ui/button'
+import { LoadingButton } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -14,6 +14,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { isEmpty } from 'radash'
+import UserCard from './user-card'
 
 type ProfileProps = {
   initialValues: ProfileSchema
@@ -101,8 +102,9 @@ export const ProfileForm = ({ initialValues }: ProfileProps) => {
             <FormItem>
               <FormLabel>Image</FormLabel>
               <FormControl>
-                <Input placeholder='image url' {...field} />
+                <Input placeholder='image url' className='hidden' {...field} />
               </FormControl>
+              <UserCard onChange={field.onChange} src={initialValues.image} />
               <FormDescription>
                 This image will be displayed on your profile.
               </FormDescription>
@@ -110,6 +112,7 @@ export const ProfileForm = ({ initialValues }: ProfileProps) => {
             </FormItem>
           )}
         />
+
         <LoadingButton isPending={isPending}>Update profile</LoadingButton>
       </form>
     </Form>
