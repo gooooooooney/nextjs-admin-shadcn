@@ -1,6 +1,6 @@
 "use client"
 import { updateProfile } from '@/action/user'
-import { Button, LoadingButton } from '@/components/ui/button'
+import { LoadingButton } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -14,8 +14,6 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { isEmpty } from 'radash'
-import { DrawerDialog } from '@/components/ui/custom/drawer-dialog'
-import { ImageUpload } from '@/components/ui/custom/image-upload'
 import UserCard from './user-card'
 
 type ProfileProps = {
@@ -105,7 +103,6 @@ export const ProfileForm = ({ initialValues }: ProfileProps) => {
               <FormLabel>Image</FormLabel>
               <FormControl>
                 <Input placeholder='image url' className='hidden' {...field} />
-                {/* <ImageUpload /> */}
               </FormControl>
               <UserCard onChange={field.onChange} src={initialValues.image} />
               <FormDescription>

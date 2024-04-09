@@ -1,7 +1,6 @@
 import { getLatestUser } from "@/lib/auth";
-import { updateUser } from "@/server/data/user";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
+import { UploadThingError, UTApi } from "uploadthing/server";
 
 const f = createUploadthing({
   /**
@@ -25,10 +24,13 @@ export const ourFileRouter = {
       return { userId: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      await updateUser(metadata.userId, { image: file.url });
+      
 
       return { fileUrl: file.url };
     }),
 } satisfies FileRouter;
+
+ 
+export const utapi = new UTApi();
 
 export type OurFileRouter = typeof ourFileRouter;

@@ -1,16 +1,14 @@
 "use client";
 
-import axios, { AxiosProgressEvent, CancelTokenSource } from "axios";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Icons } from "@/components/icons";
 import { useUploadThing } from "@/lib/uploadthing";
+import ProgressBar from "./progress-bar";
 interface FileUploadProgress {
   progress: number;
   File: File;
-  source: CancelTokenSource | null;
 }
 
 enum FileTypes {
@@ -46,19 +44,21 @@ const OtherColor = {
   fillColor: "fill-gray-400",
 };
 
-export function ImageUpload() {
+type ImageUploadProps = {
+  onChange: (url: string) => void;
+}
+
+export function ImageUpload({ onChange }: ImageUploadProps) {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [filesToUpload, setFilesToUpload] = useState<FileUploadProgress[]>([]);
 
-  const { startUpload, isUploading } = useUploadThing("imageUploader", {
-    onClientUploadComplete: (file) => {
-      console.log(file)
-    },
-    onUploadBegin: (file) => {
-      console.log(file)
+  const { startUpload } = useUploadThing("imageUploader", {
+    onClientUploadComplete: (res) => {
+      if (res) {
+        res[0] && onChange(res[0].url);
+      }
     },
     onUploadProgress: (progress) => {
-      console.log(progress)
       setFilesToUpload((prevUploadProgress) => {
         return prevUploadProgress.map((item) => {
           return {
@@ -105,58 +105,6 @@ export function ImageUpload() {
     };
   };
 
-  // feel free to mode all these functions to separate utils
-  // here is just for simplicity
-  const onUploadProgress = (
-    progressEvent: AxiosProgressEvent,
-    file: File,
-    cancelSource: CancelTokenSource
-  ) => {
-    const progress = Math.round(
-      (progressEvent.loaded / (progressEvent.total ?? 0)) * 100
-    );
-
-    if (progress === 100) {
-      setUploadedFiles((prevUploadedFiles) => {
-        return [...prevUploadedFiles, file];
-      });
-
-      setFilesToUpload((prevUploadProgress) => {
-        return prevUploadProgress.filter((item) => item.File !== file);
-      });
-
-      return;
-    }
-
-    setFilesToUpload((prevUploadProgress) => {
-      return prevUploadProgress.map((item) => {
-        if (item.File.name === file.name) {
-          return {
-            ...item,
-            progress,
-            source: cancelSource,
-          };
-        } else {
-          return item;
-        }
-      });
-    });
-  };
-
-  const uploadImageToCloudinary = async (
-    formData: FormData,
-    onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
-    cancelSource: CancelTokenSource
-  ) => {
-    return axios.post(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
-      formData,
-      {
-        onUploadProgress,
-        cancelToken: cancelSource.token,
-      }
-    );
-  };
 
   const removeFile = (file: File) => {
     setFilesToUpload((prevUploadProgress) => {
@@ -181,24 +129,6 @@ export function ImageUpload() {
         }),
       ];
     });
-
-    // cloudinary upload
-
-    // const fileUploadBatch = acceptedFiles.map((file) => {
-    //   const formData = new FormData();
-    //   formData.append("file", file);
-    //   formData.append(
-    //     "upload_preset",
-    //     process.env.NEXT_PUBLIC_UPLOAD_PRESET as string
-    //   );
-
-    //   const cancelSource = axios.CancelToken.source();
-    //   return uploadImageToCloudinary(
-    //     formData,
-    //     (progressEvent) => onUploadProgress(progressEvent, file, cancelSource),
-    //     cancelSource
-    //   );
-    // });
 
     try {
       await startUpload(acceptedFiles)
@@ -273,24 +203,14 @@ export function ImageUpload() {
                             {fileUploadProgress.progress}%
                           </span>
                         </div>
-                        <Progress
-                          value={fileUploadProgress.progress}
+                        <ProgressBar
+                          progress={fileUploadProgress.progress}
                           className={
                             getFileIconAndColor(fileUploadProgress.File).color
                           }
                         />
                       </div>
                     </div>
-                    <button
-                      onClick={() => {
-                        if (fileUploadProgress.source)
-                          fileUploadProgress.source.cancel("Upload cancelled");
-                        removeFile(fileUploadProgress.File);
-                      }}
-                      className="bg-red-500 text-white transition-all items-center justify-center cursor-pointer px-2 hidden group-hover:flex"
-                    >
-                      <Icons.X size={20} />
-                    </button>
                   </div>
                 );
               })}
