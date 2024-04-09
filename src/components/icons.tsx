@@ -32,4 +32,5 @@ export {
     UploadCloud,
     Video,
     X,
+    Trash
 } from 'lucide-react'

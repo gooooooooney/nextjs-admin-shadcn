@@ -14,6 +14,9 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { isEmpty } from 'radash'
+import { DrawerDialog } from '@/components/ui/custom/drawer-dialog'
+import { ImageUpload } from '@/components/ui/custom/image-upload'
+import UserCard from './user-card'
 
 type ProfileProps = {
   initialValues: ProfileSchema
@@ -101,8 +104,10 @@ export const ProfileForm = ({ initialValues }: ProfileProps) => {
             <FormItem>
               <FormLabel>Image</FormLabel>
               <FormControl>
-                <Input placeholder='image url' {...field} />
+                <Input placeholder='image url' className='hidden' {...field} />
+                {/* <ImageUpload /> */}
               </FormControl>
+              <UserCard onChange={field.onChange} src={initialValues.image} />
               <FormDescription>
                 This image will be displayed on your profile.
               </FormDescription>
@@ -110,6 +115,7 @@ export const ProfileForm = ({ initialValues }: ProfileProps) => {
             </FormItem>
           )}
         />
+
         <LoadingButton isPending={isPending}>Update profile</LoadingButton>
       </form>
     </Form>

@@ -5,8 +5,6 @@ import { getLatestUser } from "@/lib/auth"
 const SettingPage = async () => {
   const userinfo = await getLatestUser()
 
-  console.log(userinfo)
-
   return (
     <div className='space-y-6'>
       <div>

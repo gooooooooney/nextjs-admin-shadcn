@@ -38,8 +38,10 @@
     "@tanstack/react-query": "^5.29.0",
     "@tanstack/react-table": "^8.15.3",
     "@types/uuid": "^9.0.8",
+    "@uploadthing/react": "^6.4.1",
     "@zenstackhq/runtime": "2.0.0-beta.4",
     "@zenstackhq/server": "^2.0.0-beta.4",
+    "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
@@ -62,8 +64,10 @@
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
+    "uploadthing": "^6.8.0",
     "usehooks-ts": "^3.1.0",
     "uuid": "^9.0.1",
+    "vaul": "^0.9.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
