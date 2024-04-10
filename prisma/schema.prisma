@@ -32,6 +32,12 @@ enum Priority {
     high
 }
 
+enum Theme {
+    light
+    dark
+    system
+}
+
 model Task {
     id String @id() @default(cuid())
     code String @unique()
@@ -80,6 +86,9 @@ model User {
     /// @omit
     password String
     image String?
+    theme Theme? @default(system)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
     accounts Account[]
     sessions Session[]
 }

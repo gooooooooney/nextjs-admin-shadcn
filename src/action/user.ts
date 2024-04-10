@@ -2,7 +2,7 @@
 
 import { currentUser } from "@/lib/auth"
 import { action } from "@/lib/safe-action"
-import { ProfileSchema } from "@/schema/settings"
+import { AppearanceSchema, ProfileSchema } from "@/schema/settings"
 import { getUserByEmail, updateUser } from "@/server/data/user"
 import { revalidatePath } from "next/cache"
 
@@ -36,3 +36,26 @@ export const updateProfile = action(ProfileSchema, async (params) => {
     return { error: "An error occurred1" }
   }
 })
+export const updatePreferences = action(AppearanceSchema, async (params) => {
+  const { theme } = params
+
+  const user = await currentUser()
+
+  if (!user) {
+
+    return {
+      error: "The login has expired."
+    }
+  }
+
+  try {
+    const result = await updateUser(user.id, { theme })
+
+    if (!result) return { error: "An error occurred2" }
+    revalidatePath("/settings/appearance")
+    return { success: "Profile updated" }
+  } catch (error) {
+    return { error: "An error occurred1" }
+  }
+})
+

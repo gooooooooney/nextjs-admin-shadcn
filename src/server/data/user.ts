@@ -1,3 +1,4 @@
+import { Theme } from "@prisma/client";
 import { db } from "../db"
 
 export const getUserByEmail = async (email: string) => {
@@ -18,7 +19,7 @@ export const getUserById = async (id: string) => {
   }
 };
 
-export const updateUser = async (id: string, data: { name?: string; email?: string; image?: string }) => {
+export const updateUser = async (id: string, data: { name?: string; email?: string; image?: string, theme?: Theme }) => {
   try {
     return await db.user.update({ where: { id }, data })
   } catch (error) {
