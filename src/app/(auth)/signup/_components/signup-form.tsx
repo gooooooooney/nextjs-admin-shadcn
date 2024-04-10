@@ -61,9 +61,7 @@ export const SignupForm = () => {
                         setError(res.data.error);
                     }
                     if (res.data?.success) {
-                        form.reset();
-                        setSuccess("Account created successfully");
-                        router.replace("/login")
+                        setSuccess(res.data.success);
                     }
                 })
                 .catch(() => setError("Something went wrong"));
