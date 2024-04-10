@@ -4,16 +4,23 @@ import { useTheme } from "next-themes";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
-function ThemeToggle() {
-    const { setTheme, theme } = useTheme();
+function ThemeToggle({ theme }: { theme?: string }) {
+    const { setTheme, theme: nextTheme } = useTheme();
+    useEffect(() => {
+        if (theme) {
+            setTheme(theme);
+        }
+
+    }, [])
 
     return (
         <Button
             size="icon"
             variant="ghost"
             className="rounded-full"
-            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            onClick={() => setTheme(nextTheme === "light" ? "dark" : "light")}
         >
             <Icons.Sun
                 className="size-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"

@@ -34,6 +34,9 @@ model User {
   emailVerified DateTime?
   password String @password @omit
   image String?
+  theme Theme? @default(system)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   accounts Account[]
   sessions Session[]
   // everyone can signup, and user profile is also publicly readable
@@ -59,4 +62,10 @@ model PasswordResetToken {
   expires DateTime
 
   @@unique([email, token])
+}
+
+enum Theme {
+  light
+  dark
+  system
 }

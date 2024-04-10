@@ -1,19 +1,13 @@
-import { Separator } from "@/components/ui/separator"
 import { ProfileForm } from "./_components/profile-form"
 import { getLatestUser } from "@/lib/auth"
+import { SettingsTitle } from "./_components/settings-title"
 
 const SettingPage = async () => {
   const userinfo = await getLatestUser()
 
   return (
     <div className='space-y-6'>
-      <div>
-        <h3 className='text-lg font-medium'>Profile</h3>
-        <p className='text-sm text-muted-foreground'>
-          This is how others will see you on the site.
-        </p>
-      </div>
-      <Separator className='my-4' />
+      <SettingsTitle title="Profile" description="This is how others will see you on the site." />
       <ProfileForm initialValues={{
         username: userinfo?.name!,
         email: userinfo?.email!,

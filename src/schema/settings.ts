@@ -1,5 +1,8 @@
+import { Theme } from "@prisma/client";
 import { z } from "zod";
 
+
+/**Profile */
 export const ProfileSchema = z.object({
   username: z
     .string()
@@ -11,6 +14,12 @@ export const ProfileSchema = z.object({
     }).optional(),
   email: z.string().email().optional(),
   image: z.string().optional(),
+  theme: z.enum([Theme.dark, Theme.light, Theme.system]).optional(),
 })
 
 export type ProfileSchema = z.infer<typeof ProfileSchema>
+
+/**Appearance */
+export const AppearanceSchema = ProfileSchema.pick({ theme: true }).required()
+
+export type AppearanceSchema = z.infer<typeof AppearanceSchema>
