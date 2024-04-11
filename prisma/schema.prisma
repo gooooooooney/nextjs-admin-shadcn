@@ -38,6 +38,23 @@ enum Theme {
     system
 }
 
+enum RoleEnum {
+    user
+    admin
+    superAdmin
+}
+
+enum MenuStatus {
+    active
+    inactive
+}
+
+enum MenuType {
+    menu
+    button
+    dir
+}
+
 model Task {
     id String @id() @default(cuid())
     code String @unique()
@@ -76,7 +93,9 @@ model Session {
 }
 
 /// @@allow('create,read', true)
-/// @@allow('update,delete', auth() == this)
+/// @@deny('delete', auth().role.name == 'admin' && auth() == this)
+/// @@deny('delete', role.name == 'superAdmin')
+/// @@allow('delete', auth().role.name == 'admin')
 model User {
     id String @id() @default(cuid())
     name String?
@@ -87,6 +106,8 @@ model User {
     password String
     image String?
     theme Theme? @default(system)
+    role Role?
+    roleId String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt()
     accounts Account[]
@@ -119,4 +140,27 @@ model PasswordResetToken {
     expires DateTime
 
     @@unique([email, token])
+}
+
+model Role {
+    id String @id() @default(cuid())
+    name RoleEnum @default(user)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String @unique()
+}
+
+model Menu {
+    id String @id() @default(cuid())
+    name String
+    path String
+    type MenuType
+    status MenuStatus
+    icon String
+    parent Menu? @relation(fields: [parentId], references: [id])
+    parentId String?
+    children Menu[]
+    createBy String
+    updateBy String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
 }
