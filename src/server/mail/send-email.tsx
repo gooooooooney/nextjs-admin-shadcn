@@ -3,10 +3,17 @@ import { domain, resend } from "./mail";
 import { MagicLinkEmail } from "./templates/magic-link-email";
 
 export async function sendVerificationEmail(
-  email: string,
-  token: string
+  {
+    token,
+    email,
+    verificationPath = "new-verification"
+  }: {
+    email: string,
+    token: string,
+    verificationPath?: string
+  },
 ): Promise<{ success?: string, error?: string, link?: string }> {
-  const confirmLink = `${domain}/new-verification?token=${token}`;
+  const confirmLink = `${domain}/${verificationPath}?token=${token}`;
 
   const subject = "Confirm your email";
   const { error } = await resend.emails.send({

@@ -12,7 +12,6 @@ export const ProfileSchema = z.object({
     .max(30, {
       message: 'Username must not be longer than 30 characters.',
     }).optional(),
-  email: z.string().email().optional(),
   image: z.string().optional(),
   theme: z.enum([Theme.dark, Theme.light, Theme.system]).optional(),
 })
@@ -23,3 +22,11 @@ export type ProfileSchema = z.infer<typeof ProfileSchema>
 export const AppearanceSchema = ProfileSchema.pick({ theme: true }).required()
 
 export type AppearanceSchema = z.infer<typeof AppearanceSchema>
+
+/**Email */
+export const EmailSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+})
+
+export type EmailSchema = z.infer<typeof EmailSchema>

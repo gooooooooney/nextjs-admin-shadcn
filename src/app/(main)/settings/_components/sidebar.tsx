@@ -19,9 +19,9 @@ export const Sidebar = () => {
       path: "/settings/account",
     },
     {
-      label: "Notifications",
-      icon: <Icons.Bell className="size-4" />,
-      path: "/settings/notifications",
+      label: "Email",
+      icon: <Icons.Mail className="size-4" />,
+      path: "/settings/email",
     },
     {
       label: "Appearance",

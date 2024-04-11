@@ -4,7 +4,7 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/config/routes";
 import { action } from "@/lib/safe-action"
 import { LoginSchema, NewPasswordSchema, ResetSchema, SignupSchema } from "@/schema/auth"
 import { signIn, signOut } from "@/server/auth";
-import { getUserByEmail } from "@/server/data/user";
+import { getUserByEmail, getUserById } from "@/server/data/user";
 import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs";
 import { db } from "@/server/db";
@@ -13,14 +13,15 @@ import { generatePasswordResetToken, generateVerificationToken } from "@/lib/tok
 import { getPasswordResetTokenByToken } from "@/server/data/password-reset-token";
 import { sendPasswordResetEmail, sendVerificationEmail } from "@/server/mail/send-email";
 import { getVerificationTokenByToken } from "@/server/data/verification-token";
+import { AuthResponse } from "@/types/actions";
+import { getNewEmailVerificationTokenByToken } from "@/server/data/email-verification-token";
 
-type AuthResponse = { error?: string, success?: string, link?: string };
 
 export const login = action<typeof LoginSchema, AuthResponse | undefined>(LoginSchema, async (params: LoginSchema) => {
   const { email } = params;
 
   const existingUser = await getUserByEmail(email);
-
+  
   if (!existingUser?.password || !existingUser.email) {
     return {
       error: "Email does not exist"
@@ -29,10 +30,10 @@ export const login = action<typeof LoginSchema, AuthResponse | undefined>(LoginS
 
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(existingUser.email);
-    return await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token
-    );
+    return await sendVerificationEmail({
+      email: verificationToken.email,
+      token: verificationToken.token,
+    });
   }
 
   try {
@@ -74,10 +75,10 @@ export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, as
 
   const verificationToken = await generateVerificationToken(email);
 
-  return await sendVerificationEmail(
-    verificationToken.email,
-    verificationToken.token
-  );
+  return await sendVerificationEmail({
+    email: verificationToken.email,
+    token: verificationToken.token,
+  });
 
 })
 
@@ -179,7 +180,7 @@ export const newVerification = async (token: string) => {
 
   await db.user.update({
     where: { id: existingUser.id },
-    data: { 
+    data: {
       emailVerified: new Date(),
       email: existingToken.email,
     }
@@ -192,6 +193,39 @@ export const newVerification = async (token: string) => {
   return { success: "Email verified!" };
 };
 
+export const newEmailVerification = async (token: string) => {
+  const existingToken = await getNewEmailVerificationTokenByToken(token);
+
+  if (!existingToken) {
+    return { error: "Token does not exist!" };
+  }
+
+  const hasExpired = new Date(existingToken.expires) < new Date();
+
+  if (hasExpired) {
+    return { error: "Token has expired!" };
+  }
+
+  const existingUser = await getUserById(existingToken.userId);
+
+  if (!existingUser) {
+    return { error: "Email does not exist!" };
+  }
+
+  await db.user.update({
+    where: { id: existingUser.id },
+    data: {
+      emailVerified: new Date(),
+      email: existingToken.email,
+    }
+  });
+
+  await db.newEmailVerificationToken.delete({
+    where: { id: existingToken.id }
+  });
+
+  return { success: "Email verified!" };
+};
 
 
 export const logout = async () => {
