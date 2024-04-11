@@ -6,6 +6,7 @@ import { compare } from "bcryptjs";
 import Credentials from "next-auth/providers/credentials";
 
 import { db } from "@/server/db";
+import { comparePassword } from "@/lib/compare";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -53,7 +54,7 @@ export const authConfig = {
         const password = credentials.password as string
 
         // verify the input password with stored hash
-        const isValid = await compare(password, maybeUser.password);
+        const isValid = await comparePassword(password, maybeUser.password);
         if (!isValid) return null;
         return { id: maybeUser.id, email: maybeUser.email, name: maybeUser.name};
       },

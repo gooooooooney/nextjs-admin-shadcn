@@ -5,3 +5,6 @@ export type ActionReturnValue<T> = {
   data: null
   error: string,
 }
+
+export type AuthResponse = { error?: string, success?: string, link?: string };
+

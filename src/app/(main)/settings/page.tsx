@@ -10,7 +10,6 @@ const SettingPage = async () => {
       <SettingsTitle title="Profile" description="This is how others will see you on the site." />
       <ProfileForm initialValues={{
         username: userinfo?.name!,
-        email: userinfo?.email!,
         image: userinfo?.image || "",
       }} />
     </div>
