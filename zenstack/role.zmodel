@@ -1,0 +1,40 @@
+import "./user"
+
+model Role {
+  id String @id @default(cuid())
+  name RoleEnum
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+}
+
+enum RoleEnum {
+  user
+  admin
+  superAdmin
+}
+enum Status {
+  active 
+  inactive
+}
+
+enum MenuType {
+  menu
+  button
+  dir
+}
+
+model Menu {
+  id String @id @default(cuid())
+  name String
+  path String
+  type MenuType
+  status Status
+  icon String
+  parent Menu? @relation(fields: [parentId], references: [id])
+  parentId String?
+  children Menu[]
+  createBy String
+  updateBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
