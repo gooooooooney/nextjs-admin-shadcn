@@ -27,11 +27,11 @@ const routes: MenuItem[] = [
     label: 'Tasks',
     icon: <Icons.Package className='size-4' />,
   },
-  // {
-  //   path: '/customers',
-  //   label: 'Customers',
-  //   icon: <Icons.Users className='size-4' />,
-  // },
+  {
+    path: '/settings',
+    label: 'settings',
+    icon: <Icons.Settings className='size-4' />,
+  },
   // {
   //   path: '/analytics',
   //   label: "Analytics",
@@ -45,7 +45,9 @@ const layout = ({ children }: { children: React.ReactNode }) => {
       <Sidebar routes={routes} />
       <div className="flex flex-col flex-1">
         <Header />
+        <div className='relative h-full'>
           {children}
+        </div>
       </div>
     </div>
   )
