@@ -96,6 +96,11 @@ export const Header = async () => {
       <div className="w-full flex-1">
         <HeaderBreadcrumb />
       </div>
+      <Button variant="link" size="icon">
+        <Link href="https://github.com/gooooooooney/nextjs-admin-shadcn">
+          <Icons.Github className="h-6 w-6" />
+        </Link>
+      </Button>
       <ThemeToggle theme={user?.theme!} />
       <UserDropdown />
     </header>
