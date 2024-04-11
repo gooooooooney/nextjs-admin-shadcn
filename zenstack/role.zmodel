@@ -2,7 +2,7 @@ import "./user"
 
 model Role {
   id String @id @default(cuid())
-  name RoleEnum
+  name RoleEnum @default(user)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique
 }
@@ -12,7 +12,7 @@ enum RoleEnum {
   admin
   superAdmin
 }
-enum Status {
+enum MenuStatus {
   active 
   inactive
 }
@@ -28,7 +28,7 @@ model Menu {
   name String
   path String
   type MenuType
-  status Status
+  status MenuStatus
   icon String
   parent Menu? @relation(fields: [parentId], references: [id])
   parentId String?

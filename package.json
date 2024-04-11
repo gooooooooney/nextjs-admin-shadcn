@@ -43,6 +43,7 @@
     "@uploadthing/react": "^6.4.1",
     "@zenstackhq/runtime": "2.0.0-beta.4",
     "@zenstackhq/server": "^2.0.0-beta.4",
+    "@zenstackhq/tanstack-query": "^1.12.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
