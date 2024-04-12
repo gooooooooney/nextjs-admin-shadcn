@@ -16,6 +16,10 @@ export async function sendVerificationEmail(
   const confirmLink = `${domain}/${verificationPath}?token=${token}`;
 
   const subject = "Confirm your email";
+
+  if (env.NODE_ENV === "development") {
+    return { success: "Please check your email for the confirmation link.", link: confirmLink }
+  }
   const { error } = await resend.emails.send({
     from: env.EMAIL_FROM,
     to: email,
@@ -26,7 +30,7 @@ export async function sendVerificationEmail(
     console.log(error)
     return { error: "Email server error" }
   }
-  return { success: "Please check your email for the confirmation link.", link: env.NODE_ENV === "development" ? confirmLink : undefined }
+  return { success: "Please check your email for the confirmation link." }
 
 };
 
@@ -38,6 +42,9 @@ export async function sendPasswordResetEmail(
   const resetLink = `${domain}/new-password?token=${token}`
 
   const subject = "Reset your password";
+  if (env.NODE_ENV === "development") {
+    return { success: "Please check your email for the confirmation link.", link: resetLink }
+  }
   const { error } = await resend.emails.send({
     from: env.EMAIL_FROM,
     to: email,
@@ -49,6 +56,6 @@ export async function sendPasswordResetEmail(
     console.log(error)
     return { error: "Email server error" }
   }
-  return { success: "Reset email sent!", link: env.NODE_ENV === "development" ? resetLink : undefined }
+  return { success: "Reset email sent!"}
 };
 
