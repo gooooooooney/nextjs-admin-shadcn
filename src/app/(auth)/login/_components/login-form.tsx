@@ -23,6 +23,7 @@ import { LoginSchema } from "@/schema/auth"
 import { login } from "@/action/auth"
 import { PasswordInput } from "@/components/ui/password-input"
 import { LoadingButton } from "@/components/ui/button"
+import { toast } from "sonner"
 
 
 
@@ -36,6 +37,9 @@ export const LoginForm = () => {
                 setError(res.error);
             } else if (res?.success) {
                 setSuccess(res?.success);
+                if (res.link) {
+                    toast.success(<Link href={res.link}>Click here to verify your email</Link>)
+                }
             }
         },
         onError: () => {

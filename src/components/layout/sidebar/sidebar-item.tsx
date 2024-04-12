@@ -45,7 +45,7 @@ export const ItemLink = ({ item, collapsed, pathname }: ItemLinkProps) => {
 
       {item.icon}
       <span
-        className={cn('visible opacity-100 transition-all group-[[data-collapsed=true]]:opacity-0 group-[[data-collapsed=true]]:hidden')}
+        className={cn('visible capitalize opacity-100 transition-all group-[[data-collapsed=true]]:opacity-0 group-[[data-collapsed=true]]:hidden')}
       >
         {item.label}
       </span>
@@ -72,7 +72,7 @@ const SidebarItemWithTooltip = ({ item, collapsed, pathname }: SidebarItemProps)
 
           {item.icon}
           <span
-            className={cn('visible opacity-100 transition-all group-[[data-collapsed=true]]:opacity-0 group-[[data-collapsed=true]]:hidden')}
+            className={cn('visible capitalize opacity-100 transition-all group-[[data-collapsed=true]]:opacity-0 group-[[data-collapsed=true]]:hidden')}
           >
             {item.label}
           </span>
@@ -104,7 +104,7 @@ const SidebarItemWithAccordion = ({ item, collapsed, pathname }: SidebarItemProp
           >
             {item.icon && <span className="!rotate-0">{item.icon}</span>}
             <span
-              className={cn('opacity-100 transition-all group-[[data-collapsed=true]]:opacity-0 group-[[data-collapsed=true]]:hidden')}
+              className={cn('opacity-100 capitalize transition-all group-[[data-collapsed=true]]:opacity-0 group-[[data-collapsed=true]]:hidden')}
             >
               {item.label}
             </span>

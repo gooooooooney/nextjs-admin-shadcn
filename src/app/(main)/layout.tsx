@@ -32,6 +32,11 @@ const routes: MenuItem[] = [
     label: 'settings',
     icon: <Icons.Settings className='size-4' />,
   },
+  {
+    path: '/users',
+    label: 'users',
+    icon: <Icons.Users className='size-4' />,
+  },
   // {
   //   path: '/analytics',
   //   label: "Analytics",

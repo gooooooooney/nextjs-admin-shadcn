@@ -16,7 +16,7 @@ const config = {
     ]
   },
   experimental: {
-    serverComponentsExternalPackages: ["@zenstackhq/runtime"],
+    serverComponentsExternalPackages: ["@zenstackhq/runtime", "@zenstackhq/server"],
   }
 
 };
