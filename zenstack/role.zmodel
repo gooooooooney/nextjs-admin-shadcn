@@ -2,9 +2,17 @@ import "./user"
 
 model Role {
   id String @id @default(cuid())
-  name RoleEnum @default(user)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @unique
+  name String @default("user")
+  weight RoleEnum @default(user)
+  users User[] 
+  menus Menu[]
+  delete Boolean @default(false)
+  // createdBy User @relation(fields: [createdById], references: [id])
+  // createdById String
+  // updatedBy User @relation(fields: [updatedById], references: [id])
+  // updatedById String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum RoleEnum {
@@ -13,7 +21,7 @@ enum RoleEnum {
   superAdmin
 }
 enum MenuStatus {
-  active 
+  active
   inactive
 }
 
@@ -27,12 +35,14 @@ model Menu {
   id String @id @default(cuid())
   name String
   path String
-  type MenuType
-  status MenuStatus
-  icon String
-  parent Menu? @relation(fields: [parentId], references: [id])
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId String
+  type MenuType @default(menu)
+  status MenuStatus @default(active)
+  icon String?
+  parent Menu? @relation("ParentChildrens",  fields: [parentId], references: [id], onDelete: Cascade)
   parentId String?
-  children Menu[]
+  children Menu[] @relation("ParentChildrens")
   createBy String
   updateBy String
   createdAt DateTime @default(now())

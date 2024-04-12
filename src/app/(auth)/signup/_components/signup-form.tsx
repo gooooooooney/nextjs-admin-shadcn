@@ -18,8 +18,9 @@ import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-succcess"
 import { SignupSchema } from "@/schema/auth"
 import { signup } from "@/action/auth"
-import { Icons } from "@/components/icons"
 import { PasswordInput } from "@/components/ui/password-input"
+import { toast } from "sonner"
+import Link from "next/link"
 
 
 
@@ -56,13 +57,20 @@ export const SignupForm = () => {
         startTransition(() => {
             signup(values)
                 .then((res) => {
+                    console.log(res)
                     if (res.data?.error) {
-                        form.reset();
                         setError(res.data.error);
                     }
                     if (res.data?.success) {
                         setSuccess(res.data.success);
+                        console.log(res.data)
+                        if (res.data.link) {
+                            toast.success(<Link href={res.data.link}>Click here to verify your email</Link>), {
+                                duration: 10000,
+                            }
+                        }
                     }
+
                 })
                 .catch(() => setError("Something went wrong"));
         })

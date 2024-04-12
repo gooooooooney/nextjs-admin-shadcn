@@ -70,6 +70,11 @@ export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, as
       name: username,
       email,
       password: hashedPassword,
+      role: {
+        create: {
+          
+        }
+      }
     },
   });
 
