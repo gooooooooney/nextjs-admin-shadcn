@@ -38,7 +38,7 @@ enum Theme {
     system
 }
 
-enum RoleEnum {
+enum UserRole {
     user
     admin
     superAdmin
@@ -146,7 +146,7 @@ model PasswordResetToken {
 model Role {
     id String @id() @default(cuid())
     name String @default("user")
-    weight RoleEnum @default(user)
+    userRole UserRole @default(user)
     users User[]
     menus Menu[]
     delete Boolean @default(false)
@@ -156,7 +156,7 @@ model Role {
 
 model Menu {
     id String @id() @default(cuid())
-    name String
+    label String
     path String
     role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
     roleId String

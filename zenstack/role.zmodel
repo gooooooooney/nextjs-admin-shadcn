@@ -3,8 +3,8 @@ import "./user"
 model Role {
   id String @id @default(cuid())
   name String @default("user")
-  weight RoleEnum @default(user)
-  users User[] 
+  userRole UserRole @default(user)
+  users User[]
   menus Menu[]
   delete Boolean @default(false)
   // createdBy User @relation(fields: [createdById], references: [id])
@@ -15,7 +15,7 @@ model Role {
   updatedAt DateTime @updatedAt
 }
 
-enum RoleEnum {
+enum UserRole {
   user
   admin
   superAdmin
@@ -33,7 +33,7 @@ enum MenuType {
 
 model Menu {
   id String @id @default(cuid())
-  name String
+  label String
   path String
   role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
   roleId String

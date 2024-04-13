@@ -1,10 +1,14 @@
 import { Icons } from '@/components/icons';
 import { Header } from '@/components/layout/header'
 import { type MenuItem, Sidebar } from '@/components/layout/sidebar'
+import { currentUser } from '@/lib/auth';
+import { getUserPermissions } from '@/server/data/permissions';
+import { UserRole } from '@prisma/client';
+import { LucideIcon } from 'lucide-react';
 import React from 'react'
 
 
-const routes: MenuItem[] = [
+const defaultRoutes: MenuItem[] = [
   {
     path: '/',
     label: "Dashboard",
@@ -43,8 +47,32 @@ const routes: MenuItem[] = [
   //   icon: <Icons.LineChart className='size-4' />,
   // }
 ];
+const layout = async ({ children }: { children: React.ReactNode }) => {
+  const user = await currentUser();
+  const permissions = await getUserPermissions(user?.id);
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+  console.log({ permissions })
+  if (!permissions) return null;
+
+
+  let routes = defaultRoutes
+  if (permissions.role.userRole !== UserRole.admin) {
+    routes = permissions.role.menus.map(menu => {
+      const Icon = Icons[menu.icon as keyof typeof Icons ?? 'Package'] as LucideIcon
+      return {
+        path: menu.path,
+        label: menu.label,
+        icon: <Icon className='size-4' />,
+        children: menu.children.map(child => ({
+          path: child.path,
+          label: child.label,
+        }))
+      }
+    }
+    )
+    routes.unshift(defaultRoutes[0]!)
+  }
+
   return (
     <div className=" min-h-screen w-full flex">
       <Sidebar routes={routes} />
