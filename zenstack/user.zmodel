@@ -33,7 +33,7 @@ model User {
   email String? @unique
   emailVerified DateTime?
   password String @password @omit
-  image String?
+  image String? @url
   theme Theme? @default(system)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

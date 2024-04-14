@@ -4,6 +4,7 @@ model Role {
   id String @id @default(cuid())
   name String @default("user")
   userRole UserRole @default(user)
+  superAdmin Boolean? @default(false)
   users User[]
   menus Menu[]
   delete Boolean @default(false)
@@ -18,7 +19,6 @@ model Role {
 enum UserRole {
   user
   admin
-  superAdmin
 }
 enum MenuStatus {
   active
@@ -47,4 +47,13 @@ model Menu {
   updateBy String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model SuperAdmin {
+  id String @id @default(uuid())
+  initialized Boolean? @default(false)
+  allowSignUp Boolean? @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  instanceId String? @default("00000000-0000-0000-0000-000000000000")
 }
