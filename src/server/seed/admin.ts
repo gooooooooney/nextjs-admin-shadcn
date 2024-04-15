@@ -35,14 +35,59 @@ const runSuperAdmin = async () => {
     });
     const end = Date.now()
 
-    console.log(`✅ Seed completed in ${end - start}ms`)
+    console.log(`✅ Seed runSuperAdmin completed in ${end - start}ms`)
 
-    process.exit(0)
   }
 }
 
-runSuperAdmin().catch((err) => {
-  console.error("❌ Seed failed")
+const runAdmin = async () => {
+
+  const user = await db.user.findFirst({
+    where: {
+      email: "admin@test.com"
+    }
+  })
+  if (!user) {
+    console.log("⏳ Running seed...")
+
+    const start = Date.now()
+
+    await db.user.create({
+      data: {
+        name: "admin",
+        email: "admin@test.com",
+        password: await bcrypt.hash("admin1234", 10),
+        emailVerified: new Date(),
+        role: {
+          create: {
+            userRole: UserRole.admin,
+          },
+        },
+        createdBy: {
+          connect: {
+            email: env.SUPER_ADMIN_EMAIL
+          }
+        }
+      }
+    })
+    const end = Date.now()
+
+    console.log(`✅ Seed runAdmin completed in ${end - start}ms`)
+
+    process.exit(0)
+  }
+
+}
+
+runSuperAdmin().then(() => {
+  runAdmin().catch((err) => {
+    console.error("❌ Seed runAdmin failed")
+    console.error(err)
+    process.exit(1)
+  })
+}).catch((err) => {
+  console.error("❌ Seed runSuperAdmin failed")
   console.error(err)
   process.exit(1)
 })
+

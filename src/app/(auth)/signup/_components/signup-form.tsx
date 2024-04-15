@@ -53,17 +53,14 @@ export const SignupForm = () => {
         setError("");
         setSuccess("");
 
-        console.log(values)
         startTransition(() => {
             signup(values)
                 .then((res) => {
-                    console.log(res)
                     if (res.data?.error) {
                         setError(res.data.error);
                     }
                     if (res.data?.success) {
                         setSuccess(res.data.success);
-                        console.log(res.data)
                         if (res.data.link) {
                             toast.success(<Link href={res.data.link}>Click here to verify your email</Link>), {
                                 duration: 10000,

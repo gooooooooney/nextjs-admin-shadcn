@@ -10,13 +10,14 @@
     "db:studio": "prisma studio",
     "dev": "next dev",
     "db:seed": "dotenv tsx src/server/seed.ts",
+    "seed:admin": "dotenv tsx src/server/seed/admin.ts",
+    "seed:users": "dotenv tsx src/server/seed/users.ts",
     "postinstall": "zenstack generate",
     "lint": "next lint",
     "start": "next start"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",
-    "@faker-js/faker": "^8.4.1",
     "@hookform/resolvers": "^3.3.4",
     "@prisma/client": "^5.12.1",
     "@radix-ui/react-accordion": "^1.1.2",
@@ -71,6 +72,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/eslint": "^8.56.8",
     "@types/node": "^20.12.7",

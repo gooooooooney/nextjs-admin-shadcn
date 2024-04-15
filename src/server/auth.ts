@@ -11,6 +11,32 @@ export const {
   signOut,
 } = NextAuth({
   ...authConfig,
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user && token.sub) {
+        session.user.id = token.sub!;
+      }
+      const user = await db.user.findUnique({
+        where: { id: session.user.id },
+        select: {
+          role: true,
+          image: true,
+          name: true,
+        }
+      })
+
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          role: user?.role?.userRole,
+          superAdmin: user?.role?.superAdmin
+        }
+      };
+    },
+    redirect: () => "/"
+
+  },
   providers: [
     Credentials({
       credentials: {
