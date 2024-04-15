@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { UserRole } from '@prisma/client';
 import { db } from '../db';
 
-const fakeUsers = Array.from({ length: 10 }, (_, i) => ({
+const fakeUsers = Array.from({ length: 30 }, (_, i) => ({
   name: faker.person.fullName(),
   email: faker.internet.email(),
   password: faker.internet.password(),

@@ -4,6 +4,7 @@ import { getPasswordResetTokenByEmail } from "@/server/data/password-reset-token
 import { db } from "@/server/db";
 import { getVerificationTokenByEmail } from "@/server/data/verification-token";
 import { getNewEmailVerificationTokenByUserId } from "@/server/data/email-verification-token";
+import { getRegisterVerificationTokenByEmail } from "@/server/data/signup-verification-token";
 
 
 export const generatePasswordResetToken = async (email: string) => {
@@ -68,7 +69,7 @@ export const generateNewEmailVerificationToken = async (email: string, userId: s
     });
   }
 
-  const verficationToken = await db.newEmailVerificationToken.create({
+  const verificationToken = await db.newEmailVerificationToken.create({
     data: {
       userId,
       email,
@@ -77,5 +78,32 @@ export const generateNewEmailVerificationToken = async (email: string, userId: s
     }
   });
 
-  return verficationToken;
+  return verificationToken;
 };
+
+export const generateRegisterEmailVerificationToken = async ({ email, username, adminId }: { email: string, username: string, adminId: string }) => {
+  const token = generateUUID();
+  const expires = new Date(new Date().getTime() + 3600 * 1000);
+
+  const existingToken = await getRegisterVerificationTokenByEmail(email);
+
+  if (existingToken) {
+    await db.verificationToken.delete({
+      where: {
+        id: existingToken.id,
+      },
+    });
+  }
+
+  const verificationToken = await db.registerVerificationToken.create({
+    data: {
+      email,
+      adminId,
+      name: username,
+      token,
+      expires,
+    }
+  });
+
+  return verificationToken;
+}

@@ -129,7 +129,9 @@ export const getUsers = action<typeof getUsersSchema, ActionReturnValue<{
   try {
     const { data, total } = await db.$transaction(async db => {
       type Where = NonNullable<NonNullable<Parameters<typeof db.user.findMany>[0]>["where"]>
-      const where: Where = {}
+      const where: Where = {
+       
+      }
       if (!operator || operator === "and") {
         where.AND = [
           { email: { contains: email } },
@@ -146,6 +148,9 @@ export const getUsers = action<typeof getUsersSchema, ActionReturnValue<{
 
       const data = await db.user.findMany({
         where,
+        include: {
+          role: true,
+        },
         skip: offset,
         take: per_page,
         orderBy: column ?
@@ -154,7 +159,6 @@ export const getUsers = action<typeof getUsersSchema, ActionReturnValue<{
           } : {
             id: "desc",
           },
-
       })
       const total = await db.user.count({ where })
 

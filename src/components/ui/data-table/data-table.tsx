@@ -39,19 +39,23 @@ interface DataTableProps<TData, TValue> {
    * @example floatingBar={<TasksTableFloatingBar table={table} />}
    */
   floatingBar?: React.ReactNode | null
+  title?: React.ReactNode
+  description?: React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
   table,
   columns,
+  title = "DataTable",
+  description =  "Description of the data table.",
   floatingBar = null,
 }: DataTableProps<TData, TValue>) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Products</CardTitle>
+        <CardTitle>{title}</CardTitle>
         <CardDescription>
-          Manage your products and view their sales performance.
+          {description}
         </CardDescription>
       </CardHeader>
       <CardContent>

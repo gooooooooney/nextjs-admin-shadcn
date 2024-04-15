@@ -59,3 +59,30 @@ export async function sendPasswordResetEmail(
   return { success: "Reset email sent!" }
 };
 
+export async function sendRegisterEmail({
+  email,
+  token,
+}: {
+  email: string,
+  token: string,
+}): Promise<{ success?: string, error?: string, link?: string }> {
+  const confirmLink = `${domain}/register?token=${token}`;
+
+  const subject = "Register confirmation";
+  if (env.NODE_ENV === "development") {
+    return { success: "Please register using this link.", link: confirmLink}
+  }
+  const { error } = await resend.emails.send({
+    from: env.EMAIL_FROM,
+    to: email,
+    subject,
+    react: <MagicLinkEmail magicLink={confirmLink} previewTitle={subject} />
+  });
+  if (error) {
+    console.log(error)
+    return { error: "Email server error" }
+  }
+  return { success: "Register email sent!" }
+
+}
+

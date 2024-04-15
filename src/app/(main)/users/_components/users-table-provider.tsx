@@ -7,21 +7,21 @@ import { DateRangePicker } from "@/components/date-range-picker"
 import { ToggleButton } from "@/components/toggle-button"
 import { noop } from "@tanstack/react-table"
 
-interface TasksTableContextProps {
+interface UsersTableContextProps {
   enableAdvancedFilter: boolean
   setEnableAdvancedFilter: React.Dispatch<React.SetStateAction<boolean>>
   showFloatingBar: boolean
   setShowFloatingBar: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const TasksTableContext = React.createContext<TasksTableContextProps>({
+const TasksTableContext = React.createContext<UsersTableContextProps>({
   enableAdvancedFilter: false,
   setEnableAdvancedFilter: noop,
   showFloatingBar: false,
   setShowFloatingBar: noop,
 })
 
-export function useTasksTable() {
+export function useUsersTable() {
   const context = React.useContext(TasksTableContext)
   if (!context) {
     throw new Error("useTasksTable must be used within a TasksTableProvider")
@@ -29,7 +29,7 @@ export function useTasksTable() {
   return context
 }
 
-export function TasksTableProvider({ children }: React.PropsWithChildren) {
+export function UsersTableProvider({ children }: React.PropsWithChildren) {
   const [enableAdvancedFilter, setEnableAdvancedFilter] = React.useState(false)
   const [showFloatingBar, setShowFloatingBar] = React.useState(false)
   const [showDateRangeFilter, setShowDateRangeFilter] = React.useState(false)
