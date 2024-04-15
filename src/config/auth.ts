@@ -2,11 +2,10 @@ import {
   type NextAuthConfig,
   type DefaultSession,
 } from "next-auth";
-import { compare } from "bcryptjs";
-import Credentials from "next-auth/providers/credentials";
 
 import { db } from "@/server/db";
-import { comparePassword } from "@/lib/compare";
+import { UserRole } from "@prisma/client";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -19,6 +18,8 @@ declare module "next-auth" {
     user: {
       id: string;
       email: string;
+      role: UserRole;
+      superAdmin: boolean;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -31,35 +32,35 @@ declare module "next-auth" {
 }
 
 export const authConfig = {
-  providers: [
-    Credentials({
-      credentials: {
-        email: { type: "email" },
-        password: { type: "password" },
-      },
-      authorize: async (credentials) => {
-        if (!credentials) throw new Error("Missing credentials");
-        if (!credentials.email)
-          throw new Error('"email" is required in credentials');
-        if (!credentials.password)
-          throw new Error('"password" is required in credentials');
+  session: {
+    strategy: "jwt",
+  },
+  callbacks: {
+    session({ session, token }) {
+      if (session.user && token.sub) {
+        session.user.id = token.sub!;
+      }
+      return session;
+    },
+    redirect: () => "/"
 
-        const maybeUser = await db.user.findUnique({
-          where: { email: credentials.email as string },
-          select: { id: true, email: true, password: true, name: true},
-        });
-        
-
-        if (!maybeUser?.password) return null;
-        const password = credentials.password as string
-
-        // verify the input password with stored hash
-        const isValid = await comparePassword(password, maybeUser.password);
-        if (!isValid) return null;
-        return { id: maybeUser.id, email: maybeUser.email, name: maybeUser.name};
-      },
-    }),
-  ],
+  },
+  events: {
+    async linkAccount({ user }) {
+      await db.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() }
+      })
+    }
+  },
+  adapter: PrismaAdapter(db),
+  pages: {
+    signIn: "/login",
+    newUser: "/signup",
+  },
+  // we will add more providers later, because bcrypt relies on Node.js APIs not available in Next.js Middleware.
+  // https://nextjs.org/learn/dashboard-app/adding-authentication
+  providers: []
 } satisfies NextAuthConfig
 
 
