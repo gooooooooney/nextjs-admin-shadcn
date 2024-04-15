@@ -1,14 +1,10 @@
 import { Provider } from "@/components/provider";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { Toaster } from "@/components/ui/sonner";
-import { extractRouterConfig } from "uploadthing/server";
-
-import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 
 import "@/styles/globals.css";
 
 import { Inter } from "next/font/google";
-import { ourFileRouter } from "@/server/uploadthing";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,7 +20,9 @@ type RootLayoutProps = {
   children: React.ReactNode;
 };
 export default function RootLayout({ children }: RootLayoutProps) {
+
   return (
+    
     <html lang="en" suppressHydrationWarning >
       <body className={`font-sans ${inter.variable}`}>
         <Provider>

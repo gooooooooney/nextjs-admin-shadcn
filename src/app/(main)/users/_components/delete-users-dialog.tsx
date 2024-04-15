@@ -17,17 +17,18 @@ import {
 } from "@/components/ui/dialog"
 
 import { type Task } from "@/types/model/task"
-import { deleteTasks } from "../_lib/mutations"
+// import { deleteTasks } from "../_lib/mutations"
+import { User } from "@/types/model/user"
 
 interface DeleteTasksDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  tasks: Row<Task>[]
+  users: Row<User>[]
   onSuccess?: () => void
   showTrigger?: boolean
 }
 
-export function DeleteTasksDialog({
-  tasks,
+export function DeleteUsersDialog({
+  users,
   onSuccess,
   showTrigger = true,
   ...props
@@ -40,7 +41,7 @@ export function DeleteTasksDialog({
         <DialogTrigger asChild>
           <Button variant="outline" size="sm">
             <TrashIcon className="mr-2 size-4" aria-hidden="true" />
-            Delete ({tasks.length})
+            Delete ({users.length})
           </Button>
         </DialogTrigger>
       ) : null}
@@ -49,8 +50,8 @@ export function DeleteTasksDialog({
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>
             This action cannot be undone. This will permanently delete your{" "}
-            <span className="font-medium">{tasks.length}</span>
-            {tasks.length === 1 ? " task" : " tasks"} from our servers.
+            <span className="font-medium">{users.length}</span>
+            {users.length === 1 ? " task" : " tasks"} from our servers.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-2 sm:space-x-0">
@@ -63,10 +64,10 @@ export function DeleteTasksDialog({
               variant="destructive"
               onClick={() => {
                 startDeleteTransition(() => {
-                  deleteTasks({
-                    rows: tasks,
-                    onSucess: onSuccess,
-                  })
+                  // deleteTasks({
+                  //   rows: tasks,
+                  //   onSucess: onSuccess,
+                  // })
                 })
               }}
               disabled={isDeletePending}

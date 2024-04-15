@@ -60,6 +60,8 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
         </DataTableToolbar>
       )}
       <DataTable
+        title="Tasks"
+        description="Manage your tasks and view their performance."
         table={table}
         columns={columns}
         floatingBar={

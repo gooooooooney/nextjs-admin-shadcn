@@ -2,9 +2,11 @@ import { Icons } from '@/components/icons';
 import { Header } from '@/components/layout/header'
 import { type MenuItem, Sidebar } from '@/components/layout/sidebar'
 import { currentUser } from '@/lib/auth';
+import { auth } from '@/server/auth';
 import { getUserPermissions } from '@/server/data/permissions';
 import { UserRole } from '@prisma/client';
 import { LucideIcon } from 'lucide-react';
+import { SessionProvider } from 'next-auth/react';
 import React from 'react'
 
 
@@ -48,8 +50,9 @@ const defaultRoutes: MenuItem[] = [
   // }
 ];
 const layout = async ({ children }: { children: React.ReactNode }) => {
-  const user = await currentUser();
-  const permissions = await getUserPermissions(user?.id);
+  const session = await auth();
+
+  const permissions = await getUserPermissions(session?.user?.id);
 
   console.log({ permissions })
   if (!permissions) return null;
@@ -74,15 +77,17 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className=" min-h-screen w-full flex">
-      <Sidebar routes={routes} />
-      <div className="flex flex-col flex-1">
-        <Header />
-        <div className='relative h-full'>
-          {children}
+    <SessionProvider session={session}>
+      <div className=" min-h-screen w-full flex">
+        <Sidebar routes={routes} />
+        <div className="flex flex-col flex-1">
+          <Header />
+          <div className='relative h-full'>
+            {children}
+          </div>
         </div>
       </div>
-    </div>
+    </SessionProvider>
   )
 }
 

@@ -38,39 +38,39 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
-
-import { DeleteTasksDialog } from "./delete-tasks-dialog"
-import { LabelSchema, PrioritySchema, StatusSchema } from "@/schema/zod/enums"
+// import { DeleteTasksDialog } from "./delete-users-dialog"
+import { LabelSchema, PrioritySchema, StatusSchema, UserRoleSchema } from "@/schema/zod/enums"
 import { type Task } from "@/types/model/task"
 import { updateTask } from "@/action/task"
+import { User } from "@/types/model/user"
 
-export const searchableColumns: DataTableSearchableColumn<Task>[] = [
+export const searchableColumns: DataTableSearchableColumn<User>[] = [
   {
-    id: "title",
-    placeholder: "Filter titles...",
+    id: "name",
+    placeholder: "Filter username...",
   },
 ]
 
-export const filterableColumns: DataTableFilterableColumn<Task>[] = [
+export const filterableColumns: DataTableFilterableColumn<User>[] = [
   {
-    id: "status",
-    title: "Status",
-    options: StatusSchema.options.map((status) => ({
-      label: status[0]?.toUpperCase() + status.slice(1),
-      value: status,
+    id: "role",
+    title: "Role",
+    options: UserRoleSchema.options.map((userRole) => ({
+      label: userRole[0]?.toUpperCase() + userRole.slice(1),
+      value: userRole,
     })),
   },
   {
-    id: "priority",
-    title: "Priority",
-    options: PrioritySchema.options.map((priority) => ({
-      label: priority[0]?.toUpperCase() + priority.slice(1),
-      value: priority,
+    id: "emailVerified",
+    title: "isEmailVerified",
+    options: [true, false].map((emailVerified) => ({
+      label: emailVerified ? "Yes" : "No",
+      value: emailVerified.toString(),
     })),
   },
 ]
 
-export function getColumns(): ColumnDef<Task>[] {
+export function getColumns(): ColumnDef<User>[] {
   return [
     {
       id: "select",
@@ -96,28 +96,37 @@ export function getColumns(): ColumnDef<Task>[] {
       enableSorting: false,
       enableHiding: false,
     },
-    {
-      accessorKey: "id",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Id" />
-      ),
-      cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // {
+    //   accessorKey: "id",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Id" />
+    //   ),
+    //   cell: ({ row }) => <div >{row.getValue("id")}</div>,
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
       accessorKey: "name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Username" />
       ),
-      cell: ({ row }) => <div className="w-[80px]">{row.getValue("name")}</div>,
+      cell: ({ row }) => <div >{row.getValue("name")}</div>,
     },
     {
       accessorKey: "email",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Email" />
       ),
-      cell: ({ row }) => <div className="w-[80px]">{row.getValue("email")}</div>,
+      cell: ({ row }) => <div >{row.getValue("email")}</div>,
+    },
+    {
+      accessorKey: "role",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Role" />
+      ),
+      cell: ({ row }) => {
+        return <h2 className="capitalize">{(row.getValue("role") as any).userRole}</h2>
+      },
     },
     // {
     //   accessorKey: "status",
@@ -227,12 +236,12 @@ export function getColumns(): ColumnDef<Task>[] {
 
         return (
           <>
-            <DeleteTasksDialog
+            {/* <DeleteTasksDialog
               open={showDeleteTaskDialog}
               onOpenChange={setShowDeleteTaskDialog}
               tasks={[row]}
               showTrigger={false}
-            />
+            /> */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -247,8 +256,8 @@ export function getColumns(): ColumnDef<Task>[] {
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>
-                    <DropdownMenuRadioGroup
-                      value={row.original.label}
+                    {/* <DropdownMenuRadioGroup
+                      value={row.original.role!.userRole as any}
                       onValueChange={(value) => {
                         startUpdateTransition(() => {
                           toast.promise(
@@ -275,7 +284,7 @@ export function getColumns(): ColumnDef<Task>[] {
                           {label}
                         </DropdownMenuRadioItem>
                       ))}
-                    </DropdownMenuRadioGroup>
+                    </DropdownMenuRadioGroup> */}
                   </DropdownMenuSubContent>
                 </DropdownMenuSub>
                 <DropdownMenuSeparator />

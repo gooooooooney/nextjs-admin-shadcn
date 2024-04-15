@@ -1,16 +1,24 @@
 import { Shell } from "@/components/layout/shell"
 import { currentUser } from "@/lib/auth"
-import { getUsers } from "@/server/data/user"
 import React from "react"
+import { UsersTableProvider } from "./_components/users-table-provider"
+import { DataTableSkeleton } from "@/components/ui/data-table/data-table-skeleton"
+import { UsersTable } from "./_components/users-table"
+import { searchParamsSchema } from "@/schema/data/users"
+import { getUsers } from "@/action/user"
 
-const UsersPage = async () => {
-  const user = await currentUser()
-  const users = await getUsers({ user: { id: user!.id, role: user?.role }, superAdmin: user?.superAdmin })
 
-  console.log({ users })
+interface UserPageProps {
+  searchParams: Record<string, string | string[] | undefined>
+}
+
+const UsersPage = ({ searchParams }: UserPageProps) => {
+  const search = searchParamsSchema.parse(searchParams)
+
+  const tasksPromise = getUsers(search)
   return (
     <Shell variant="sidebar" className="px-4">
-      <TasksTableProvider>
+      <UsersTableProvider>
         <React.Suspense
           fallback={
             <DataTableSkeleton
@@ -27,9 +35,9 @@ const UsersPage = async () => {
          * This is done because the table columns need to be memoized, and the `useDataTable` hook needs to be called in a client component.
          * By encapsulating the `DataTable` component within the `tasktableshell` component, we can ensure that the necessary logic and state management is handled correctly.
          */}
-          <TasksTable tasksPromise={tasksPromise} />
+          <UsersTable usersPromise={tasksPromise} />
         </React.Suspense>
-      </TasksTableProvider>
+      </UsersTableProvider>
     </Shell>
   )
 }

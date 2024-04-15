@@ -22,15 +22,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-import { deleteTasks, updateTasks } from "../_lib/mutations"
+// import { deleteTasks, updateTasks } from "../_lib/mutations"
 import { type Task } from "@/types/model/task"
 import { PrioritySchema, StatusSchema } from "@/schema/zod/enums"
+import { User } from "@/types/model/user"
 
-interface TasksTableFloatingBarProps {
-  table: Table<Task>
+interface UsersTableFloatingBarProps {
+  table: Table<User>
 }
 
-export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
+export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
 
   const [isPending, startTransition] = React.useTransition()
@@ -80,10 +81,10 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
           </div>
           <Separator orientation="vertical" className="hidden h-5 sm:block" />
           <div className="flex items-center gap-1.5">
-            <Select
-              onValueChange={(value: Task["status"]) => {
+            {/* <Select
+              onValueChange={(value: User["role"]) => {
                 startTransition(() => {
-                  updateTasks({
+                  updateUsers({
                     rows,
                     status: value,
                     onSucess: () => table.toggleAllRowsSelected(false),
@@ -121,49 +122,8 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                   ))}
                 </SelectGroup>
               </SelectContent>
-            </Select>
-            <Select
-              onValueChange={(value: Task["priority"]) => {
-                startTransition(() => {
-                  updateTasks({
-                    rows,
-                    priority: value,
-                    onSucess: () => table.toggleAllRowsSelected(false),
-                  })
-                })
-              }}
-            >
-              <Tooltip>
-                <SelectTrigger asChild>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="secondary"
-                      size="icon"
-                      className="size-7 border data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
-                      disabled={isPending}
-                    >
-                      <ArrowUpIcon className="size-4" aria-hidden="true" />
-                    </Button>
-                  </TooltipTrigger>
-                </SelectTrigger>
-                <TooltipContent className=" border bg-accent font-semibold text-foreground dark:bg-zinc-900">
-                  <p>Update priority</p>
-                </TooltipContent>
-              </Tooltip>
-              <SelectContent align="center">
-                <SelectGroup>
-                  {PrioritySchema.options.map((priority) => (
-                    <SelectItem
-                      key={priority}
-                      value={priority}
-                      className="capitalize"
-                    >
-                      {priority}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            </Select> */}
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -172,10 +132,10 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                   className="size-7 border"
                   onClick={() => {
                     startTransition(() => {
-                      deleteTasks({
-                        rows,
-                        onSucess: () => table.toggleAllRowsSelected(false),
-                      })
+                      // deleteUsers({
+                      //   rows,
+                      //   onSucess: () => table.toggleAllRowsSelected(false),
+                      // })
                     })
                   }}
                   disabled={isPending}
@@ -184,7 +144,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                 </Button>
               </TooltipTrigger>
               <TooltipContent className=" border bg-accent font-semibold text-foreground dark:bg-zinc-900">
-                <p>Delete tasks</p>
+                <p>Delete users</p>
               </TooltipContent>
             </Tooltip>
           </div>

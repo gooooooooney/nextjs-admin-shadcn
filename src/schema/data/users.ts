@@ -11,12 +11,12 @@ export const UpdateUsersSchema = UserSchema.pick({
 })
 
 
-export const createUsersSchema = UserSchema.pick({
-  name: true,
-  email: true,
+export const createUserSchema = z.object({
+  name: z.string().min(3).max(50),
+  email: z.string().email(),
 })
 
-export type CreateTask = z.infer<typeof createUsersSchema>
+export type CreateUser = z.infer<typeof createUserSchema>
 
 export const searchParamsSchema = z.object({
   page: z.coerce.number().default(1),

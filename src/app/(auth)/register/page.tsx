@@ -7,10 +7,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { SignupForm } from "./_components/signup-form"
+import { RegisterForm } from "./_components/register-form"
 import { Suspense } from "react"
 
-export default function SignupPage() {
+
+
+export default function RegisterPage() {
   return (
     <Card className="mx-auto max-w-md  min-w-[90%] md:min-w-96">
       <CardHeader>
@@ -19,7 +21,7 @@ export default function SignupPage() {
       </CardHeader>
       <CardContent>
         <Suspense fallback={null}>
-          <SignupForm />
+          <RegisterForm />
         </Suspense>
         <div className="mt-4 text-center text-sm">
           Already have an account?

@@ -11,20 +11,20 @@ import {
   filterableColumns,
   getColumns,
   searchableColumns,
-} from "./tasks-table-columns"
-import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
-import { useTasksTable } from "./tasks-table-provider"
-import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
+} from "./users-table-columns"
+import { UsersTableFloatingBar } from "./users-table-floating-bar"
+import { useUsersTable } from "./users-table-provider"
+import { UsersTableToolbarActions } from "./users-table-toolbar-actions"
 import { type getTasks } from "@/action/task"
-import { getUsers } from "@/server/data/user"
+import { getUsers } from "@/action/user"
 
 interface TasksTableProps {
   usersPromise: ReturnType<typeof getUsers>
 }
 
-export function TasksTable({ usersPromise }: TasksTableProps) {
+export function UsersTable({ usersPromise }: TasksTableProps) {
   // Flags for showcasing some additional features. Feel free to remove it.
-  const { enableAdvancedFilter, showFloatingBar } = useTasksTable()
+  const { enableAdvancedFilter, showFloatingBar } = useUsersTable()
 
   // Learn more about React.use here: https://react.dev/reference/react/use
   const { data } = React.use(usersPromise)
@@ -33,7 +33,7 @@ export function TasksTable({ usersPromise }: TasksTableProps) {
   const columns = React.useMemo(() => getColumns(), [])
 
   const { table } = useDataTable({
-    data: data?.data?.data ?? [],
+    data: data?.data?.data!,
     columns,
     pageCount: data?.data?.total ?? -1,
     searchableColumns,
@@ -49,7 +49,7 @@ export function TasksTable({ usersPromise }: TasksTableProps) {
           filterableColumns={filterableColumns}
           searchableColumns={searchableColumns}
         >
-          <TasksTableToolbarActions table={table} />
+          <UsersTableToolbarActions table={table} />
         </DataTableAdvancedToolbar>
       ) : (
         <DataTableToolbar
@@ -57,14 +57,16 @@ export function TasksTable({ usersPromise }: TasksTableProps) {
           filterableColumns={filterableColumns}
           searchableColumns={searchableColumns}
         >
-          <TasksTableToolbarActions table={table} />
+          <UsersTableToolbarActions table={table} />
         </DataTableToolbar>
       )}
       <DataTable
+        title="Users"
+        description="List of all users in the system."
         table={table}
         columns={columns}
         floatingBar={
-          showFloatingBar ? <TasksTableFloatingBar table={table} /> : null
+          showFloatingBar ? <UsersTableFloatingBar table={table} /> : null
         }
       />
     </div>
