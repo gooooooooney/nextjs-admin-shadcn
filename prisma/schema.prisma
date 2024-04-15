@@ -41,7 +41,6 @@ enum Theme {
 enum UserRole {
     user
     admin
-    superAdmin
 }
 
 enum MenuStatus {
@@ -100,6 +99,7 @@ model User {
     /// @password
     /// @omit
     password String
+    /// @url
     image String?
     theme Theme? @default(system)
     createdAt DateTime @default(now())
@@ -110,7 +110,7 @@ model User {
     roleId String
     /// created by which user
     createdBy User? @relation("UserCreatedBy", fields: [createdById], references: [id])
-    createdById String? @unique()
+    createdById String?
     /// The users that this user has created
     createdUsers User[] @relation("UserCreatedBy")
 }
@@ -147,6 +147,7 @@ model Role {
     id String @id() @default(cuid())
     name String @default("user")
     userRole UserRole @default(user)
+    superAdmin Boolean? @default(false)
     users User[]
     menus Menu[]
     delete Boolean @default(false)
@@ -170,4 +171,13 @@ model Menu {
     updateBy String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt()
+}
+
+model SuperAdmin {
+    id String @id() @default(uuid())
+    initialized Boolean? @default(false)
+    allowSignUp Boolean? @default(true)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+    instanceId String? @default("00000000-0000-0000-0000-000000000000")
 }

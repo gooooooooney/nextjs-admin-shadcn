@@ -43,7 +43,7 @@ model User {
   roleId String
   /// created by which user
   createdBy User? @relation("UserCreatedBy", fields: [createdById], references: [id])
-  createdById String? @unique
+  createdById String?
   /// The users that this user has created
   createdUsers User[] @relation("UserCreatedBy")
 }

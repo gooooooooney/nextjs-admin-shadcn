@@ -35,16 +35,7 @@ export const authConfig = {
   session: {
     strategy: "jwt",
   },
-  callbacks: {
-    session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub!;
-      }
-      return session;
-    },
-    redirect: () => "/"
 
-  },
   events: {
     async linkAccount({ user }) {
       await db.user.update({
