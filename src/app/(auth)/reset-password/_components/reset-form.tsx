@@ -43,7 +43,7 @@ export const ResetPasswordForm = () => {
                 setSuccess(res?.success);
                 res.link && toast.success(<Link href={res.link}>
                     Reset password now
-                </Link>)
+                </Link>, {duration: 0})
             }
         },
         onError: () => {

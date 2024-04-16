@@ -5,14 +5,18 @@ import { comparePassword } from "@/lib/compare"
 import { getErrorMessage } from "@/lib/handle-error"
 import { action } from "@/lib/safe-action"
 import { generateNewEmailVerificationToken, generateVerificationToken } from "@/lib/tokens"
-import { getUsersSchema } from "@/schema/data/users"
+import { DeleteManyScheme, getUsersSchema } from "@/schema/data/users"
 import { AppearanceSchema, EmailSchema, ProfileSchema } from "@/schema/settings"
-import { getUserByEmail, updateUser } from "@/server/data/user"
+import { UserSchema } from "@/schema/zod/models"
+import { deleteUserById, deleteUsersByIds, getUserByEmail, updateUser } from "@/server/data/user"
 import { db } from "@/server/db"
+import { getEnhancedPrisma } from "@/server/db/enhance"
 import { sendVerificationEmail } from "@/server/mail/send-email"
 import { ActionReturnValue, AuthResponse } from "@/types/actions"
 import { User } from "@/types/model/user"
+import { UserRole } from "@prisma/client"
 import { revalidatePath } from "next/cache"
+
 
 export const updateProfile = action(ProfileSchema, async (params) => {
   const { username, image } = params
@@ -98,16 +102,14 @@ export const updatePreferences = action(AppearanceSchema, async (params) => {
   }
 })
 
-export const getUsers = action<typeof getUsersSchema, ActionReturnValue<{
-  data: User[],
-  total: number,
-}>>(getUsersSchema, async (params) => {
+export const getUsers = action(getUsersSchema, async (params) => {
   const {
     page,
     per_page,
     sort,
     name,
-    email,
+    emailVerified,
+    role,
     operator,
     from,
     to,
@@ -126,30 +128,54 @@ export const getUsers = action<typeof getUsersSchema, ActionReturnValue<{
   // Filter tasks by date range
   const fromDay = from ? new Date(from) : undefined
   const toDay = to ? new Date(to) : undefined
+  const { db, user } = await getEnhancedPrisma()
   try {
     const { data, total } = await db.$transaction(async db => {
       type Where = NonNullable<NonNullable<Parameters<typeof db.user.findMany>[0]>["where"]>
+
+      const userRole = role ? ({
+        in: role!.split(".") as UserRole[]
+      }) : undefined
+
+      const emailVerifiedParam = emailVerified === '1' ? {
+        not: null
+      } : emailVerified === '0' ? {
+        equals: null
+      } : undefined
+
       const where: Where = {
-       
-      }
-      if (!operator || operator === "and") {
-        where.AND = [
-          { email: { contains: email } },
-          
-          { createdAt: { gte: fromDay, lte: toDay } },
-        ]
-      } else {
-        where.OR = [
-          { email: { contains: email } },
-          { createdAt: { gte: fromDay, lte: toDay } },
-        ]
+        role: {
+          userRole,
+        },
+        emailVerified: emailVerifiedParam
       }
 
+      // If the user is not an admin, return an empty array
+      if (user?.role === UserRole.user) return { data: [], total: 0 }
+      // If the user is an admin, only return the tasks created by the user
+      if (user?.role === UserRole.admin) {
+        where.createdById = user.id
+      }
+      // If the user is a super admin, return all tasks
+      const params = [
+        { name: { contains: name } },
+        { createdAt: { gte: fromDay, lte: toDay } },
+      ]
+      if (!operator || operator === "and") {
+        where.AND = [...params]
+      } else {
+        where.OR = [...params]
+      }
 
       const data = await db.user.findMany({
         where,
         include: {
-          role: true,
+          role: {
+            include: {
+              menus: true,
+            }
+          },
+          createdBy: true,
         },
         skip: offset,
         take: per_page,
@@ -161,14 +187,33 @@ export const getUsers = action<typeof getUsersSchema, ActionReturnValue<{
           },
       })
       const total = await db.user.count({ where })
-
       const pageCount = Math.ceil(total / per_page)
       return { data, total: pageCount }
     })
-    revalidatePath('/products')
+    revalidatePath('/users')
     return { data: { data, total }, error: null }
   } catch (error) {
     return { error: getErrorMessage(error), data: null }
   }
 })
 
+const DeleteScheme = UserSchema.pick({ id: true })
+
+export const deleteUser = action<typeof DeleteScheme, ActionReturnValue<User>>(DeleteScheme, async ({ id }) => {
+  const [err, data] = await deleteUserById(id)
+  if (err) {
+    return { error: getErrorMessage(err), data: null }
+  }
+  revalidatePath("/users")
+  return { data, error: null }
+})
+
+
+export const deleteUsersAction = action(DeleteManyScheme, async (ids) => {
+  const [err, data] = await deleteUsersByIds(ids)
+  if (err) {
+    return { error: getErrorMessage(err), data: null }
+  }
+  revalidatePath("/users")
+  return { data, error: null }
+})

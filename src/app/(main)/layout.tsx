@@ -54,12 +54,11 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
 
   const permissions = await getUserPermissions(session?.user?.id);
 
-  console.log({ permissions })
   if (!permissions) return null;
 
 
   let routes = defaultRoutes
-  if (permissions.role.userRole !== UserRole.admin) {
+  if (permissions.role.userRole === UserRole.user) {
     routes = permissions.role.menus.map(menu => {
       const Icon = Icons[menu.icon as keyof typeof Icons] as LucideIcon || Icons.Package
       return {

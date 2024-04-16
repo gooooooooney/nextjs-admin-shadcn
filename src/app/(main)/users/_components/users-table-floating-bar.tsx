@@ -26,6 +26,7 @@ import {
 import { type Task } from "@/types/model/task"
 import { PrioritySchema, StatusSchema } from "@/schema/zod/enums"
 import { User } from "@/types/model/user"
+import { deleteUsers } from "../_lib/mutations"
 
 interface UsersTableFloatingBarProps {
   table: Table<User>
@@ -81,48 +82,6 @@ export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
           </div>
           <Separator orientation="vertical" className="hidden h-5 sm:block" />
           <div className="flex items-center gap-1.5">
-            {/* <Select
-              onValueChange={(value: User["role"]) => {
-                startTransition(() => {
-                  updateUsers({
-                    rows,
-                    status: value,
-                    onSucess: () => table.toggleAllRowsSelected(false),
-                  })
-                })
-              }}
-            >
-              <Tooltip>
-                <SelectTrigger asChild>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="secondary"
-                      size="icon"
-                      className="size-7 border data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
-                      disabled={isPending}
-                    >
-                      <CheckCircledIcon className="size-4" aria-hidden="true" />
-                    </Button>
-                  </TooltipTrigger>
-                </SelectTrigger>
-                <TooltipContent className=" border bg-accent font-semibold text-foreground dark:bg-zinc-900">
-                  <p>Update status</p>
-                </TooltipContent>
-              </Tooltip>
-              <SelectContent align="center">
-                <SelectGroup>
-                  {StatusSchema.options.map((status) => (
-                    <SelectItem
-                      key={status}
-                      value={status}
-                      className="capitalize"
-                    >
-                      {status}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select> */}
 
             <Tooltip>
               <TooltipTrigger asChild>
@@ -132,10 +91,10 @@ export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
                   className="size-7 border"
                   onClick={() => {
                     startTransition(() => {
-                      // deleteUsers({
-                      //   rows,
-                      //   onSucess: () => table.toggleAllRowsSelected(false),
-                      // })
+                      deleteUsers({
+                        rows,
+                        onSuccess: () => table.toggleAllRowsSelected(false),
+                      })
                     })
                   }}
                   disabled={isPending}

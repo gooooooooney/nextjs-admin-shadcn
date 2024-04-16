@@ -41,6 +41,7 @@ enum Theme {
 enum UserRole {
     user
     admin
+    superAdmin
 }
 
 enum MenuStatus {
@@ -91,6 +92,7 @@ model Session {
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+/// @@allow('all', true)
 model User {
     id String @id() @default(cuid())
     name String?
@@ -106,8 +108,11 @@ model User {
     updatedAt DateTime @updatedAt()
     accounts Account[]
     sessions Session[]
-    role Role? @relation(fields: [roleId], references: [id], onDelete: Cascade)
-    roleId String
+    role Role?
+    deletedAt DateTime?
+    deletedBy User? @relation("UserDeletedBy", fields: [deletedById], references: [id])
+    deletedById String?
+    deletedUsers User[] @relation("UserDeletedBy")
     /// created by which user
     createdBy User? @relation("UserCreatedBy", fields: [createdById], references: [id])
     createdById String?
@@ -154,14 +159,16 @@ model PasswordResetToken {
     @@unique([email, token])
 }
 
+/// @@allow('all', true)
+/// @@allow('all', superAdmin == true)
 model Role {
     id String @id() @default(cuid())
     name String @default("user")
     userRole UserRole @default(user)
     superAdmin Boolean? @default(false)
-    users User[]
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String @unique()
     menus Menu[]
-    delete Boolean @default(false)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt()
 }
@@ -182,13 +189,4 @@ model Menu {
     updateBy String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt()
-}
-
-model SuperAdmin {
-    id String @id() @default(uuid())
-    initialized Boolean? @default(false)
-    allowSignUp Boolean? @default(true)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
-    instanceId String? @default("00000000-0000-0000-0000-000000000000")
 }

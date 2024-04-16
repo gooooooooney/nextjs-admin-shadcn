@@ -39,13 +39,19 @@ model User {
   updatedAt DateTime @updatedAt
   accounts Account[]
   sessions Session[]
-  role Role? @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId String
+  role Role? 
+  deletedAt DateTime?
+  deletedBy User? @relation("UserDeletedBy", fields: [deletedById], references: [id])
+  deletedById String?
+  deletedUsers User[] @relation("UserDeletedBy")
   /// created by which user
   createdBy User? @relation("UserCreatedBy", fields: [createdById], references: [id])
   createdById String?
   /// The users that this user has created
   createdUsers User[] @relation("UserCreatedBy")
+
+  @@allow("all", true)
+
 }
 
 model RegisterVerificationToken {

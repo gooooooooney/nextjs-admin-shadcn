@@ -17,10 +17,10 @@ import {
 } from "@/components/ui/dialog"
 
 import { type Task } from "@/types/model/task"
-// import { deleteTasks } from "../_lib/mutations"
+import { deleteUsers } from "../_lib/mutations"
 import { User } from "@/types/model/user"
 
-interface DeleteTasksDialogProps
+interface DeleteUserDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
   users: Row<User>[]
   onSuccess?: () => void
@@ -32,7 +32,7 @@ export function DeleteUsersDialog({
   onSuccess,
   showTrigger = true,
   ...props
-}: DeleteTasksDialogProps) {
+}: DeleteUserDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition()
 
   return (
@@ -51,7 +51,7 @@ export function DeleteUsersDialog({
           <DialogDescription>
             This action cannot be undone. This will permanently delete your{" "}
             <span className="font-medium">{users.length}</span>
-            {users.length === 1 ? " task" : " tasks"} from our servers.
+            {users.length === 1 ? "user" : " users"} from our servers.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-2 sm:space-x-0">
@@ -63,11 +63,12 @@ export function DeleteUsersDialog({
               aria-label="Delete selected rows"
               variant="destructive"
               onClick={() => {
+                console.log(111)
                 startDeleteTransition(() => {
-                  // deleteTasks({
-                  //   rows: tasks,
-                  //   onSucess: onSuccess,
-                  // })
+                  deleteUsers({
+                    rows: users,
+                    onSuccess: onSuccess,
+                  })
                 })
               }}
               disabled={isDeletePending}

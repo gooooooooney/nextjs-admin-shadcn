@@ -7,8 +7,11 @@ import { db } from '../db';
 
 export async function getEnhancedPrisma() {
   const user = await currentUser();
-  return enhance(
-    db,
-    { user },
-  );
+  return {
+    db: enhance(
+      db,
+      { user },
+    ),
+    user
+  }
 }

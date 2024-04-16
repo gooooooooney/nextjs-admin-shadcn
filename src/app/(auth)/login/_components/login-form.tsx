@@ -38,7 +38,7 @@ export const LoginForm = () => {
             } else if (res?.success) {
                 setSuccess(res?.success);
                 if (res.link) {
-                    toast.success(<Link href={res.link}>Click here to verify your email</Link>)
+                    toast.success(<Link href={res.link}>Click here to verify your email</Link>, {duration: 0})
                 }
             }
         },

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { UserSchema } from "../zod/models";
+import { UserRoleSchema } from "../zod/enums";
 
 export const UpdateUsersSchema = UserSchema.pick({
   id: true,
@@ -23,8 +24,9 @@ export const searchParamsSchema = z.object({
   per_page: z.coerce.number().default(10),
   sort: z.string().optional(),
   name: z.string().optional(),
-  email:z.string().email().optional(),
+  emailVerified: z.string().optional(),
   from: z.string().optional(),
+  role: z.string().optional(),
   to: z.string().optional(),
   operator: z.enum(["and", "or"]).optional(),
 })
@@ -32,3 +34,5 @@ export const searchParamsSchema = z.object({
 export const getUsersSchema = searchParamsSchema
 
 export type UpdateUsers = z.infer<typeof UpdateUsersSchema>
+
+export const DeleteManyScheme = z.array(z.string())

@@ -1,24 +1,23 @@
 import "./user"
 
 model Role {
-  id String @id @default(cuid())
-  name String @default("user")
-  userRole UserRole @default(user)
+  id         String   @id @default(cuid())
+  name       String   @default("user")
+  userRole   UserRole @default(user)   @@allow("all", true)
   superAdmin Boolean? @default(false)
-  users User[]
-  menus Menu[]
-  delete Boolean @default(false)
-  // createdBy User @relation(fields: [createdById], references: [id])
-  // createdById String
-  // updatedBy User @relation(fields: [updatedById], references: [id])
-  // updatedById String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String   @unique
+  menus      Menu[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@allow("all", superAdmin == true)
 }
 
 enum UserRole {
   user
   admin
+  superAdmin
 }
 enum MenuStatus {
   active
@@ -32,28 +31,21 @@ enum MenuType {
 }
 
 model Menu {
-  id String @id @default(cuid())
-  label String
-  path String
-  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId String
-  type MenuType @default(menu)
-  status MenuStatus @default(active)
-  icon String?
-  parent Menu? @relation("ParentChildrens",  fields: [parentId], references: [id], onDelete: Cascade)
-  parentId String?
-  children Menu[] @relation("ParentChildrens")
-  createBy String
-  updateBy String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+  id        String     @id @default(cuid())
+  label     String
+  path      String
+  role      Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String
+  type      MenuType   @default(menu)
+  status    MenuStatus @default(active)
+  icon      String?
+  parent    Menu?      @relation("ParentChildrens", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId  String?
+  children  Menu[]     @relation("ParentChildrens")
+  createBy  String
+  updateBy  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
-model SuperAdmin {
-  id String @id @default(uuid())
-  initialized Boolean? @default(false)
-  allowSignUp Boolean? @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  instanceId String? @default("00000000-0000-0000-0000-000000000000")
+  
 }
