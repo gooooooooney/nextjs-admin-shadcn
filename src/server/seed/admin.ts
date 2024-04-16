@@ -27,7 +27,7 @@ const runSuperAdmin = async () => {
         emailVerified: new Date(),
         role: {
           create: {
-            userRole: UserRole.admin,
+            userRole: UserRole.superAdmin,
             superAdmin: true,
           }
         }

@@ -29,6 +29,7 @@ export const getUserPermissions = async (userId?: string) => {
   const res = await db.user.findUnique({
     where: { id: userId },
     select: {
+      createdUsers: true,
       role: {
         include: {
           menus: true

@@ -63,7 +63,7 @@ export const SignupForm = () => {
                         setSuccess(res.data.success);
                         if (res.data.link) {
                             toast.success(<Link href={res.data.link}>Click here to verify your email</Link>), {
-                                duration: 10000,
+                                duration: 0,
                             }
                         }
                     }

@@ -105,7 +105,6 @@ export const signupByAdmin = action<typeof SignupByTokenSchema, AuthResponse>(Si
   }
   const existingUser = await getUserByEmail(existingToken.email);
 
-  console.log(existingToken, "existingToken------------------------------------------------------------------------------------------->")
   if (existingUser) {
     return { error: "Email already in use!" };
   }
@@ -114,6 +113,8 @@ export const signupByAdmin = action<typeof SignupByTokenSchema, AuthResponse>(Si
       name: username ,
       email: existingToken.email,
       password: hashedPassword,
+      // It is verified by the token
+      emailVerified: new Date(),
       createdBy: {
         connect: {
           id: existingToken.adminId
@@ -124,6 +125,12 @@ export const signupByAdmin = action<typeof SignupByTokenSchema, AuthResponse>(Si
 
         }
       }
+    }
+  });
+
+  await db.registerVerificationToken.delete({
+    where: {
+      id: existingToken.id
     }
   });
 

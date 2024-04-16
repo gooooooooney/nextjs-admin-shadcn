@@ -20,7 +20,6 @@ import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 
 import { getErrorMessage } from "@/lib/handle-error"
-import { formatDate } from "@/lib/utils"
 import { Badge, type BadgeVariant } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -43,6 +42,8 @@ import { LabelSchema, PrioritySchema, StatusSchema, UserRoleSchema } from "@/sch
 import { type Task } from "@/types/model/task"
 import { updateTask } from "@/action/task"
 import { User } from "@/types/model/user"
+import { format } from "date-fns"
+import { DeleteUsersDialog } from "./delete-users-dialog"
 
 export const searchableColumns: DataTableSearchableColumn<User>[] = [
   {
@@ -63,10 +64,10 @@ export const filterableColumns: DataTableFilterableColumn<User>[] = [
   {
     id: "emailVerified",
     title: "isEmailVerified",
-    options: [true, false].map((emailVerified) => ({
-      label: emailVerified ? "Yes" : "No",
-      value: emailVerified.toString(),
-    })),
+    options: [
+      { label: "Yes", value: "1" },
+      { label: "No", value: "0" },
+    ],
   },
 ]
 
@@ -96,15 +97,6 @@ export function getColumns(): ColumnDef<User>[] {
       enableSorting: false,
       enableHiding: false,
     },
-    // {
-    //   accessorKey: "id",
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title="Id" />
-    //   ),
-    //   cell: ({ row }) => <div >{row.getValue("id")}</div>,
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
     {
       accessorKey: "name",
       header: ({ column }) => (
@@ -115,116 +107,48 @@ export function getColumns(): ColumnDef<User>[] {
     {
       accessorKey: "email",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Email" />
+        <div title="Email" >Email</div>
       ),
       cell: ({ row }) => <div >{row.getValue("email")}</div>,
     },
     {
       accessorKey: "role",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Role" />
+        <p title="Role" >Role</p>
       ),
       cell: ({ row }) => {
-        return <h2 className="capitalize">{(row.getValue("role") as any).userRole}</h2>
+        const role = row.getValue("role") || {} as any
+        return <h2 className="capitalize">{role.userRole}</h2>
       },
     },
-    // {
-    //   accessorKey: "status",
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title="Status" />
-    //   ),
-    //   cell: ({ row }) => {
-    //     const status = StatusSchema.options.find(
-    //       (status) => status === row.original.status
-    //     )
-
-    //     if (!status) return null
-
-    //     return (
-    //       <div className="flex w-[100px] items-center">
-    //         {status === "canceled" ? (
-    //           <CrossCircledIcon
-    //             className="mr-2 size-4 text-muted-foreground"
-    //             aria-hidden="true"
-    //           />
-    //         ) : status === "done" ? (
-    //           <CheckCircledIcon
-    //             className="mr-2 size-4 text-muted-foreground"
-    //             aria-hidden="true"
-    //           />
-    //         ) : status === "inProgress" ? (
-    //           <StopwatchIcon
-    //             className="mr-2 size-4 text-muted-foreground"
-    //             aria-hidden="true"
-    //           />
-    //         ) : status === "todo" ? (
-    //           <QuestionMarkCircledIcon
-    //             className="mr-2 size-4 text-muted-foreground"
-    //             aria-hidden="true"
-    //           />
-    //         ) : (
-    //           <CircleIcon
-    //             className="mr-2 size-4 text-muted-foreground"
-    //             aria-hidden="true"
-    //           />
-    //         )}
-    //         <span className="capitalize">{status}</span>
-    //       </div>
-    //     )
-    //   },
-    //   filterFn: (row, id, value) => {
-    //     return Array.isArray(value) && value.includes(row.getValue(id))
-    //   },
-    // },
-    // {
-    //   accessorKey: "priority",
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title="Priority" />
-    //   ),
-    //   cell: ({ row }) => {
-    //     const priority = PrioritySchema.options.find(
-    //       (priority) => priority === row.original.priority
-    //     )
-
-    //     if (!priority) return null
-
-    //     return (
-    //       <div className="flex items-center">
-    //         {priority === "low" ? (
-    //           <ArrowDownIcon
-    //             className="mr-2 size-4 text-muted-foreground"
-    //             aria-hidden="true"
-    //           />
-    //         ) : priority === "medium" ? (
-    //           <ArrowRightIcon
-    //             className="mr-2 size-4 text-muted-foreground"
-    //             aria-hidden="true"
-    //           />
-    //         ) : priority === "high" ? (
-    //           <ArrowUpIcon
-    //             className="mr-2 size-4 text-muted-foreground"
-    //             aria-hidden="true"
-    //           />
-    //         ) : (
-    //           <CircleIcon
-    //             className="mr-2 size-4 text-muted-foreground"
-    //             aria-hidden="true"
-    //           />
-    //         )}
-    //         <span className="capitalize">{priority}</span>
-    //       </div>
-    //     )
-    //   },
-    //   filterFn: (row, id, value) => {
-    //     return Array.isArray(value) && value.includes(row.getValue(id))
-    //   },
-    // },
+    {
+      accessorKey: "emailVerified",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="EmailVerified" />
+      ),
+      cell: ({ row }) => {
+        const emailVerified = row.getValue("emailVerified") as Date
+        return emailVerified ? format(row.getValue("emailVerified") as Date, "PPpp") : "N/A"
+      },
+      enableColumnFilter: false,
+    },
     {
       accessorKey: "createdAt",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created At" />
       ),
-      cell: ({ cell }) => formatDate(cell.getValue() as Date),
+      cell: ({ cell }) => format(cell.getValue() as Date, "PPpp"),
+      enableColumnFilter: false,
+    },
+    {
+      accessorKey: "createdBy",
+      header: ({ column }) => (
+        <p>Created By</p>
+      ),
+      cell: ({ row }) => {
+        const createdBy: User = row.getValue("createdBy") || { name: "System" }
+        return <div >{createdBy.name}</div>
+      },
       enableColumnFilter: false,
     },
     {
@@ -236,12 +160,12 @@ export function getColumns(): ColumnDef<User>[] {
 
         return (
           <>
-            {/* <DeleteTasksDialog
+            <DeleteUsersDialog
               open={showDeleteTaskDialog}
               onOpenChange={setShowDeleteTaskDialog}
-              tasks={[row]}
+              users={[row]}
               showTrigger={false}
-            /> */}
+            />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -253,40 +177,6 @@ export function getColumns(): ColumnDef<User>[] {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent>
-                    {/* <DropdownMenuRadioGroup
-                      value={row.original.role!.userRole as any}
-                      onValueChange={(value) => {
-                        startUpdateTransition(() => {
-                          toast.promise(
-                            updateTask({
-                              id: row.original.id,
-                              label: value as Task["label"],
-                            }),
-                            {
-                              loading: "Updating...",
-                              success: "Label updated",
-                              error: (err) => getErrorMessage(err),
-                            }
-                          )
-                        })
-                      }}
-                    >
-                      {LabelSchema.options.map((label) => (
-                        <DropdownMenuRadioItem
-                          key={label}
-                          value={label}
-                          className="capitalize"
-                          disabled={isUpdatePending}
-                        >
-                          {label}
-                        </DropdownMenuRadioItem>
-                      ))}
-                    </DropdownMenuRadioGroup> */}
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onSelect={() => setShowDeleteTaskDialog(true)}

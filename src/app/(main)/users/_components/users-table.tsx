@@ -17,6 +17,7 @@ import { useUsersTable } from "./users-table-provider"
 import { UsersTableToolbarActions } from "./users-table-toolbar-actions"
 import { type getTasks } from "@/action/task"
 import { getUsers } from "@/action/user"
+import { User } from "@/types/model/user"
 
 interface TasksTableProps {
   usersPromise: ReturnType<typeof getUsers>
@@ -33,7 +34,7 @@ export function UsersTable({ usersPromise }: TasksTableProps) {
   const columns = React.useMemo(() => getColumns(), [])
 
   const { table } = useDataTable({
-    data: data?.data?.data!,
+    data: data?.data?.data! as User[],
     columns,
     pageCount: data?.data?.total ?? -1,
     searchableColumns,

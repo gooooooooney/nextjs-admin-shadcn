@@ -1,6 +1,7 @@
 import { Theme, UserRole } from "@prisma/client";
 import { db } from "../db"
 import { tryit } from "radash";
+import { getEnhancedPrisma } from "../db/enhance";
 
 export const getUserByEmail = async (email: string) => {
   try {
@@ -28,39 +29,12 @@ export const updateUser = async (id: string, data: { name?: string; email?: stri
   }
 }
 
-export const getUsers = async ({
-  user,
-  superAdmin
-}: {
-  user: {
-    id: string,
-    role?: UserRole
-  }
-  superAdmin?: boolean
-}) => {
-  // let where: NonNullable<Parameters<typeof db.user.findMany>[0]>['where'];
-  if (superAdmin) {
-    return await db.user.findMany({
-      where: {
-        NOT: {
-          id: user.id
-        }
-      }
-    })
-  } 
-  if (user.role === UserRole.admin) {
-    const res = await db.user.findUnique({
-      where: {
-        id: user.id
-      },
-      select: {
-        role: {
-          select: {
-            users: true
-          }
-        }
-      }
-    })
-    return res?.role?.users
-  }
+export const deleteUserById = async (id: string) => {
+  const { db } = await getEnhancedPrisma();
+  return tryit(db.user.delete)({ where: { id } })
+}
+
+export const deleteUsersByIds = async (ids: string[]) => {
+  const { db } = await getEnhancedPrisma();
+  return tryit(db.user.deleteMany)({ where: { id: { in: ids } } })
 }
