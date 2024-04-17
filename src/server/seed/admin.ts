@@ -21,6 +21,7 @@ const runSuperAdmin = async () => {
 
     await db.user.create({
       data: {
+        id: env.SUPER_ADMIN_UUID,
         name: "super admin",
         email: env.SUPER_ADMIN_EMAIL,
         password: hashedPassword,
@@ -29,6 +30,7 @@ const runSuperAdmin = async () => {
           create: {
             userRole: UserRole.superAdmin,
             superAdmin: true,
+            name: "Super Admin",
           }
         }
       },
@@ -61,11 +63,13 @@ const runAdmin = async () => {
         role: {
           create: {
             userRole: UserRole.admin,
+            name: "Admin",
           },
         },
         createdBy: {
           connect: {
-            email: env.SUPER_ADMIN_EMAIL
+            email: env.SUPER_ADMIN_EMAIL,
+            id: env.SUPER_ADMIN_UUID,
           }
         }
       }

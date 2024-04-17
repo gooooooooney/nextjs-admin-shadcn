@@ -39,9 +39,16 @@ const defaultRoutes: MenuItem[] = [
     icon: <Icons.Settings className='size-4' />,
   },
   {
-    path: '/users',
-    label: 'users',
-    icon: <Icons.Users className='size-4' />,
+    path: '/system',
+    label: 'system',
+    icon: <Icons.Package className='size-4' />,
+    children: [
+      {
+        path: '/system/users',
+        label: "System Users",
+        icon: <Icons.Users className='size-4' />,
+      },
+    ],
   },
   // {
   //   path: '/analytics',

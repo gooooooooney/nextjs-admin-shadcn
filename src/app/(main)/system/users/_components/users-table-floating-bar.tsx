@@ -52,7 +52,7 @@ export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
   return (
     <div className="fixed inset-x-0 bottom-4 z-50 w-full px-4">
       <div className="w-full overflow-x-auto">
-        <div className="mx-auto flex w-fit items-center gap-2 rounded-md border bg-card p-2 shadow-2xl">
+        <div className="mx-auto flex w-fit items-center gap-2 rounded-md border bg-red-400 text-primary-foreground p-2 shadow-2xl">
           <div className="flex h-7 items-center rounded-md border border-dashed pl-2.5 pr-1">
             <span className="whitespace-nowrap text-xs">
               {rows.length} selected

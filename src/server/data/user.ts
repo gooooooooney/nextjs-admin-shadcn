@@ -30,11 +30,19 @@ export const updateUser = async (id: string, data: { name?: string; email?: stri
 }
 
 export const deleteUserById = async (id: string) => {
-  const { db } = await getEnhancedPrisma();
-  return tryit(db.user.delete)({ where: { id } })
+  const { db, user } = await getEnhancedPrisma();
+  return tryit(db.user.update)({
+    where: { id },
+    data: { deletedAt: new Date(), deletedById: user?.id }
+  })
 }
 
 export const deleteUsersByIds = async (ids: string[]) => {
-  const { db } = await getEnhancedPrisma();
-  return tryit(db.user.deleteMany)({ where: { id: { in: ids } } })
+  const { db, user } = await getEnhancedPrisma();
+  return tryit(db.user.updateMany)({
+    where: { id: { in: ids } }, data: {
+      deletedAt: new Date(),
+      deletedById: user?.id
+    }
+  })
 }

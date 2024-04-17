@@ -98,6 +98,13 @@ export function getColumns(): ColumnDef<User>[] {
       enableHiding: false,
     },
     {
+      id: 'index',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} className="w-24 text-center" title="Index" />
+      ),
+      cell: ({ row }) => <div className="w-24 text-center">{row.index + 1}</div>,
+    },
+    {
       accessorKey: "name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Username" />
@@ -118,7 +125,13 @@ export function getColumns(): ColumnDef<User>[] {
       ),
       cell: ({ row }) => {
         const role = row.getValue("role") || {} as any
-        return <h2 className="capitalize">{role.userRole}</h2>
+
+        const getVariant = () => {
+          if (role.userRole === "admin") return "warning"
+          if (role.userRole === "user") return "secondary"
+          return "success"
+        }
+        return <Badge className="capitalize" variant={getVariant()}>{role.userRole}</Badge>
       },
     },
     {
@@ -128,7 +141,7 @@ export function getColumns(): ColumnDef<User>[] {
       ),
       cell: ({ row }) => {
         const emailVerified = row.getValue("emailVerified") as Date
-        return emailVerified ? format(row.getValue("emailVerified") as Date, "PPpp") : "N/A"
+        return emailVerified ? format(row.getValue("emailVerified") as Date, "yyyy-MM-dd HH:mm") : "N/A"
       },
       enableColumnFilter: false,
     },
@@ -137,7 +150,7 @@ export function getColumns(): ColumnDef<User>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created At" />
       ),
-      cell: ({ cell }) => format(cell.getValue() as Date, "PPpp"),
+      cell: ({ cell }) => format(cell.getValue() as Date, "yyyy-MM-dd HH:mm"),
       enableColumnFilter: false,
     },
     {
@@ -147,7 +160,20 @@ export function getColumns(): ColumnDef<User>[] {
       ),
       cell: ({ row }) => {
         const createdBy: User = row.getValue("createdBy") || { name: "System" }
-        return <div >{createdBy.name}</div>
+        return <Badge className="truncate" variant={createdBy.name == 'System' ? 'success' : 'secondary'} >{createdBy.name}</Badge>
+      },
+      enableColumnFilter: false,
+    },
+    {
+      accessorKey: "deletedBy",
+      header: ({ column }) => (
+        <p>DeletedBy By</p>
+      ),
+      cell: ({ row }) => {
+        console.log(row.original )
+        const deletedBy: User = row.getValue("deletedBy")
+        
+        return deletedBy && <Badge className="truncate" variant="destructive" >{deletedBy.name}</Badge>
       },
       enableColumnFilter: false,
     },

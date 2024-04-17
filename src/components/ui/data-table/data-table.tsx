@@ -16,6 +16,7 @@ import {
 
 import { DataTablePagination } from "./data-table-pagination"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../card"
+import { ScrollArea } from "../scroll-area"
 
 interface DataTableProps<TData, TValue> {
   /**
@@ -62,7 +63,7 @@ export function DataTable<TData, TValue>({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div ref={ref} className="overflow-auto h-[500px] relative">
+        <ScrollArea className="h-[520px]">
           <Table>
             <TableHeader className="bg-muted sticky top-0 z-50 shadow-sm">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -111,7 +112,7 @@ export function DataTable<TData, TValue>({
               )}
             </TableBody>
           </Table>
-        </div>
+        </ScrollArea>
       </CardContent>
       <CardFooter>
         <div className="flex flex-col gap-2.5 text-xs text-muted-foreground">
