@@ -161,9 +161,6 @@ dependencies:
   vaul:
     specifier: ^0.9.0
     version: 0.9.0(@types/react-dom@18.2.25)(@types/react@18.2.77)(react-dom@18.2.0)(react@18.2.0)
-  virtual:
-    specifier: github:tanstack/react-virtual
-    version: git/github.com+tanstack/react-virtual/b4ad45c3e6480a8436632cd51131691d4bb27b23
   zod:
     specifier: ^3.22.4
     version: 3.22.4
@@ -7409,10 +7406,3 @@ packages:
 
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
-
-  git/github.com+tanstack/react-virtual/b4ad45c3e6480a8436632cd51131691d4bb27b23:
-    resolution: {commit: b4ad45c3e6480a8436632cd51131691d4bb27b23, repo: git@github.com:tanstack/react-virtual.git, type: git}
-    name: virtual
-    version: 0.0.0
-    requiresBuild: true
-    dev: false
