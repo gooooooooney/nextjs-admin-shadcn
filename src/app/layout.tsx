@@ -1,7 +1,8 @@
 import { Provider } from "@/components/provider";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { Toaster } from "@/components/ui/sonner";
-
+import { ViewTransitions } from 'next-view-transitions'
+import NextTopLoader from 'nextjs-toploader';
 import "@/styles/globals.css";
 
 import { Inter } from "next/font/google";
@@ -22,18 +23,20 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
 
   return (
-    
-    <html lang="en" suppressHydrationWarning >
-      <body className={`font-sans ${inter.variable}`}>
-        <Provider>
-          {/* <NextSSRPlugin
+    <ViewTransitions>
+      <html lang="en" suppressHydrationWarning >
+        <body className={`font-sans ${inter.variable}`}>
+        <NextTopLoader />
+          <Provider>
+            {/* <NextSSRPlugin
             routerConfig={extractRouterConfig(ourFileRouter)}
           /> */}
-          {children}
-          <TailwindIndicator />
-          <Toaster richColors />
-        </Provider>
-      </body>
-    </html>
+            {children}
+            <TailwindIndicator />
+            <Toaster richColors />
+          </Provider>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }

@@ -63,7 +63,6 @@ export function DeleteUsersDialog({
               aria-label="Delete selected rows"
               variant="destructive"
               onClick={() => {
-                console.log(111)
                 startDeleteTransition(() => {
                   deleteUsers({
                     rows: users,

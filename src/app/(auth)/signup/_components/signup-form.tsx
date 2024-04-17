@@ -20,7 +20,7 @@ import { SignupSchema } from "@/schema/auth"
 import { signup } from "@/action/auth"
 import { PasswordInput } from "@/components/ui/password-input"
 import { toast } from "sonner"
-import Link from "next/link"
+import {  Link } from "@/components/ui/link"
 
 
 

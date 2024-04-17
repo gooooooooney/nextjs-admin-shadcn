@@ -46,7 +46,7 @@ import { User } from "@/types/model/user"
 import { createByAdmin } from "@/action/auth"
 import { useCurrentUser } from "@/hooks/use-current-user"
 import { useAction } from "next-safe-action/hooks"
-import Link from "next/link"
+import {  Link } from "@/components/ui/link"
 import { isExecuting } from "next-safe-action/status"
 
 interface CreateUserDialogProps {

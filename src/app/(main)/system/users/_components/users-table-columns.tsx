@@ -170,7 +170,6 @@ export function getColumns(): ColumnDef<User>[] {
         <p>DeletedBy By</p>
       ),
       cell: ({ row }) => {
-        console.log(row.original )
         const deletedBy: User = row.getValue("deletedBy")
         
         return deletedBy && <Badge className="truncate" variant="destructive" >{deletedBy.name}</Badge>
