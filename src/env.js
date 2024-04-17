@@ -30,9 +30,6 @@ export const env = createEnv({
     ),
     RESEND_API_KEY: z.string(),
     EMAIL_FROM: z.string(),
-    SUPER_ADMIN_EMAIL: z.string().email(),
-    SUPER_ADMIN_PASSWORD: z.string(),
-    SUPER_ADMIN_UUID: z.string(),
   },
 
   /**
@@ -57,9 +54,6 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     EMAIL_FROM: process.env.EMAIL_FROM,
-    SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL,
-    SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD,
-    SUPER_ADMIN_UUID: process.env.SUPER_ADMIN_UUID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
