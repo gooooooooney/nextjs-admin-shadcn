@@ -78,9 +78,13 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <SessionProvider session={session}>
       <div className=" min-h-screen w-full flex">
-        <Sidebar routes={routes} />
+        <div className="sticky bg-background top-0 h-screen z-[99]">
+          <Sidebar routes={routes} />
+        </div>
         <div className="flex flex-col flex-1">
-          <Header />
+          <div className="sticky bg-background top-0 z-[99]">
+            <Header />
+          </div>
           <div className='relative h-full'>
             {children}
           </div>
