@@ -150,13 +150,21 @@ export const getUsers = action(getUsersSchema, async (params) => {
         emailVerified: emailVerifiedParam
       }
 
-      // If the user is not an admin, return an empty array
-      if (user?.role === UserRole.user) return { data: [], total: 0 }
-      // If the user is an admin, only return the tasks created by the user
-      if (user?.role === UserRole.admin) {
-        where.createdById = user.id
+      switch (user?.role) {
+        case UserRole.user:
+          // If the user is not an admin, return an empty array
+          return { data: [], total: 0 }
+        case UserRole.admin:
+          // If the user is an admin, only return the tasks created by the user
+          where.createdById = user.id
+          // Only return users that have not been deleted
+          where.deletedAt = null;
+          where.deletedById = null;
+          break
+        case UserRole.superAdmin:
+          // If the user is a super admin, return all user
+          break
       }
-      // If the user is a super admin, return all tasks
       const params = [
         { name: { contains: name } },
         { createdAt: { gte: fromDay, lte: toDay } },
@@ -166,7 +174,6 @@ export const getUsers = action(getUsersSchema, async (params) => {
       } else {
         where.OR = [...params]
       }
-
       const data = await db.user.findMany({
         where,
         include: {
@@ -175,6 +182,7 @@ export const getUsers = action(getUsersSchema, async (params) => {
               menus: true,
             }
           },
+          deletedBy: true,
           createdBy: true,
         },
         skip: offset,

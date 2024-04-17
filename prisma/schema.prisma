@@ -56,7 +56,7 @@ enum MenuType {
 }
 
 model Task {
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     code String @unique()
     title String
     status Status @default(todo)
@@ -67,7 +67,7 @@ model Task {
 }
 
 model Account {
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     userId String
     type String
     provider String
@@ -85,7 +85,7 @@ model Account {
 }
 
 model Session {
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     sessionToken String @unique()
     userId String
     expires DateTime
@@ -94,7 +94,7 @@ model Session {
 
 /// @@allow('all', true)
 model User {
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     name String?
     email String? @unique()
     emailVerified DateTime?
@@ -121,7 +121,7 @@ model User {
 }
 
 model RegisterVerificationToken {
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     email String
     name String
     adminId String
@@ -132,7 +132,7 @@ model RegisterVerificationToken {
 }
 
 model VerificationToken {
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     email String
     token String @unique()
     expires DateTime
@@ -141,7 +141,7 @@ model VerificationToken {
 }
 
 model NewEmailVerificationToken {
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     email String
     userId String
     token String @unique()
@@ -151,7 +151,7 @@ model NewEmailVerificationToken {
 }
 
 model PasswordResetToken {
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     email String
     token String @unique()
     expires DateTime
@@ -162,7 +162,7 @@ model PasswordResetToken {
 /// @@allow('all', true)
 /// @@allow('all', superAdmin == true)
 model Role {
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     name String @default("user")
     userRole UserRole @default(user)
     superAdmin Boolean? @default(false)
@@ -174,7 +174,7 @@ model Role {
 }
 
 model Menu {
-    id String @id() @default(cuid())
+    id String @id() @default(uuid())
     label String
     path String
     role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)

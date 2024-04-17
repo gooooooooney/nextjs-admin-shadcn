@@ -33,7 +33,7 @@ export {
     Video,
     X,
     Mail,
-    Trash,
+    Trash, 
 } from 'lucide-react'
 
 export const Github = (props: IconProps) => (
