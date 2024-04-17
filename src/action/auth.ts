@@ -16,6 +16,7 @@ import { getVerificationTokenByToken } from "@/server/data/verification-token";
 import { AuthResponse } from "@/types/actions";
 import { getNewEmailVerificationTokenByToken } from "@/server/data/email-verification-token";
 import { getRegisterVerificationTokenByToken } from "@/server/data/signup-verification-token";
+import { UserRole } from "@prisma/client";
 
 
 export const login = action<typeof LoginSchema, AuthResponse | undefined>(LoginSchema, async (params: LoginSchema) => {
@@ -79,7 +80,8 @@ export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, as
       },
       role: {
         create: {
-
+          // For now, by default, registration grants admin permissions, used for demonstrating the backend management system.
+          userRole: UserRole.admin
         }
       }
     }
