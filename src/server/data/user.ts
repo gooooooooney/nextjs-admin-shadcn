@@ -13,7 +13,7 @@ export const getUserByEmail = async (email: string) => {
 
 export const getUserById = async (id?: string) => {
   try {
-    const user = await db.user.findUnique({ where: { id } });
+    const user = await db.user.findUnique({ where: { id }, include: { role: { select: { userRole: true } } } });
 
     return user;
   } catch {

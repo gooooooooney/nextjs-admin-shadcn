@@ -19,7 +19,7 @@ import { reset } from "@/action/auth"
 import { Icons } from "@/components/icons"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import Link from "next/link"
+import {  Link } from "@/components/ui/link"
 import { useAction } from "next-safe-action/hooks"
 import { isExecuting } from "next-safe-action/status"
 
