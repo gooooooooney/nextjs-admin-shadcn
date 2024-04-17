@@ -1,6 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import {  Link } from "@/components/ui/link"
 import { usePathname, useSearchParams } from "next/navigation"
 
 const LoginButton = () => {

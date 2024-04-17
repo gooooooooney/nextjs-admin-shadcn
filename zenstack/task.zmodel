@@ -21,7 +21,7 @@ enum Priority {
 }
 
 model Task {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
   code String @unique
   title String
   status Status @default(todo)

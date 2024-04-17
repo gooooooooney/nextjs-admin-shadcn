@@ -15,7 +15,7 @@ export const Header = async () => {
 
   const user = await getLatestUser()
   return (
-    <header className="flex h-[var(--header-height)] items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+    <header className=" flex h-[var(--header-height)] items-center gap-4 border-b bg-muted/20 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
         <SheetTrigger asChild>
           <Button

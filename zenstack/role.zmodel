@@ -1,0 +1,51 @@
+import "./user"
+
+model Role {
+  id         String   @id @default(uuid())
+  name       String   @default("user")
+  userRole   UserRole @default(user)   @@allow("all", true)
+  superAdmin Boolean? @default(false)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String   @unique
+  menus      Menu[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@allow("all", superAdmin == true)
+}
+
+enum UserRole {
+  user
+  admin
+  superAdmin
+}
+enum MenuStatus {
+  active
+  inactive
+}
+
+enum MenuType {
+  menu
+  button
+  dir
+}
+
+model Menu {
+  id        String     @id @default(uuid())
+  label     String
+  path      String
+  role      Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String
+  type      MenuType   @default(menu)
+  status    MenuStatus @default(active)
+  icon      String?
+  parent    Menu?      @relation("ParentChildrens", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId  String?
+  children  Menu[]     @relation("ParentChildrens")
+  createBy  String
+  updateBy  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  
+}

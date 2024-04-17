@@ -61,7 +61,6 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
   })
 
   function onSubmit(input: CreateTask) {
-    console.log("input", input)
     const anotherTaskId =
       prevTasks[Math.floor(Math.random() * prevTasks.length)]?.id
 

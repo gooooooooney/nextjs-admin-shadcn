@@ -1,4 +1,4 @@
-import Link from "next/link"
+import {  Link } from "@/components/ui/link"
 
 import {
   Card,
@@ -10,7 +10,7 @@ import {
 import { SignupForm } from "./_components/signup-form"
 import { Suspense } from "react"
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <Card className="mx-auto max-w-md  min-w-[90%] md:min-w-96">
       <CardHeader>

@@ -1,5 +1,7 @@
-import { Theme } from "@prisma/client";
+import { Theme, UserRole } from "@prisma/client";
 import { db } from "../db"
+import { tryit } from "radash";
+import { getEnhancedPrisma } from "../db/enhance";
 
 export const getUserByEmail = async (email: string) => {
   try {
@@ -11,7 +13,7 @@ export const getUserByEmail = async (email: string) => {
 
 export const getUserById = async (id?: string) => {
   try {
-    const user = await db.user.findUnique({ where: { id } });
+    const user = await db.user.findUnique({ where: { id }, include: { role: { select: { userRole: true } } } });
 
     return user;
   } catch {
@@ -25,4 +27,22 @@ export const updateUser = async (id: string, data: { name?: string; email?: stri
   } catch (error) {
     return null
   }
+}
+
+export const deleteUserById = async (id: string) => {
+  const { db, user } = await getEnhancedPrisma();
+  return tryit(db.user.update)({
+    where: { id },
+    data: { deletedAt: new Date(), deletedById: user?.id }
+  })
+}
+
+export const deleteUsersByIds = async (ids: string[]) => {
+  const { db, user } = await getEnhancedPrisma();
+  return tryit(db.user.updateMany)({
+    where: { id: { in: ids } }, data: {
+      deletedAt: new Date(),
+      deletedById: user?.id
+    }
+  })
 }

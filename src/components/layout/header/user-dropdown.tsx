@@ -25,11 +25,20 @@ export const UserDropdown = async () => {
         <DropdownMenuContent className='w-56' align="end">
           <DropdownMenuLabel>
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{user.name}</p>
+              <p className="text-sm leading-none text-secondary-foreground">
+                {user.name}
+              </p>
               <p className="text-xs leading-none text-muted-foreground">
                 {user.email}
               </p>
-            </div></DropdownMenuLabel>
+
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+
+          <DropdownMenuLabel>
+            <p>Role: {user.role?.userRole}</p>
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href="/settings">

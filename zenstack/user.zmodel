@@ -1,8 +1,8 @@
 
-
+import "./role"
 // Necessary for Next auth
 model Account {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
   userId String
   type String
   provider String
@@ -20,7 +20,7 @@ model Account {
 }
 
 model Session {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
   sessionToken String @unique
   userId String
   expires DateTime
@@ -28,26 +28,46 @@ model Session {
 }
 
 model User {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
   name String?
   email String? @unique
   emailVerified DateTime?
   password String @password @omit
-  image String?
+  image String? @url
   theme Theme? @default(system)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   accounts Account[]
   sessions Session[]
-  // everyone can signup, and user profile is also publicly readable
-  @@allow('create,read', true)
+  role Role? 
+  deletedAt DateTime?
+  deletedBy User? @relation("UserDeletedBy", fields: [deletedById], references: [id])
+  deletedById String?
+  deletedUsers User[] @relation("UserDeletedBy")
+  /// created by which user
+  createdBy User? @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdById String?
+  /// The users that this user has created
+  createdUsers User[] @relation("UserCreatedBy")
 
-  // only the user can update or delete their own profile
-  @@allow('update,delete', auth() == this)
+  @@allow("all", true)
+
+}
+
+model RegisterVerificationToken {
+  id String @id @default(uuid())
+  email String
+  name String
+  adminId String
+  token String @unique
+  expires DateTime
+
+  @@unique([email, token])
+
 }
 
 model VerificationToken {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
   email String
   token String @unique
   expires DateTime
@@ -56,7 +76,7 @@ model VerificationToken {
 }
 
 model NewEmailVerificationToken {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
   email String
   userId String
   token String @unique
@@ -66,7 +86,7 @@ model NewEmailVerificationToken {
 }
 
 model PasswordResetToken {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
   email String
   token String @unique
   expires DateTime
