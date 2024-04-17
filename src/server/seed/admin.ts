@@ -1,17 +1,16 @@
 import bcrypt from "bcryptjs";
 import { db } from "../db"
-import { env } from "@/env"
 import { UserRole } from "@prisma/client";
 
 const runSuperAdmin = async () => {
   const user = await db.user.findFirst({
     where: {
-      email: env.SUPER_ADMIN_EMAIL
+      email: process.env.SUPER_ADMIN_EMAIL
     }
   })
 
   if (!user) {
-    const hashedPassword = await bcrypt.hash(env.SUPER_ADMIN_PASSWORD, 10);
+    const hashedPassword = await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD!, 10);
 
     console.log("⏳ Running seed...")
 
@@ -21,9 +20,9 @@ const runSuperAdmin = async () => {
 
     await db.user.create({
       data: {
-        id: env.SUPER_ADMIN_UUID,
+        id: process.env.SUPER_ADMIN_UUID,
         name: "super admin",
-        email: env.SUPER_ADMIN_EMAIL,
+        email: process.env.SUPER_ADMIN_EMAIL,
         password: hashedPassword,
         emailVerified: new Date(),
         role: {
@@ -68,8 +67,8 @@ const runAdmin = async () => {
         },
         createdBy: {
           connect: {
-            email: env.SUPER_ADMIN_EMAIL,
-            id: env.SUPER_ADMIN_UUID,
+            email:  process.env.SUPER_ADMIN_EMAIL,
+            id:  process.env.SUPER_ADMIN_UUID,
           }
         }
       }
