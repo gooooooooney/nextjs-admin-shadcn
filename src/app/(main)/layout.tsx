@@ -38,6 +38,24 @@ const defaultRoutes: MenuItem[] = [
       },
     ],
   },
+  {
+    path: "/error",
+    label: "error pages",
+    icon: <Icons.AlertCircle className="size-4" />,
+    children: [
+      {
+        path: "/error/404",
+        label: "404",
+        icon: <Icons.AlertTriangle className="size-4" />,
+
+      },
+      {
+        path: "/error/500",
+        label: "500",
+        icon: <Icons.ShieldAlert className="size-4" />,
+      },
+    ],
+  }
 ];
 const layout = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth();
