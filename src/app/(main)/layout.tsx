@@ -17,18 +17,6 @@ const defaultRoutes: MenuItem[] = [
     icon: <Icons.Home className="size-4" />
   },
   {
-    path: '/orders',
-    label: "Orders",
-    icon: <Icons.ShoppingCart className='size-4' />,
-
-    children: [
-      {
-        path: '/orders/management',
-        label: "management",
-      },
-    ],
-  },
-  {
     path: '/tasks',
     label: 'Tasks',
     icon: <Icons.Package className='size-4' />,
@@ -50,11 +38,6 @@ const defaultRoutes: MenuItem[] = [
       },
     ],
   },
-  // {
-  //   path: '/analytics',
-  //   label: "Analytics",
-  //   icon: <Icons.LineChart className='size-4' />,
-  // }
 ];
 const layout = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth();
