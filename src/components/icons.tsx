@@ -34,6 +34,9 @@ export {
     X,
     Mail,
     Trash, 
+    AlertCircle,
+    AlertTriangle,
+    ShieldAlert,
 } from 'lucide-react'
 
 export const Github = (props: IconProps) => (
