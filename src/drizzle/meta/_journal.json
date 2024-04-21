@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1713613791151,
+      "tag": "0000_glorious_killmonger",
+      "breakpoints": true
+    }
+  ]
+}
