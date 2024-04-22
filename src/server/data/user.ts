@@ -44,6 +44,23 @@ export const updateUser = async (id: string, data: { name?: string; email?: stri
   }
 }
 
+export const updateUserPassword = async (email: string, data: { password?: string }) => {
+  try {
+    return await db.update(user).set(data).where(eq(user.email, email)).returning({ id: user.id })
+  } catch (error) {
+    return null
+  }
+}
+
+export const updateUserEmail = async (id: string, email: string) => {
+  try {
+    return await db.update(user).set({ email, emailVerified: new Date() }).where(eq(user.id, id)).returning({ id: user.id })
+  } catch (error) {
+    return null
+  }
+
+}
+
 export const deleteUserById = async (id: string) => {
   const userinfo = await currentUser()
   return to(db.update(user).set({
