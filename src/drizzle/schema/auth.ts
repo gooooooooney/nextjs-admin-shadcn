@@ -9,7 +9,7 @@ export const registerVerificationToken = pgTable("RegisterVerificationToken", {
 	name: varchar("name").notNull(),
 	adminId: uuid("adminId").notNull(),
 	token: varchar("token").notNull().unique(),
-	expires: timestamp("expires", { precision: 3, mode: 'string' }).notNull(),
+	expires: timestamp("expires").notNull(),
 },
 (table) => {
 	return {
@@ -22,7 +22,7 @@ export const verificationToken = pgTable("VerificationToken", {
 	id: uuid("id").defaultRandom().primaryKey(),
 	email: varchar("email").notNull(),
 	token: varchar("token").notNull().unique(),
-	expires: timestamp("expires", { precision: 3, mode: 'string' }).notNull(),
+	expires: timestamp("expires").notNull(),
 },
 (table) => {
 	return {
@@ -36,7 +36,7 @@ export const newEmailVerificationToken = pgTable("NewEmailVerificationToken", {
 	email: varchar("email").notNull(),
 	userId: uuid("userId").notNull(),
 	token: varchar("token").notNull().unique(),
-	expires: timestamp("expires", { precision: 3, mode: 'string' }).notNull(),
+	expires: timestamp("expires").notNull(),
 },
 (table) => {
 	return {
@@ -49,7 +49,7 @@ export const passwordResetToken = pgTable("PasswordResetToken", {
 	id: uuid("id").defaultRandom().primaryKey(),
 	email: varchar("email").notNull(),
 	token: varchar("token").notNull().unique(),
-	expires: timestamp("expires", { precision: 3, mode: 'string' }).notNull(),
+	expires: timestamp("expires").notNull(),
 },
 (table) => {
 	return {

@@ -1,10 +1,12 @@
 
 import { generateUUID } from "./utils";
 import { getPasswordResetTokenByEmail } from "@/server/data/password-reset-token";
-import { db } from "@/server/db";
 import { getVerificationTokenByEmail } from "@/server/data/verification-token";
 import { getNewEmailVerificationTokenByUserId } from "@/server/data/email-verification-token";
 import { getRegisterVerificationTokenByEmail } from "@/server/data/signup-verification-token";
+import { newEmailVerificationToken, passwordResetToken, registerVerificationToken, verificationToken } from "@/drizzle/schema";
+import { db } from "@/drizzle/db";
+import { eq } from "drizzle-orm";
 
 
 export const generatePasswordResetToken = async (email: string) => {
@@ -14,20 +16,16 @@ export const generatePasswordResetToken = async (email: string) => {
   const existingToken = await getPasswordResetTokenByEmail(email);
 
   if (existingToken) {
-    await db.passwordResetToken.delete({
-      where: { id: existingToken.id }
-    });
+    await db.delete(passwordResetToken).where(eq(passwordResetToken.id, existingToken.id));
   }
 
-  const passwordResetToken = await db.passwordResetToken.create({
-    data: {
-      email,
-      token,
-      expires
-    }
-  });
+  const pwdResetToken = await db.insert(passwordResetToken).values({
+    email,
+    token,
+    expires
+  }).returning();
 
-  return passwordResetToken;
+  return pwdResetToken[0]!;
 }
 
 export const generateVerificationToken = async (email: string) => {
@@ -37,22 +35,16 @@ export const generateVerificationToken = async (email: string) => {
   const existingToken = await getVerificationTokenByEmail(email);
 
   if (existingToken) {
-    await db.verificationToken.delete({
-      where: {
-        id: existingToken.id,
-      },
-    });
+    await db.delete(verificationToken).where(eq(verificationToken.id, existingToken.id));
   }
 
-  const verficationToken = await db.verificationToken.create({
-    data: {
-      email,
-      token,
-      expires,
-    }
-  });
+  const verification = await db.insert(verificationToken).values({
+    email,
+    token,
+    expires,
+  }).returning();
 
-  return verficationToken;
+  return verification[0]!;
 };
 
 export const generateNewEmailVerificationToken = async (email: string, userId: string) => {
@@ -62,23 +54,17 @@ export const generateNewEmailVerificationToken = async (email: string, userId: s
   const existingToken = await getNewEmailVerificationTokenByUserId(userId);
 
   if (existingToken) {
-    await db.verificationToken.delete({
-      where: {
-        id: existingToken.id,
-      },
-    });
+    await db.delete(newEmailVerificationToken).where(eq(newEmailVerificationToken.id, existingToken.id));
   }
 
-  const verificationToken = await db.newEmailVerificationToken.create({
-    data: {
-      userId,
-      email,
-      token,
-      expires,
-    }
-  });
+  const verificationToken = await db.insert(newEmailVerificationToken).values({
+    userId,
+    email,
+    token,
+    expires,
+  }).returning();
 
-  return verificationToken;
+  return verificationToken[0]!;
 };
 
 export const generateRegisterEmailVerificationToken = async ({ email, username, adminId }: { email: string, username: string, adminId: string }) => {
@@ -88,22 +74,16 @@ export const generateRegisterEmailVerificationToken = async ({ email, username, 
   const existingToken = await getRegisterVerificationTokenByEmail(email);
 
   if (existingToken) {
-    await db.verificationToken.delete({
-      where: {
-        id: existingToken.id,
-      },
-    });
+    await db.delete(registerVerificationToken).where(eq(registerVerificationToken.id, existingToken.id))
   }
 
-  const verificationToken = await db.registerVerificationToken.create({
-    data: {
-      email,
-      adminId,
-      name: username,
-      token,
-      expires,
-    }
-  });
+  const verification = await db.insert(registerVerificationToken).values({
+    email,
+    adminId,
+    name: username,
+    token,
+    expires,
+  }).returning();
 
-  return verificationToken;
+  return verification[0]!;
 }

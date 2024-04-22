@@ -4,17 +4,17 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/config/routes";
 import { action } from "@/lib/safe-action"
 import { LoginSchema, NewPasswordSchema, RegisterByAdminSchema, ResetSchema, SignupByTokenSchema, SignupSchema } from "@/schema/auth"
 import { signIn, signOut } from "@/server/auth";
-import { createUser, createUserByAdmin, getUserByEmail, getUserById } from "@/server/data/user";
+import { createUser, createUserByAdmin, getUserByEmail, getUserById, updateUserEmail, updateUserPassword } from "@/server/data/user";
 import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { generatePasswordResetToken, generateRegisterEmailVerificationToken, generateVerificationToken } from "@/lib/tokens";
-import { getPasswordResetTokenByToken } from "@/server/data/password-reset-token";
+import { deletePasswordResetToken, getPasswordResetTokenByToken } from "@/server/data/password-reset-token";
 import { sendPasswordResetEmail, sendRegisterEmail, sendVerificationEmail } from "@/server/mail/send-email";
-import { getVerificationTokenByToken } from "@/server/data/verification-token";
+import { deleteVerificationToken, getVerificationTokenByToken } from "@/server/data/verification-token";
 import { AuthResponse } from "@/types/actions";
-import { getNewEmailVerificationTokenByToken } from "@/server/data/email-verification-token";
-import { getRegisterVerificationTokenByToken } from "@/server/data/signup-verification-token";
+import { deleteNewEmailVerificationToken, getNewEmailVerificationTokenByToken } from "@/server/data/email-verification-token";
+import { deleteRegisterVerificationToken, getRegisterVerificationTokenByToken } from "@/server/data/signup-verification-token";
 import { UserRole } from "@prisma/client";
 
 
@@ -104,11 +104,7 @@ export const signupByAdmin = action<typeof SignupByTokenSchema, AuthResponse>(Si
     adminId: existingToken.adminId
   })
 
-  await db.registerVerificationToken.delete({
-    where: {
-      id: existingToken.id
-    }
-  });
+  await deleteRegisterVerificationToken(existingToken.id)
 
   return {
     success: "User created!"
@@ -215,20 +211,9 @@ export const newPassword = async (params: NewPasswordSchema, token?: string) => 
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  await db.user.update({
-    where: {
-      email: existingToken.email
-    },
-    data: {
-      password: hashedPassword
-    }
-  });
+  await updateUserPassword(existingToken.email, { password: hashedPassword })
 
-  await db.passwordResetToken.delete({
-    where: {
-      id: existingToken.id
-    }
-  });
+  deletePasswordResetToken(existingToken.id);
 
   return {
     success: "Password updated!"
@@ -254,17 +239,9 @@ export const newVerification = async (token: string) => {
     return { error: "Email does not exist!" };
   }
 
-  await db.user.update({
-    where: { id: existingUser.id },
-    data: {
-      emailVerified: new Date(),
-      email: existingToken.email,
-    }
-  });
+  updateUserEmail(existingUser.id, existingToken.email);
 
-  await db.verificationToken.delete({
-    where: { id: existingToken.id }
-  });
+  deleteVerificationToken(existingToken.id);
 
   return { success: "Email verified!" };
 };
@@ -288,17 +265,10 @@ export const newEmailVerification = async (token: string) => {
     return { error: "Email does not exist!" };
   }
 
-  await db.user.update({
-    where: { id: existingUser.id },
-    data: {
-      emailVerified: new Date(),
-      email: existingToken.email,
-    }
-  });
+  updateUserEmail(existingUser.id, existingToken.email);
 
-  await db.newEmailVerificationToken.delete({
-    where: { id: existingToken.id }
-  });
+
+  deleteNewEmailVerificationToken(existingToken.id);
 
   return { success: "Email verified!" };
 };
