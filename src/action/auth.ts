@@ -4,10 +4,9 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/config/routes";
 import { action } from "@/lib/safe-action"
 import { LoginSchema, NewPasswordSchema, RegisterByAdminSchema, ResetSchema, SignupByTokenSchema, SignupSchema } from "@/schema/auth"
 import { signIn, signOut } from "@/server/auth";
-import { getUserByEmail, getUserById } from "@/server/data/user";
+import { createUser, createUserByAdmin, getUserByEmail, getUserById } from "@/server/data/user";
 import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs";
-import { db } from "@/server/db";
 import { revalidatePath } from "next/cache";
 import { generatePasswordResetToken, generateRegisterEmailVerificationToken, generateVerificationToken } from "@/lib/tokens";
 import { getPasswordResetTokenByToken } from "@/server/data/password-reset-token";
@@ -68,24 +67,12 @@ export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, as
   }
 
 
-  await db.user.create({
-    data: {
-      name: username,
-      email,
-      password: hashedPassword,
-      createdBy: {
-        connect: {
-          id: adminId
-        }
-      },
-      role: {
-        create: {
-          // For now, by default, registration grants admin permissions, used for demonstrating the backend management system.
-          userRole: UserRole.admin
-        }
-      }
-    }
-  });
+  await createUser({
+    username,
+    email,
+    password: hashedPassword,
+    adminId,
+  })
 
   const verificationToken = await generateVerificationToken(email);
 
@@ -110,25 +97,12 @@ export const signupByAdmin = action<typeof SignupByTokenSchema, AuthResponse>(Si
   if (existingUser) {
     return { error: "Email already in use!" };
   }
-  await db.user.create({
-    data: {
-      name: username ,
-      email: existingToken.email,
-      password: hashedPassword,
-      // It is verified by the token
-      emailVerified: new Date(),
-      createdBy: {
-        connect: {
-          id: existingToken.adminId
-        }
-      },
-      role: {
-        create: {
-
-        }
-      }
-    }
-  });
+  await createUserByAdmin({
+    username,
+    email: existingToken.email,
+    password: hashedPassword,
+    adminId: existingToken.adminId
+  })
 
   await db.registerVerificationToken.delete({
     where: {

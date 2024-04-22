@@ -15,7 +15,6 @@ import {
 import { UsersTableFloatingBar } from "./users-table-floating-bar"
 import { useUsersTable } from "./users-table-provider"
 import { UsersTableToolbarActions } from "./users-table-toolbar-actions"
-import { type getTasks } from "@/action/task"
 import { getUsers } from "@/action/user"
 import { User } from "@/types/model/user"
 

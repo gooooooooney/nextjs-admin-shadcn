@@ -1,17 +1,19 @@
 import { Theme, UserRole } from "@prisma/client";
-import { tryit } from "radash";
 import { getEnhancedPrisma } from "../db/enhance";
 import { db } from "@/drizzle/db";
 import { eq, inArray } from "drizzle-orm";
-import { user, role } from "@/drizzle/schema";
+import { user, role, UserSchema } from "@/drizzle/schema";
 import { currentUser } from "@/lib/auth";
+import to from "@/lib/utils";
+import { SignupByTokenSchema, SignupSchema } from "@/schema/auth";
+import { TypeOf, z } from "zod";
 
 export const getUserByEmail = async (email: string) => {
-  try {
-    return await db.select().from(user).where(eq(user.email, email))
-  } catch (error) {
-    return null
-  }
+
+  return await db.query.user.findFirst({
+    where: eq(user.email, email)
+  })
+
 }
 
 export const getUserById = async (id: string) => {
@@ -44,27 +46,52 @@ export const updateUser = async (id: string, data: { name?: string; email?: stri
 
 export const deleteUserById = async (id: string) => {
   const userinfo = await currentUser()
-  return tryit(db.update(user).set({
-    deletedAt: (new Date()).toString(),
+  return to(db.update(user).set({
+    deletedAt: new Date(),
     deletedById: userinfo?.id
-  }).where(eq(user!.id, id)).returning)({ id: user.id })
-  // ({
-  //   where: { id },
-  //   data: { deletedAt: new Date(), deletedById: user?.id }
-  // })
+  }).where(eq(user!.id, id)).returning({ id: user.id }))
 }
 
 export const deleteUsersByIds = async (ids: string[]) => {
   const userinfo = await currentUser()
-  // return tryit(db.user.updateMany)({
-  //   where: { id: { in: ids } }, data: {
-  //     deletedAt: new Date(),
-  //     deletedById: user?.id
-  //   }
-  // })
-  console.log(ids)
-  return tryit(db.update(user).set({
-    deletedAt: (new Date()).toString(),
+  return to(db.update(user).set({
+    deletedAt: new Date(),
     deletedById: userinfo?.id
-  }).where(inArray(user.id, ids)).returning)({ id: user.id })
+  }).where(inArray(user.id, ids)).returning({ id: user.id }))
+}
+
+export const createUser = async (data: Omit<z.infer<typeof SignupSchema>, 'confirmPassword'>) => {
+  const { adminId, ...rest } = data
+  return to(db.transaction(async tx => {
+    const result = await tx.insert(user).values({
+      ...rest,
+      createdById: adminId
+    }).returning({ userId: user.id })
+    if (!result[0]) return new Error('Failed to create user')
+
+    await tx.insert(role).values({
+      // For now, by default, registration grants admin permissions, used for demonstrating the backend management system.
+      userRole: UserRole.admin,
+      userId: result[0].userId
+    }).returning({ id: role.id })
+    return result
+  }))
+}
+
+export const createUserByAdmin = async (data: Omit<z.infer<typeof SignupSchema>, "confirmPassword"> & { adminId: string }) => {
+  const { adminId, ...rest } = data
+  return to(db.transaction(async tx => {
+    const result = await tx.insert(user).values({
+      ...rest,
+      createdById: adminId,
+      // It is verified by the token
+      emailVerified: new Date(),
+    }).returning({ userId: user.id })
+    if (!result[0]) return new Error('Failed to create user')
+
+    await tx.insert(role).values({
+      userId: result[0].userId
+    }).returning({ id: role.id })
+    return result
+  }))
 }

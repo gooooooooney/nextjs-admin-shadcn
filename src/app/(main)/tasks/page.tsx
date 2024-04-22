@@ -3,7 +3,6 @@ import React from "react"
 import { TasksTable } from "./_components/tasks-table"
 import { TasksTableProvider } from "./_components/tasks-table-provider"
 import { searchParamsSchema } from "@/schema/data/task"
-// import { getTasks } from "@/action/task"
 import { Shell } from "@/components/layout/shell"
 import { getTasks } from "./_lib/queries"
 

@@ -39,9 +39,9 @@ import {
 } from "@/components/ui/select"
 
 import { LabelSchema, PrioritySchema, StatusSchema } from "@/schema/zod/enums"
-import { createTask } from "@/action/task"
 import { type Task, } from "@/drizzle/schema"
 import { CreateTaskSchema, createTaskSchema } from "@/schema/data/task"
+import { createTask } from "../_lib/actions"
 
 interface CreateTaskDialogProps {
   prevTasks: Row<Task>[]
@@ -70,6 +70,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
       toast.promise(
         createTask({
           ...input,
+          anotherTaskId,
         }),
         {
           loading: "Creating task...",

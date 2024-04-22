@@ -7,13 +7,13 @@ import { action } from "@/lib/safe-action"
 import { generateNewEmailVerificationToken, generateVerificationToken } from "@/lib/tokens"
 import { DeleteManyScheme, getUsersSchema } from "@/schema/data/users"
 import { AppearanceSchema, EmailSchema, ProfileSchema } from "@/schema/settings"
-import { UserSchema } from "@/schema/zod/models"
+import { UserSchema } from "@/drizzle/schema"
 import { deleteUserById, deleteUsersByIds, getUserByEmail, updateUser } from "@/server/data/user"
 import { db } from "@/server/db"
 import { getEnhancedPrisma } from "@/server/db/enhance"
 import { sendVerificationEmail } from "@/server/mail/send-email"
 import { ActionReturnValue, AuthResponse } from "@/types/actions"
-import { User } from "@/types/model/user"
+import { type User } from "@/drizzle/schema"
 import { UserRole } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
@@ -205,9 +205,9 @@ export const getUsers = action(getUsersSchema, async (params) => {
   }
 })
 
-const DeleteScheme = UserSchema.pick({ id: true })
+const DeleteScheme = UserSchema.pick({ id: true }).required()
 
-export const deleteUser = action<typeof DeleteScheme, ActionReturnValue<User>>(DeleteScheme, async ({ id }) => {
+export const deleteUser = action<typeof DeleteScheme, ActionReturnValue<{id: string}[]>>(DeleteScheme, async ({ id }) => {
   const [err, data] = await deleteUserById(id)
   if (err) {
     return { error: getErrorMessage(err), data: null }
@@ -217,7 +217,7 @@ export const deleteUser = action<typeof DeleteScheme, ActionReturnValue<User>>(D
 })
 
 
-export const deleteUsersAction = action(DeleteManyScheme, async (ids) => {
+export const deleteUsersAction = action<typeof DeleteManyScheme, ActionReturnValue<{id: string}[]>>(DeleteManyScheme, async (ids) => {
   const [err, data] = await deleteUsersByIds(ids)
   console.log(err)
   if (err) {
