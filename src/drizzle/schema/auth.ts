@@ -1,14 +1,14 @@
-import { pgTable, pgEnum, timestamp, text, integer, uniqueIndex, uuid } from "drizzle-orm/pg-core"
+import { pgTable, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core"
 
 
 
 
 export const registerVerificationToken = pgTable("RegisterVerificationToken", {
 	id: uuid("id").defaultRandom().primaryKey(),
-	email: text("email").notNull(),
-	name: text("name").notNull(),
+	email: varchar("email").notNull(),
+	name: varchar("name").notNull(),
 	adminId: uuid("adminId").notNull(),
-	token: text("token").notNull(),
+	token: varchar("token").notNull().unique(),
 	expires: timestamp("expires", { precision: 3, mode: 'string' }).notNull(),
 },
 (table) => {
@@ -20,8 +20,8 @@ export const registerVerificationToken = pgTable("RegisterVerificationToken", {
 
 export const verificationToken = pgTable("VerificationToken", {
 	id: uuid("id").defaultRandom().primaryKey(),
-	email: text("email").notNull(),
-	token: text("token").notNull(),
+	email: varchar("email").notNull(),
+	token: varchar("token").notNull().unique(),
 	expires: timestamp("expires", { precision: 3, mode: 'string' }).notNull(),
 },
 (table) => {
@@ -33,9 +33,9 @@ export const verificationToken = pgTable("VerificationToken", {
 
 export const newEmailVerificationToken = pgTable("NewEmailVerificationToken", {
 	id: uuid("id").defaultRandom().primaryKey(),
-	email: text("email").notNull(),
+	email: varchar("email").notNull(),
 	userId: uuid("userId").notNull(),
-	token: text("token").notNull(),
+	token: varchar("token").notNull().unique(),
 	expires: timestamp("expires", { precision: 3, mode: 'string' }).notNull(),
 },
 (table) => {
@@ -47,8 +47,8 @@ export const newEmailVerificationToken = pgTable("NewEmailVerificationToken", {
 
 export const passwordResetToken = pgTable("PasswordResetToken", {
 	id: uuid("id").defaultRandom().primaryKey(),
-	email: text("email").notNull(),
-	token: text("token").notNull(),
+	email: varchar("email").notNull(),
+	token: varchar("token").notNull().unique(),
 	expires: timestamp("expires", { precision: 3, mode: 'string' }).notNull(),
 },
 (table) => {

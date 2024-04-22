@@ -1,4 +1,3 @@
-import { deleteTask, updateTask } from "@/action/task"
 import { deleteUser, deleteUsersAction } from "@/action/user"
 import { getErrorMessage } from "@/lib/handle-error"
 import { updateUser } from "@/server/data/user"
@@ -25,7 +24,7 @@ export function deleteUsers({
         if (err) {
           return getErrorMessage(err)
         }
-        const count = res.data?.data?.count!
+        const count = res.data?.data?.length
         
         return `${count === 1 ? 'user' : count + ' users'} deleted`
       },
