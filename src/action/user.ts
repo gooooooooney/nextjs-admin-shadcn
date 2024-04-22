@@ -219,6 +219,7 @@ export const deleteUser = action<typeof DeleteScheme, ActionReturnValue<User>>(D
 
 export const deleteUsersAction = action(DeleteManyScheme, async (ids) => {
   const [err, data] = await deleteUsersByIds(ids)
+  console.log(err)
   if (err) {
     return { error: getErrorMessage(err), data: null }
   }

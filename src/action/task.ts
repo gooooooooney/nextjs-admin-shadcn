@@ -6,7 +6,7 @@ import { UpdateTaskSchema, createTaskSchema, getTasksSchema } from "@/schema/dat
 import { TaskSchema } from "@/schema/zod/models"
 import { db } from "@/server/db"
 import { type ActionReturnValue } from "@/types/actions"
-import { type Task, type TaskCreate } from "@/types/model/task"
+import { type Task, type TaskCreate } from "@/drizzle/schema"
 import { revalidatePath } from "next/cache"
 import { faker } from "@faker-js/faker"
 import { customAlphabet } from "nanoid"

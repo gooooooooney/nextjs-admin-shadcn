@@ -39,7 +39,7 @@ import {
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
 // import { DeleteTasksDialog } from "./delete-users-dialog"
 import { LabelSchema, PrioritySchema, StatusSchema, UserRoleSchema } from "@/schema/zod/enums"
-import { type Task } from "@/types/model/task"
+import { type Task } from "@/drizzle/schema"
 import { updateTask } from "@/action/task"
 import { User } from "@/types/model/user"
 import { format } from "date-fns"

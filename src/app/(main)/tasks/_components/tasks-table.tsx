@@ -15,7 +15,7 @@ import {
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
 import { useTasksTable } from "./tasks-table-provider"
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
-import { type getTasks } from "@/action/task"
+import { getTasks } from "../_lib/queries"
 
 interface TasksTableProps {
   tasksPromise: ReturnType<typeof getTasks>
@@ -26,15 +26,15 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
   const { enableAdvancedFilter, showFloatingBar } = useTasksTable()
 
   // Learn more about React.use here: https://react.dev/reference/react/use
-  const { data } = React.use(tasksPromise)
+  const { data, pageCount } = React.use(tasksPromise)
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo(() => getColumns(), [])
 
   const { table } = useDataTable({
-    data: data?.data?.data ?? [],
+    data: data!,
     columns,
-    pageCount: data?.data?.total ?? -1,
+    pageCount,
     searchableColumns,
     filterableColumns,
     enableAdvancedFilter,

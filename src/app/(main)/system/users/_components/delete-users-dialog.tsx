@@ -16,7 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-import { type Task } from "@/types/model/task"
+import { type Task } from "@/drizzle/schema"
 import { deleteUsers } from "../_lib/mutations"
 import { User } from "@/types/model/user"
 
