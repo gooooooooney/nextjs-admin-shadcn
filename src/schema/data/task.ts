@@ -1,26 +1,7 @@
 import { z } from "zod";
 import { TaskSchema } from "../zod/models";
+import { task } from "@/drizzle/schema";
 
-export const UpdateTaskSchema = TaskSchema.pick({
-  id: true,
-  label: true,
-  priority: true,
-  status: true,
-}).partial({
-  label: true,
-  status: true,
-  priority: true,
-})
-
-
-export const createTaskSchema = TaskSchema.pick({
-  label: true,
-  priority: true,
-  status: true,
-  title: true,
-})
-
-export type CreateTask = z.infer<typeof createTaskSchema>
 
 export const searchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -36,4 +17,23 @@ export const searchParamsSchema = z.object({
 
 export const getTasksSchema = searchParamsSchema
 
-export type UpdateTask = z.infer<typeof UpdateTaskSchema>
+export type GetTasksSchema = z.infer<typeof getTasksSchema>
+
+
+export const createTaskSchema = z.object({
+  title: z.string(),
+  label: z.enum(task.label.enumValues),
+  status: z.enum(task.status.enumValues),
+  priority: z.enum(task.priority.enumValues),
+})
+
+export type CreateTaskSchema = z.infer<typeof createTaskSchema>
+
+export const updateTaskSchema = z.object({
+  id: z.string(),
+  label: z.enum(task.label.enumValues).optional(),
+  status: z.enum(task.status.enumValues).optional(),
+  priority: z.enum(task.priority.enumValues).optional(),
+})
+
+export type UpdateTaskSchema = z.infer<typeof updateTaskSchema>

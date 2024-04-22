@@ -1,8 +1,12 @@
-import { deleteTask, updateTask } from "@/action/task"
-import { getErrorMessage } from "@/lib/handle-error"
-import { type Task } from "@/types/model/task"
 import { type Row } from "@tanstack/react-table"
 import { toast } from "sonner"
+
+import { getErrorMessage } from "@/lib/handle-error"
+
+import { deleteTask, updateTask } from "./actions"
+import { Task } from "@/drizzle/schema"
+
+
 
 export function deleteTasks({
   rows,

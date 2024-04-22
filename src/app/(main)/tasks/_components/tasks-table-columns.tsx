@@ -41,8 +41,8 @@ import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-col
 
 import { DeleteTasksDialog } from "./delete-tasks-dialog"
 import { LabelSchema, PrioritySchema, StatusSchema } from "@/schema/zod/enums"
-import { type Task } from "@/types/model/task"
 import { updateTask } from "@/action/task"
+import { Task } from "@/drizzle/schema"
 
 export const searchableColumns: DataTableSearchableColumn<Task>[] = [
   {

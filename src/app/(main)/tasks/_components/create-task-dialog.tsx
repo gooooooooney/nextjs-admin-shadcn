@@ -40,8 +40,8 @@ import {
 
 import { LabelSchema, PrioritySchema, StatusSchema } from "@/schema/zod/enums"
 import { createTask } from "@/action/task"
-import { type Task, } from "@/types/model/task"
-import { type CreateTask, createTaskSchema } from "@/schema/data/task"
+import { type Task, } from "@/drizzle/schema"
+import { CreateTaskSchema, createTaskSchema } from "@/schema/data/task"
 
 interface CreateTaskDialogProps {
   prevTasks: Row<Task>[]
@@ -53,14 +53,14 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [isCreatePending, startCreateTransition] = React.useTransition()
 
-  const form = useForm<CreateTask>({
+  const form = useForm<CreateTaskSchema>({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
       title: "",
     }
   })
 
-  function onSubmit(input: CreateTask) {
+  function onSubmit(input: CreateTaskSchema) {
     const anotherTaskId =
       prevTasks[Math.floor(Math.random() * prevTasks.length)]?.id
 

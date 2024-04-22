@@ -36,8 +36,8 @@ export const getUserById = async (id: string) => {
 
 export const updateUser = async (id: string, data: { name?: string; email?: string; image?: string, theme?: Theme }) => {
   try {
-    return await db.update(user).set(data).where(eq(user.id, id)).returning({id: user.id})
-    } catch (error) {
+    return await db.update(user).set(data).where(eq(user.id, id)).returning({ id: user.id })
+  } catch (error) {
     return null
   }
 }
@@ -45,9 +45,9 @@ export const updateUser = async (id: string, data: { name?: string; email?: stri
 export const deleteUserById = async (id: string) => {
   const userinfo = await currentUser()
   return tryit(db.update(user).set({
-    deletedAt:( new Date()).toString(),  
-    deletedById: userinfo?.id 
-  }).where(eq(user!.id, id)).returning)({id: user.id})
+    deletedAt: (new Date()).toString(),
+    deletedById: userinfo?.id
+  }).where(eq(user!.id, id)).returning)({ id: user.id })
   // ({
   //   where: { id },
   //   data: { deletedAt: new Date(), deletedById: user?.id }
@@ -62,8 +62,9 @@ export const deleteUsersByIds = async (ids: string[]) => {
   //     deletedById: user?.id
   //   }
   // })
-  db.update(user).set({
+  console.log(ids)
+  return tryit(db.update(user).set({
     deletedAt: (new Date()).toString(),
     deletedById: userinfo?.id
-  }).where(inArray(user.id, ids)).returning({id: user.id})
+  }).where(inArray(user.id, ids)).returning)({ id: user.id })
 }

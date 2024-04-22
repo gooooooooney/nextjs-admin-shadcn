@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/tooltip"
 
 import { deleteTasks, updateTasks } from "../_lib/mutations"
-import { type Task } from "@/types/model/task"
+import { type Task } from "@/drizzle/schema"
 import { PrioritySchema, StatusSchema } from "@/schema/zod/enums"
 
 interface TasksTableFloatingBarProps {
