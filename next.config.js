@@ -16,8 +16,8 @@ const config = {
     ]
   },
   experimental: {
-    serverComponentsExternalPackages: ["@zenstackhq/runtime", "@zenstackhq/server"],
-  }
+    typedRoutes: true,
+  },
 
 };
 

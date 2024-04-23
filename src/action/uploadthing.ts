@@ -1,6 +1,5 @@
 "use server"
 
-import { action } from "@/lib/safe-action"
 import { utapi } from "@/server/uploadthing"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"

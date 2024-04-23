@@ -38,8 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { LabelSchema, PrioritySchema, StatusSchema } from "@/schema/zod/enums"
-import { type Task, } from "@/drizzle/schema"
+import { label, priority, status, type Task, } from "@/drizzle/schema"
 import { CreateTaskSchema, createTaskSchema } from "@/schema/data/task"
 import { createTask } from "../_lib/actions"
 
@@ -139,7 +138,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {LabelSchema.options.map((item) => (
+                        {label.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}
@@ -172,7 +171,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {StatusSchema.options.map((item) => (
+                        {status.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}
@@ -205,7 +204,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {PrioritySchema.options.map((item) => (
+                        {priority.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}

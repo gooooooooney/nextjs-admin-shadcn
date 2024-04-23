@@ -21,10 +21,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
 // import { DeleteTasksDialog } from "./delete-users-dialog"
-import { UserRoleSchema } from "@/schema/zod/enums"
 import { User } from "@/types/model/user"
 import { format } from "date-fns"
 import { DeleteUsersDialog } from "./delete-users-dialog"
+import { userRole } from "@/drizzle/schema"
 
 export const searchableColumns: DataTableSearchableColumn<User>[] = [
   {
@@ -37,7 +37,7 @@ export const filterableColumns: DataTableFilterableColumn<User>[] = [
   {
     id: "role",
     title: "Role",
-    options: UserRoleSchema.options.map((userRole) => ({
+    options: userRole.enumValues.map((userRole) => ({
       label: userRole[0]?.toUpperCase() + userRole.slice(1),
       value: userRole,
     })),

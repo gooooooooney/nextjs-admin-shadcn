@@ -1,10 +1,13 @@
-import { Menu } from "@prisma/client";
-import { db } from "../db"
+import { db } from "@/drizzle/db";
+import { Menu, menu, user } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
 
 export const getNestedMenus = async (id: string) => {
-  const menus = await db.menu.findUnique({
-    where: { id: id },
-    include: { children: true },
+  const menus = await db.query.menu.findFirst({
+    where: eq(menu.id, id),
+    with: {
+      children: true,
+    }
   });
 
   if (!menus) {
@@ -26,18 +29,22 @@ export const getNestedMenus = async (id: string) => {
 }
 
 export const getUserPermissions = async (userId?: string) => {
-  const res = await db.user.findUnique({
-    where: { id: userId },
-    select: {
-      createdUsers: true,
+  const res = await db.query.user.findFirst({
+    where: eq(user.id, userId!),
+    columns: {},
+    with: {
       role: {
-        include: {
+        columns: {
+          userRole: true,
+        },
+        with: {
           menus: true
         }
-      }
+      },
+      createdUsers: true
     }
   })
-  if (!res?.role) return null
+  if (!res?.role && !res?.role.menus) return null
   const menus = res.role.menus.map(menu => ({
     ...menu,
     children: [] as Menu[]

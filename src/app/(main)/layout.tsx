@@ -1,10 +1,10 @@
 import { Icons } from '@/components/icons';
 import { Header } from '@/components/layout/header'
 import { type MenuItem, Sidebar } from '@/components/layout/sidebar'
+import { UserRole } from '@/drizzle/schema';
 import { currentUser } from '@/lib/auth';
 import { auth } from '@/server/auth';
 import { getUserPermissions } from '@/server/data/permissions';
-import { UserRole } from '@prisma/client';
 import { LucideIcon } from 'lucide-react';
 import { SessionProvider } from 'next-auth/react';
 import React from 'react'
@@ -60,28 +60,28 @@ const defaultRoutes: MenuItem[] = [
 const layout = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth();
 
-  const permissions = await getUserPermissions(session?.user?.id);
+  // const permissions = await getUserPermissions(session?.user?.id);
 
-  if (!permissions) return null;
+  // if (!permissions) return null;
 
 
   let routes = defaultRoutes
-  if (permissions.role.userRole === UserRole.user) {
-    routes = permissions.role.menus.map(menu => {
-      const Icon = Icons[menu.icon as keyof typeof Icons] as LucideIcon || Icons.Package
-      return {
-        path: menu.path,
-        label: menu.label,
-        icon: <Icon className='size-4' />,
-        children: menu.children.map(child => ({
-          path: child.path,
-          label: child.label,
-        }))
-      }
-    }
-    )
-    routes.unshift(defaultRoutes[0]!)
-  }
+  // if (permissions.role.userRole === UserRole.Enum.user) {
+  //   routes = permissions.role.menus.map(menu => {
+  //     const Icon = Icons[menu.icon as keyof typeof Icons] as LucideIcon || Icons.Package
+  //     return {
+  //       path: menu.path,
+  //       label: menu.label,
+  //       icon: <Icon className='size-4' />,
+  //       children: menu.children.map(child => ({
+  //         path: child.path,
+  //         label: child.label,
+  //       }))
+  //     }
+  //   }
+  //   )
+  //   routes.unshift(defaultRoutes[0]!)
+  // }
 
   return (
     <SessionProvider session={session}>

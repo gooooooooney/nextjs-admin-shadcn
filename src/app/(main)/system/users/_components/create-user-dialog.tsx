@@ -38,7 +38,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { LabelSchema, PrioritySchema, StatusSchema } from "@/schema/zod/enums"
 import { type Task, } from "@/drizzle/schema"
 import { type CreateUser, createUserSchema } from "@/schema/data/users"
 import { User } from "@/types/model/user"

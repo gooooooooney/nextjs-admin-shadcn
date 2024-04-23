@@ -44,8 +44,12 @@ export const menu = pgTable("Menu", {
 		}
 	});
 
-export const menuRelations = relations(menu, ({ many }) => ({
-	children: many(menu)
+export const menuRelations = relations(menu, ({ many, one }) => ({
+	children: many(menu),
+	role: one(role, {
+		fields: [menu.roleId],
+		references: [role.id]
+	})
 }))
 
 export const roleRelations = relations(role, ({ many }) => ({

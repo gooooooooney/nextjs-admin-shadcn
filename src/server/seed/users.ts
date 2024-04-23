@@ -1,18 +1,19 @@
+import { db } from '@/drizzle/db';
+import { user } from '@/drizzle/schema';
 import { faker } from '@faker-js/faker';
-import { UserRole } from '@prisma/client';
-import { db } from '../db';
+import { eq } from 'drizzle-orm';
 
-const fakeUsers = Array.from({ length: 30 }, (_, i) => ({
+let fakeUsers = Array.from({ length: 30 }, (_, i) => ({
   name: faker.person.fullName(),
   email: faker.internet.email(),
   password: faker.internet.password(),
   emailVerified: new Date(),
-  role: {
-    create: {
-      userRole: UserRole.user,
-      superAdmin: false,
-    },
-  },
+  // role: {
+  //   create: {
+  //     userRole: UserRole.user,
+  //     superAdmin: false,
+  //   },
+  // },
 }));
 
 
@@ -21,20 +22,22 @@ const runCreateUsers = async () => {
 
   const start = Date.now();
 
-  await Promise.all(
-    fakeUsers.map((user) =>
-      db.user.create({
-        data: {
-          ...user,
-          createdBy: {
-            connect: {
-              email: "admin@test.com"
-            }
-          }
-        },
-      })
-    )
-  );
+  await db.transaction(async (tx) => {
+    const admin = await tx.query.user.findFirst({
+      columns: {
+        id: true
+      },
+      where: eq(user.email, 'admin@test.com')
+    })
+
+    if (!admin) return new Error('Admin not found');
+    fakeUsers = fakeUsers.map((user) => ({
+      ...user,
+      createdById: admin.id
+    }));
+    await tx.insert(user).values(fakeUsers).execute();
+  })
+
 
   const end = Date.now();
 
