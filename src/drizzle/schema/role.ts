@@ -43,3 +43,5 @@ export const menu = pgTable("Menu", {
 		}).onUpdate("cascade").onDelete("cascade"),
 	}
 });
+
+export type Role = typeof role.$inferSelect

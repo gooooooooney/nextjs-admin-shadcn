@@ -79,7 +79,6 @@ export async function sendRegisterEmail({
     react: <MagicLinkEmail magicLink={confirmLink} previewTitle={subject} />
   });
   if (error) {
-    console.log(error)
     return { error: "Email server error" }
   }
   return { success: "Register email sent!" }

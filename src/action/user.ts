@@ -1,5 +1,5 @@
 "use server"
-
+import { unstable_noStore as noStore } from "next/cache"
 import { currentUser, getLatestUser } from "@/lib/auth"
 import { comparePassword } from "@/lib/compare"
 import { getErrorMessage } from "@/lib/handle-error"
@@ -7,15 +7,17 @@ import { action } from "@/lib/safe-action"
 import { generateNewEmailVerificationToken, generateVerificationToken } from "@/lib/tokens"
 import { DeleteManyScheme, getUsersSchema } from "@/schema/data/users"
 import { AppearanceSchema, EmailSchema, ProfileSchema } from "@/schema/settings"
-import { UserSchema } from "@/drizzle/schema"
+import { UserSchema, user, role, UserRole } from "@/drizzle/schema"
 import { deleteUserById, deleteUsersByIds, getUserByEmail, updateUser } from "@/server/data/user"
-import { db } from "@/server/db"
 import { getEnhancedPrisma } from "@/server/db/enhance"
 import { sendVerificationEmail } from "@/server/mail/send-email"
 import { ActionReturnValue, AuthResponse } from "@/types/actions"
 import { type User } from "@/drizzle/schema"
-import { UserRole } from "@prisma/client"
+import { User as UserDataType } from '@/types/model/user'
 import { revalidatePath } from "next/cache"
+import { db } from "@/drizzle/db"
+import { and, asc, count, desc, eq, getTableColumns, gte, isNotNull, isNull, lte, not, or } from "drizzle-orm"
+import { filterColumn } from "@/lib/filter-column"
 
 
 export const updateProfile = action(ProfileSchema, async (params) => {
@@ -103,111 +105,114 @@ export const updatePreferences = action(AppearanceSchema, async (params) => {
 })
 
 export const getUsers = action(getUsersSchema, async (params) => {
-  const {
-    page,
-    per_page,
-    sort,
-    name,
-    emailVerified,
-    role,
-    operator,
-    from,
-    to,
-  } = params
-
-  // Offset to paginate the results
-  const offset = (page - 1) * per_page
-  // Column and order to sort by
-  // Spliting the sort string by "." to get the column and order
-  // Example: "title.desc" => ["title", "desc"]
-  const [column, order] = (sort?.split(".").filter(Boolean) ?? [
-    "createdAt",
-    "desc",
-  ]) as [keyof User | undefined, "asc" | "desc" | undefined]
-
-  // Filter tasks by date range
-  const fromDay = from ? new Date(from) : undefined
-  const toDay = to ? new Date(to) : undefined
-  const { db, user } = await getEnhancedPrisma()
+  noStore()
   try {
-    const { data, total } = await db.$transaction(async db => {
-      type Where = NonNullable<NonNullable<Parameters<typeof db.user.findMany>[0]>["where"]>
+    const {
+      page,
+      per_page,
+      sort,
+      name,
+      emailVerified,
+      role: userRole,
+      operator,
+      from,
+      to,
+    } = params
 
-      const userRole = role ? ({
-        in: role!.split(".") as UserRole[]
-      }) : undefined
+    const userinfo = await currentUser()
+    // 普通用户没有权限查看用户列表
+    if (userinfo?.role === UserRole.enum.user) {
+      return { data: [], pageCount: 0 }
+    }
 
-      const emailVerifiedParam = emailVerified === '1' ? {
-        not: null
-      } : emailVerified === '0' ? {
-        equals: null
-      } : undefined
+    const offset = (page - 1) * per_page
 
-      const where: Where = {
-        role: {
-          userRole,
-        },
-        emailVerified: emailVerifiedParam
-      }
+    const [column, order] = (sort?.split(".").filter(Boolean) ?? [
+      "createdAt",
+      "desc",
+    ]) as [keyof User | undefined, "asc" | "desc" | undefined]
 
-      switch (user?.role) {
-        case UserRole.user:
-          // If the user is not an admin, return an empty array
-          return { data: [], total: 0 }
-        case UserRole.admin:
-          // If the user is an admin, only return the tasks created by the user
-          where.createdById = user.id
-          // Only return users that have not been deleted
-          where.deletedAt = null;
-          where.deletedById = null;
-          break
-        case UserRole.superAdmin:
-          // If the user is a super admin, return all user
-          break
-      }
-      const params = [
-        { name: { contains: name } },
-        { createdAt: { gte: fromDay, lte: toDay } },
-      ]
-      if (!operator || operator === "and") {
-        where.AND = [...params]
-      } else {
-        where.OR = [...params]
-      }
-      const data = await db.user.findMany({
-        where,
-        include: {
-          role: {
-            include: {
-              menus: true,
-            }
-          },
-          deletedBy: true,
-          createdBy: true,
-        },
-        skip: offset,
-        take: per_page,
-        orderBy: column ?
-          {
-            [column]: order,
-          } : {
-            id: "desc",
-          },
+    // Filter user by date range
+    const fromDay = from ? new Date(from) : undefined
+    const toDay = to ? new Date(to) : undefined
+
+
+    const whereParams = () => [name
+      ? filterColumn({
+        column: user.name,
+        value: name,
       })
-      const total = await db.user.count({ where })
-      const pageCount = Math.ceil(total / per_page)
-      return { data, total: pageCount }
+      : undefined,
+    // admin 只能查看自己创建的用户 superAdmin 可以查看所有用户
+    userinfo?.role === UserRole.enum.admin ? and(
+      eq(user.createdById, userinfo!.id),
+      isNull(user.deletedAt),
+      isNull(user.deletedById)
+    ) : undefined,
+    !!userRole
+      ? filterColumn({
+        column: role.userRole,
+        value: userRole,
+        isSelectable: true,
+      })
+      : undefined,
+    emailVerified === '1' ? isNotNull(user.emailVerified) : emailVerified === '0' ? isNull(user.emailVerified) : undefined,
+    // Filter by createdAt
+    fromDay && toDay
+      ? and(
+        gte(user.createdAt, fromDay),
+        lte(user.createdAt, toDay)
+      )
+      : undefined]
+    const { password, ...rest } = getTableColumns(user);
+
+    const { data, total } = await db.transaction(async (tx) => {
+      const data = await tx
+        .select({ ...rest, role })
+        .from(user)
+        .limit(per_page)
+        .offset(offset)
+        .leftJoin(role, eq(user.id, role.userId))
+        .where(
+          !operator || operator === "and" ? and(...whereParams()) : or(...whereParams())
+        )
+        .orderBy(
+          column && column in user
+            ? order === "asc"
+              ? asc(user[column])
+              : desc(user[column])
+            : desc(user.id)
+        ) as unknown as UserDataType[]
+
+      const total = await tx
+        .select({
+          count: count(),
+        })
+        .from(user)
+        .leftJoin(role, eq(user.id, role.userId))
+        .where(
+          !operator || operator === "and" ? and(...whereParams()) : or(...whereParams())
+        )
+        .execute()
+        .then((res) => res[0]?.count ?? 0)
+
+      return {
+        data,
+        total,
+      }
     })
-    revalidatePath('/users')
-    return { data: { data, total }, error: null }
-  } catch (error) {
-    return { error: getErrorMessage(error), data: null }
+
+    const pageCount = Math.ceil(total / per_page)
+    return { data, pageCount }
+  } catch (err) {
+    console.log(err)
+    return { data: [], pageCount: 0 }
   }
 })
 
 const DeleteScheme = UserSchema.pick({ id: true }).required()
 
-export const deleteUser = action<typeof DeleteScheme, ActionReturnValue<{id: string}[]>>(DeleteScheme, async ({ id }) => {
+export const deleteUser = action<typeof DeleteScheme, ActionReturnValue<{ id: string }[]>>(DeleteScheme, async ({ id }) => {
   const [err, data] = await deleteUserById(id)
   if (err) {
     return { error: getErrorMessage(err), data: null }
@@ -217,9 +222,8 @@ export const deleteUser = action<typeof DeleteScheme, ActionReturnValue<{id: str
 })
 
 
-export const deleteUsersAction = action<typeof DeleteManyScheme, ActionReturnValue<{id: string}[]>>(DeleteManyScheme, async (ids) => {
+export const deleteUsersAction = action<typeof DeleteManyScheme, ActionReturnValue<{ id: string }[]>>(DeleteManyScheme, async (ids) => {
   const [err, data] = await deleteUsersByIds(ids)
-  console.log(err)
   if (err) {
     return { error: getErrorMessage(err), data: null }
   }
