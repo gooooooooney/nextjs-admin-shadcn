@@ -3,10 +3,10 @@ import {
   type DefaultSession,
 } from "next-auth";
 
-import { db } from "@/server/db";
-import { UserRole } from "@prisma/client";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-
+import { DrizzleAdapter } from "@auth/drizzle-adapter"
+import { db } from "@/drizzle/db";
+import { UserRole, user } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -37,14 +37,13 @@ export const authConfig = {
   },
 
   events: {
-    async linkAccount({ user }) {
-      await db.user.update({
-        where: { id: user.id },
-        data: { emailVerified: new Date() }
-      })
+    async linkAccount({ user: userinfo }) {
+      await db.update(user).set({
+        emailVerified: new Date()
+      }).where(eq(user.id, userinfo.id!))
     }
   },
-  adapter: PrismaAdapter(db),
+  adapter: DrizzleAdapter(db),
   pages: {
     signIn: "/login",
     newUser: "/signup",

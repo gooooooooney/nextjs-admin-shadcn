@@ -8,9 +8,15 @@ import { z } from "zod";
 
 export const getUserByEmail = async (email: string) => {
 
-  return await db.query.user.findFirst({
-    where: eq(user.email, email)
-  })
+  try {
+    const res = await db.query.user.findFirst({
+      where: eq(user.email, email)
+    })
+
+    return res
+  } catch (error) {
+    console.log('error', error)
+  }
 
 }
 

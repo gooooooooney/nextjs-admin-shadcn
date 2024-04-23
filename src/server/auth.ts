@@ -2,7 +2,9 @@ import { authConfig } from "@/config/auth";
 import { comparePassword } from "@/lib/compare";
 import Credentials from "next-auth/providers/credentials";
 import NextAuth from "next-auth";
-import { db } from "./db";
+import { db } from "@/drizzle/db";
+import { eq } from "drizzle-orm";
+import { user } from "@/drizzle/schema";
 
 export const {
   handlers: { GET, POST },
@@ -16,12 +18,15 @@ export const {
       if (session.user && token.sub) {
         session.user.id = token.sub!;
       }
-      const user = await db.user.findUnique({
-        where: { id: session.user.id },
-        select: {
-          role: true,
+      console.log(session)
+      const userinfo = await db.query.user.findFirst({
+        where: eq(user.id, session.user.id!),
+        columns: {
           image: true,
           name: true,
+        },
+        with: {
+          role: true
         }
       })
 
@@ -29,8 +34,8 @@ export const {
         ...session,
         user: {
           ...session.user,
-          role: user?.role?.userRole,
-          superAdmin: user?.role?.superAdmin
+          role: userinfo?.role?.userRole,
+          superAdmin: userinfo?.role?.superAdmin
         }
       };
     },
@@ -50,20 +55,23 @@ export const {
         if (!credentials.password)
           throw new Error('"password" is required in credentials');
 
-        const maybeUser = await db.user.findUnique({
-          where: { email: credentials.email as string },
-          select: {
+        const maybeUser = await db.query.user.findFirst({
+          where: eq(user.email, credentials.email as string),
+          columns: {
             id: true,
             email: true,
             password: true,
             name: true,
+
+          },
+          with: {
             role: {
-              select: {
+              columns: {
                 userRole: true,
                 superAdmin: true,
               }
             }
-          },
+          }
         });
 
 
