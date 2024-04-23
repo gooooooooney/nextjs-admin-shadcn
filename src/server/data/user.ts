@@ -1,12 +1,10 @@
-import { Theme, UserRole } from "@prisma/client";
-import { getEnhancedPrisma } from "../db/enhance";
 import { db } from "@/drizzle/db";
 import { eq, inArray } from "drizzle-orm";
-import { user, role, UserSchema } from "@/drizzle/schema";
+import { user, role, Theme, UserRole } from "@/drizzle/schema";
 import { currentUser } from "@/lib/auth";
 import to from "@/lib/utils";
-import { SignupByTokenSchema, SignupSchema } from "@/schema/auth";
-import { TypeOf, z } from "zod";
+import { SignupSchema } from "@/schema/auth";
+import { z } from "zod";
 
 export const getUserByEmail = async (email: string) => {
 
@@ -88,7 +86,7 @@ export const createUser = async (data: Omit<z.infer<typeof SignupSchema>, 'confi
 
     await tx.insert(role).values({
       // For now, by default, registration grants admin permissions, used for demonstrating the backend management system.
-      userRole: UserRole.admin,
+      userRole: UserRole.Enum.admin,
       userId: result[0].userId
     }).returning({ id: role.id })
     return result

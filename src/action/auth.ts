@@ -15,7 +15,6 @@ import { deleteVerificationToken, getVerificationTokenByToken } from "@/server/d
 import { AuthResponse } from "@/types/actions";
 import { deleteNewEmailVerificationToken, getNewEmailVerificationTokenByToken } from "@/server/data/email-verification-token";
 import { deleteRegisterVerificationToken, getRegisterVerificationTokenByToken } from "@/server/data/signup-verification-token";
-import { UserRole } from "@prisma/client";
 
 
 export const login = action<typeof LoginSchema, AuthResponse | undefined>(LoginSchema, async (params: LoginSchema) => {

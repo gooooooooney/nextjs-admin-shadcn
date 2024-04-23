@@ -76,7 +76,10 @@ export const session = pgTable("Session", {
 
 
 export const userRelation = relations(user, ({ one, many }) => ({
-	role: one(role),
+	role: one(role, {
+		fields: [user.id],
+		references: [role.userId],
+	}),
 	createdBy: one(user, {
 		fields: [user.createdById],
 		references: [user.id],

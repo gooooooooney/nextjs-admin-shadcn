@@ -1,6 +1,8 @@
-import { type UserSchema, type UserCreateSchema } from "@/schema/zod/models";
-import { type z } from "zod";
 
-export type UserCreate = z.infer<typeof UserCreateSchema>
+import { NewUser, Role, User as UserType } from '@/drizzle/schema'
 
-export type User = z.infer<typeof UserSchema>
+export type UserCreate = NewUser
+
+export interface User extends UserType {
+  role: Role
+}

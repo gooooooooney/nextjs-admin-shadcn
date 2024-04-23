@@ -27,15 +27,15 @@ export function UsersTable({ usersPromise }: TasksTableProps) {
   const { enableAdvancedFilter, showFloatingBar } = useUsersTable()
 
   // Learn more about React.use here: https://react.dev/reference/react/use
-  const { data } = React.use(usersPromise)
+  const {data} = React.use(usersPromise)
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo(() => getColumns(), [])
 
   const { table } = useDataTable({
-    data: data?.data?.data! as User[],
+    data: data?.data! as User[],
     columns,
-    pageCount: data?.data?.total ?? -1,
+    pageCount: data?.pageCount || -1,
     searchableColumns,
     filterableColumns,
     enableAdvancedFilter,
