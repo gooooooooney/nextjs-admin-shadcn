@@ -59,29 +59,30 @@ const defaultRoutes: MenuItem[] = [
 ];
 const layout = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth();
+  console.log(111)
 
-  // const permissions = await getUserPermissions(session?.user?.id);
+  const permissions = await getUserPermissions({ userId: session?.user?.id });
 
-  // if (!permissions) return null;
+  if (!permissions) return null;
 
 
   let routes = defaultRoutes
-  // if (permissions.role.userRole === UserRole.Enum.user) {
-  //   routes = permissions.role.menus.map(menu => {
-  //     const Icon = Icons[menu.icon as keyof typeof Icons] as LucideIcon || Icons.Package
-  //     return {
-  //       path: menu.path,
-  //       label: menu.label,
-  //       icon: <Icon className='size-4' />,
-  //       children: menu.children.map(child => ({
-  //         path: child.path,
-  //         label: child.label,
-  //       }))
-  //     }
-  //   }
-  //   )
-  //   routes.unshift(defaultRoutes[0]!)
-  // }
+  if (permissions.role.userRole === UserRole.Enum.user) {
+    routes = permissions.role.menus.map(menu => {
+      const Icon = Icons[menu.icon as keyof typeof Icons] as LucideIcon || Icons.Package
+      return {
+        path: menu.path,
+        label: menu.label,
+        icon: <Icon className='size-4' />,
+        children: menu.children.map(child => ({
+          path: child.path,
+          label: child.label,
+        }))
+      }
+    }
+    )
+    routes.unshift(defaultRoutes[0]!)
+  }
 
   return (
     <SessionProvider session={session}>

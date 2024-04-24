@@ -5,8 +5,9 @@
  */
 export const publicRoutes = [
   // "/",
-  "/new-verification",
-  "/api/uploadthing"
+  
+  "/api/uploadthing",
+  "/api/get-user-permission",
 ];
 
 /**
@@ -15,12 +16,14 @@ export const publicRoutes = [
  * @type {string[]}
  */
 export const authRoutes = [
+  "/not-found",
   "/login",
   "/signup",
   "/error",
   "/reset-password",
   "/new-password",
-  "/register"
+  "/register",
+  "/new-verification",
 ];
 
 /**

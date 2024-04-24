@@ -4,7 +4,8 @@ import Credentials from "next-auth/providers/credentials";
 import NextAuth from "next-auth";
 import { db } from "@/drizzle/db";
 import { eq } from "drizzle-orm";
-import { user } from "@/drizzle/schema";
+import { UserRole, user } from "@/drizzle/schema";
+import { getUserById } from "./data/user";
 
 export const {
   handlers: { GET, POST },
@@ -14,30 +15,31 @@ export const {
 } = NextAuth({
   ...authConfig,
   callbacks: {
+    async jwt({ token }) {
+      if (!token?.sub) return token
+      const existingUser = await getUserById(token.sub)
+
+      if (!existingUser) return token
+
+      token.role = existingUser.role?.userRole
+      token.image = existingUser.image
+      token.superAdmin = existingUser.role?.superAdmin
+
+      return token
+    },
     async session({ session, token }) {
       if (session.user && token.sub) {
         session.user.id = token.sub!;
       }
-      console.log(session)
-      const userinfo = await db.query.user.findFirst({
-        where: eq(user.id, session.user.id!),
-        columns: {
-          image: true,
-          name: true,
-        },
-        with: {
-          role: true
-        }
-      })
+      if (token.role && session.user) {
+        session.user.role = token.role as UserRole
+      }
 
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          role: userinfo?.role?.userRole,
-          superAdmin: userinfo?.role?.superAdmin
-        }
-      };
+      if (session.user) {
+        session.user.superAdmin = token.superAdmin as boolean
+        session.user.image = token.image as string
+      }
+      return session
     },
     redirect: () => "/"
 
