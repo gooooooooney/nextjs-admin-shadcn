@@ -4,7 +4,7 @@ import { sql } from "drizzle-orm";
 
 
 export const task = pgTable("Task", {
-	id: uuid("id").defaultRandom().primaryKey(),
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	code: varchar("code").notNull(),
 	title: varchar("title").notNull(),
 	status: status("status").default('todo').notNull().default('todo'),
@@ -13,11 +13,11 @@ export const task = pgTable("Task", {
 	createdAt: timestamp("createdAt").defaultNow().notNull(),
 	updatedAt: timestamp("updatedAt").default(sql`current_timestamp`),
 },
-(table) => {
-	return {
-		codeKey: uniqueIndex("Task_code_key").on(table.code),
-	}
-});
+	(table) => {
+		return {
+			codeKey: uniqueIndex("Task_code_key").on(table.code),
+		}
+	});
 
 export type Task = typeof task.$inferSelect
 export type NewTask = typeof task.$inferInsert

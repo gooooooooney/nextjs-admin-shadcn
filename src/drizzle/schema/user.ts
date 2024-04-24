@@ -7,7 +7,7 @@ import { role } from "./role";
 
 
 export const user = pgTable("User", {
-	id: uuid("id").defaultRandom().primaryKey(),
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	name: varchar("name"),
 	email: varchar("email"),
 	emailVerified: timestamp("emailVerified"),
@@ -42,7 +42,7 @@ export type User = typeof user.$inferSelect
 export type NewUser = typeof user.$inferInsert
 
 export const account = pgTable("Account", {
-	id: varchar("id").primaryKey().notNull(),
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	userId: uuid("userId").notNull().references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
 	type: varchar("type").notNull(),
 	provider: varchar("provider").notNull(),
@@ -63,7 +63,7 @@ export const account = pgTable("Account", {
 
 
 export const session = pgTable("Session", {
-	id: varchar("id").primaryKey().notNull(),
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	sessionToken: varchar("sessionToken").notNull(),
 	userId: uuid("userId").notNull().references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
 	expires: timestamp("expires").notNull(),
@@ -83,20 +83,30 @@ export const userRelation = relations(user, ({ one, many }) => ({
 	createdBy: one(user, {
 		fields: [user.createdById],
 		references: [user.id],
+		relationName: 'user_createdBy',
 	}),
 	deletedBy: one(user, {
 		fields: [user.deletedById],
 		references: [user.id],
+		relationName: 'user_deletedBy',
 	}),
-	accounts: many(account),
-	session: many(session),
-	createdUsers: many(user),
+	accounts: many(account, {
+		relationName: 'user_accounts',
+	}),
+	session: many(session, {
+		relationName: 'user_sessions',
+	}),
+	createdUsers: many(user, {
+		relationName: 'user_createdBy',
+	}),
+
 }))
 
 export const accountRelation = relations(account, ({ one }) => ({
 	user: one(user, {
 		fields: [account.userId],
 		references: [user.id],
+		relationName: 'user_accounts'
 	}),
 }))
 
@@ -104,5 +114,6 @@ export const sessionRelation = relations(session, ({ one }) => ({
 	user: one(user, {
 		fields: [session.userId],
 		references: [user.id],
+		relationName: 'user_sessions'
 	}),
 }))

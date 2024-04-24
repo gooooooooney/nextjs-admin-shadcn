@@ -28,14 +28,16 @@ export const getNestedMenus = async (id: string) => {
   return nestedBlock;
 }
 
-export const getUserPermissions = async (userId?: string) => {
+export const getUserPermissions = async ({userId, email}: {userId?:string, email?:string}) => {
+  const where = userId ? eq(user.id, userId) : email ? eq(user.email, email) : undefined
   const res = await db.query.user.findFirst({
-    where: eq(user.id, userId!),
+    where,
     columns: {},
     with: {
       role: {
         columns: {
           userRole: true,
+          superAdmin: true
         },
         with: {
           menus: true

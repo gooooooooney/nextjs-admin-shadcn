@@ -6,7 +6,7 @@
   "scripts": {
     "build": "next build",
     "db:generate": "drizzle-kit generate:pg",
-    "db:migrate": "bun lib/db/migrate.ts",
+    "db:migrate": "bun src/drizzle/migrate.ts",
     "db:drop": "drizzle-kit drop",
     "db:push": "drizzle-kit push:pg",
     "db:pull": "drizzle-kit introspect:pg",

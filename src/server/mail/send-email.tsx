@@ -16,7 +16,6 @@ export async function sendVerificationEmail(
   const confirmLink = `${domain}/${verificationPath}?token=${token}`;
 
   const subject = "Confirm your email";
-  console.log(env.NODE_ENV, "env.NODE_ENV")
   if (env.NODE_ENV === "development") {
     return { success: "Please check your email for the confirmation link.", link: confirmLink }
   }

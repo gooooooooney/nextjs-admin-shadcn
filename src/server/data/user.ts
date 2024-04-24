@@ -12,7 +12,6 @@ export const getUserByEmail = async (email: string) => {
     const res = await db.query.user.findFirst({
       where: eq(user.email, email)
     })
-
     return res
   } catch (error) {
     console.log('error', error)
@@ -26,7 +25,8 @@ export const getUserById = async (id: string) => {
       with: {
         role: {
           columns: {
-            userRole: true
+            userRole: true,
+            superAdmin: true
           }
         }
       },

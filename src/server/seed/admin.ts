@@ -16,20 +16,21 @@ const runSuperAdmin = async () => {
     const start = Date.now()
 
     await db.transaction(async (tx) => {
-      const insertUserResult = await db.insert(user).values({
+      const insertUserResult = await tx.insert(user).values({
         id: process.env.SUPER_ADMIN_UUID,
         name: "super admin",
         email: process.env.SUPER_ADMIN_EMAIL,
         password: hashedPassword,
         emailVerified: new Date(),
       }).returning({ userId: user.id });
+
       const userId = insertUserResult[0]?.userId
       if (!userId) return new Error('Failed to create superAdmin')
 
       await tx.insert(role).values({
-        // For now, by default, registration grants admin permissions, used for demonstrating the backend management system.
-        userRole: UserRole.Enum.admin,
+        userRole: UserRole.Enum.superAdmin,
         userId,
+        superAdmin: true,
       })
     })
 
@@ -37,6 +38,8 @@ const runSuperAdmin = async () => {
 
     console.log(`✅ Seed runSuperAdmin completed in ${end - start}ms`)
 
+  } else {
+    console.log("✅ Super admin already exists")
   }
 }
 
@@ -46,7 +49,7 @@ const runAdmin = async () => {
     where: eq(user.email, "admin@test.com")
   })
   if (!userinfo) {
-    console.log("⏳ Running seed...")
+    console.log("⏳ Running runAdmin seed...")
 
     const start = Date.now()
     const insertUserResult = await db.insert(user).values({

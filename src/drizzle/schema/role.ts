@@ -6,7 +6,7 @@ import { relations } from "drizzle-orm";
 
 
 export const role = pgTable("Role", {
-	id: uuid("id").defaultRandom().primaryKey(),
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	name: varchar("name").default('user'),
 	userRole: userRole("userRole").default('user'),
 	superAdmin: boolean("superAdmin").default(false),
@@ -21,18 +21,18 @@ export const role = pgTable("Role", {
 	});
 
 export const menu = pgTable("Menu", {
-	id: uuid("id").defaultRandom().primaryKey(),
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	label: varchar("label").notNull(),
 	path: varchar("path").notNull(),
-	roleId: varchar("roleId").notNull().references(() => role.id, { onDelete: "cascade", onUpdate: "cascade" }),
-	type: menuType("type").default('menu').notNull(),
-	status: menuStatus("status").default('active').notNull(),
+	roleId: uuid("roleId").notNull().references(() => role.id, { onDelete: "cascade", onUpdate: "cascade" }),
+	type: menuType("type").default('menu'),
+	status: menuStatus("status").default('active'),
 	icon: varchar("icon"),
 	parentId: uuid("parentId"),
-	createBy: uuid("createBy").notNull(),
-	updateBy: uuid("updateBy").notNull(),
-	createdAt: timestamp("createdAt", { precision: 3, mode: 'string' }).defaultNow().notNull(),
-	updatedAt: timestamp("updatedAt", { precision: 3, mode: 'string' }).notNull(),
+	createBy: uuid("createBy"),
+	updateBy: uuid("updateBy"),
+	createdAt: timestamp("createdAt").defaultNow(),
+	updatedAt: timestamp("updatedAt").defaultNow(),
 },
 	(table) => {
 		return {
@@ -44,8 +44,12 @@ export const menu = pgTable("Menu", {
 		}
 	});
 
-export const menuRelations = relations(menu, ({ many }) => ({
-	children: many(menu)
+export const menuRelations = relations(menu, ({ many, one }) => ({
+	children: many(menu),
+	role: one(role, {
+		fields: [menu.roleId],
+		references: [role.id]
+	})
 }))
 
 export const roleRelations = relations(role, ({ many }) => ({
@@ -53,5 +57,7 @@ export const roleRelations = relations(role, ({ many }) => ({
 }))
 
 export type Menu = typeof menu.$inferSelect
+
+export type MenuWithChildren = Menu & { children: MenuWithChildren[] }
 
 export type Role = typeof role.$inferSelect
