@@ -26,7 +26,8 @@ export const getUserById = async (id: string) => {
         role: {
           columns: {
             userRole: true,
-            superAdmin: true
+            superAdmin: true,
+            id: true
           }
         }
       },

@@ -24,6 +24,7 @@ export const {
       token.role = existingUser.role?.userRole
       token.image = existingUser.image
       token.superAdmin = existingUser.role?.superAdmin
+      token.roleId = existingUser.role.id
 
       return token
     },
@@ -38,6 +39,7 @@ export const {
       if (session.user) {
         session.user.superAdmin = token.superAdmin as boolean
         session.user.image = token.image as string
+        session.user.roleId = token.roleId as string
       }
       return session
     },

@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { Menu, menu, user } from "@/drizzle/schema";
-import { eq } from "drizzle-orm";
+import { SQL, eq } from "drizzle-orm";
 
 export const getNestedMenus = async (id: string) => {
   const menus = await db.query.menu.findFirst({
@@ -28,7 +28,7 @@ export const getNestedMenus = async (id: string) => {
   return nestedBlock;
 }
 
-export const getUserPermissions = async ({userId, email}: {userId?:string, email?:string}) => {
+export const getUserPermissions = async ({userId, email, menusWhere}: {userId?:string, email?:string, menusWhere?: SQL}) => {
   const where = userId ? eq(user.id, userId) : email ? eq(user.email, email) : undefined
   const res = await db.query.user.findFirst({
     where,
@@ -40,7 +40,10 @@ export const getUserPermissions = async ({userId, email}: {userId?:string, email
           superAdmin: true
         },
         with: {
-          menus: true
+          menus: {
+            where: menusWhere,
+          },
+          
         }
       },
       createdUsers: true
