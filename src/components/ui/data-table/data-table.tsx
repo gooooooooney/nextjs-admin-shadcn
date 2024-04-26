@@ -26,14 +26,6 @@ interface DataTableProps<TData, TValue> {
   table: TanstackTable<TData>
 
   /**
-   * The columns of the table.
-   * @default []
-   * @type ColumnDef<TData, TValue>[]
-   * @example columns={[{accessorKey: "flipTrick", header: "Flip Trick", cell: ({row}) => <div>{row.getValue("flipTrick")}</div>}]
-   */
-  columns: ColumnDef<TData, TValue>[]
-
-  /**
    * The floating bar to render at the bottom of the table on row selection.
    * @default null
    * @type React.ReactNode | null
@@ -41,18 +33,14 @@ interface DataTableProps<TData, TValue> {
    */
   floatingBar?: React.ReactNode | null
   title?: React.ReactNode
-
-  ref?: React.Ref<HTMLDivElement>
   description?: React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
   table,
-  columns,
   title = "DataTable",
   description = "Description of the data table.",
   floatingBar = null,
-  ref
 }: DataTableProps<TData, TValue>) {
   return (
     <Card>
@@ -103,7 +91,7 @@ export function DataTable<TData, TValue>({
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={columns.length}
+                    colSpan={table.getAllColumns().length}
                     className="h-24 text-center"
                   >
                     No results.

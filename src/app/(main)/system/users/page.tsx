@@ -6,6 +6,7 @@ import { DataTableSkeleton } from "@/components/ui/data-table/data-table-skeleto
 import { UsersTable } from "./_components/users-table"
 import { searchParamsSchema } from "@/schema/data/users"
 import { getUsers } from "@/action/user"
+import { DateRangePicker } from "@/components/date-range-picker"
 
 
 interface UserPageProps {
@@ -19,6 +20,11 @@ const UsersPage = ({ searchParams }: UserPageProps) => {
   return (
     <Shell variant="sidebar" className="px-4">
       <UsersTableProvider>
+        <DateRangePicker
+          triggerSize="sm"
+          triggerClassName="ml-auto w-56 sm:w-60"
+          align="end"
+        />
         <React.Suspense
           fallback={
             <DataTableSkeleton

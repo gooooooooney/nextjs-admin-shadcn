@@ -1,4 +1,4 @@
-import { Theme } from "@prisma/client";
+import { Theme } from "@/drizzle/schema/enum";
 import { z } from "zod";
 
 
@@ -13,7 +13,7 @@ export const ProfileSchema = z.object({
       message: 'Username must not be longer than 30 characters.',
     }).optional(),
   image: z.string().optional(),
-  theme: z.enum([Theme.dark, Theme.light, Theme.system]).optional(),
+  theme: z.enum([Theme.Enum.dark, Theme.Enum.light, Theme.Enum.system]).optional(),
 })
 
 export type ProfileSchema = z.infer<typeof ProfileSchema>

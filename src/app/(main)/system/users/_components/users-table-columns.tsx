@@ -1,10 +1,6 @@
 "use client"
 
 import * as React from "react"
-import type {
-  DataTableFilterableColumn,
-  DataTableSearchableColumn,
-} from "@/types/data-table"
 import {
   DotsHorizontalIcon
 } from "@radix-ui/react-icons"
@@ -16,41 +12,15 @@ import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem, DropdownMenuSeparator,
-  DropdownMenuShortcut, DropdownMenuTrigger
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
-// import { DeleteTasksDialog } from "./delete-users-dialog"
 import { User } from "@/types/model/user"
 import { format } from "date-fns"
 import { DeleteUsersDialog } from "./delete-users-dialog"
-import { userRole } from "@/drizzle/schema"
-
-export const searchableColumns: DataTableSearchableColumn<User>[] = [
-  {
-    id: "name",
-    placeholder: "Filter username...",
-  },
-]
-
-export const filterableColumns: DataTableFilterableColumn<User>[] = [
-  {
-    id: "role",
-    title: "Role",
-    options: userRole.enumValues.map((userRole) => ({
-      label: userRole[0]?.toUpperCase() + userRole.slice(1),
-      value: userRole,
-    })),
-  },
-  {
-    id: "emailVerified",
-    title: "isEmailVerified",
-    options: [
-      { label: "Yes", value: "1" },
-      { label: "No", value: "0" },
-    ],
-  },
-]
 
 export function getColumns(): ColumnDef<User>[] {
   return [
@@ -152,7 +122,7 @@ export function getColumns(): ColumnDef<User>[] {
       ),
       cell: ({ row }) => {
         const deletedBy: User = row.getValue("deletedBy")
-        
+
         return deletedBy && <Badge className="truncate" variant="destructive" >{deletedBy.name}</Badge>
       },
       enableColumnFilter: false,
@@ -183,7 +153,6 @@ export function getColumns(): ColumnDef<User>[] {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onSelect={() => setShowDeleteTaskDialog(true)}
                 >

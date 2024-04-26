@@ -1,20 +1,11 @@
 import * as React from "react"
 import {
-  ArrowUpIcon,
-  CheckCircledIcon,
   Cross2Icon,
-  TrashIcon,
+  TrashIcon
 } from "@radix-ui/react-icons"
-import { SelectTrigger } from "@radix-ui/react-select"
 import { type Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-} from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import {
   Tooltip,
@@ -22,8 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-// import { deleteTasks, updateTasks } from "../_lib/mutations"
-import { type Task } from "@/drizzle/schema"
+import { Kbd } from "@/components/kbd"
 import { User } from "@/types/model/user"
 import { deleteUsers } from "../_lib/mutations"
 
@@ -73,9 +63,9 @@ export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
               </TooltipTrigger>
               <TooltipContent className="flex items-center border bg-accent font-semibold text-foreground dark:bg-zinc-900">
                 <p className="mr-2">Clear selection</p>
-                <kbd className="rounded-sm border bg-background px-1 py-px text-[0.7rem]">
+                <Kbd className="rounded-sm border bg-background px-1 py-px text-[0.7rem]">
                   Esc
-                </kbd>
+                </Kbd>
               </TooltipContent>
             </Tooltip>
           </div>

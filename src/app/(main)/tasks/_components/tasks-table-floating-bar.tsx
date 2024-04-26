@@ -25,6 +25,7 @@ import {
 import { deleteTasks, updateTasks } from "../_lib/mutations"
 import { type Task } from "@/drizzle/schema"
 import { PrioritySchema, StatusSchema } from "@/schema/zod/enums"
+import { Kbd } from "@/components/kbd"
 
 interface TasksTableFloatingBarProps {
   table: Table<Task>
@@ -72,9 +73,9 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
               </TooltipTrigger>
               <TooltipContent className="flex items-center border bg-accent font-semibold text-foreground dark:bg-zinc-900">
                 <p className="mr-2">Clear selection</p>
-                <kbd className="rounded-sm border bg-background px-1 py-px text-[0.7rem]">
+                <Kbd className="rounded-sm border bg-background px-1 py-px text-[0.7rem]">
                   Esc
-                </kbd>
+                </Kbd>
               </TooltipContent>
             </Tooltip>
           </div>

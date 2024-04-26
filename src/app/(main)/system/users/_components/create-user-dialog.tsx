@@ -65,7 +65,7 @@ export function CreateUserDialog({ prevUsers }: CreateUserDialogProps) {
     onSuccess: (res) => {
       if (res.success) {
         if (res.link) {
-          toast.success(<Link href={res.link}>{res.success}</Link>, {duration: 0})
+          toast.success(<Link href={res.link as any}>{res.success}</Link>, {duration: 0})
         } else {
           toast.success(res.success)
         }
