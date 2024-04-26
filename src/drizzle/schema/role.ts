@@ -44,16 +44,46 @@ export const menu = pgTable("Menu", {
 		}
 	});
 
+	// createdBy: one(user, {
+	// 	fields: [user.createdById],
+	// 	references: [user.id],
+	// 	relationName: 'user_createdBy',
+	// }),
+	// deletedBy: one(user, {
+	// 	fields: [user.deletedById],
+	// 	references: [user.id],
+	// 	relationName: 'user_deletedBy',
+	// }),
+	// accounts: many(account, {
+	// 	relationName: 'user_accounts',
+	// }),
+	// session: many(session, {
+	// 	relationName: 'user_sessions',
+	// }),
+	// createdUsers: many(user, {
+	// 	relationName: 'user_createdBy',
+	// }),
 export const menuRelations = relations(menu, ({ many, one }) => ({
-	children: many(menu),
+	children: many(menu, {
+		relationName: "menu_parent",
+	}),
+	createBy: one(menu, {
+		fields: [menu.parentId],
+		references: [menu.id],
+		relationName: "menu_parent",
+	}),
 	role: one(role, {
 		fields: [menu.roleId],
-		references: [role.id]
+		references: [role.id],
+		relationName: "role_menu",
+
 	})
 }))
 
 export const roleRelations = relations(role, ({ many }) => ({
-	menus: many(menu)
+	menus: many(menu, {
+		relationName: "role_menu",
+	})
 }))
 
 export type Menu = typeof menu.$inferSelect
