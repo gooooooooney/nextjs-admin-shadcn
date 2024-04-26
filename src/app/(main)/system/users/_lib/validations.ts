@@ -1,5 +1,5 @@
+import { UserSchema } from "@/drizzle/schema/user";
 import { z } from "zod";
-import { UserSchema } from "../zod/models";
 
 export const UpdateUsersSchema = UserSchema.pick({
   id: true,
@@ -23,7 +23,6 @@ export const searchParamsSchema = z.object({
   per_page: z.coerce.number().default(10),
   sort: z.string().optional(),
   name: z.string().optional(),
-  email: z.string().optional(),
   emailVerified: z.string().optional(),
   from: z.string().optional(),
   role: z.string().optional(),

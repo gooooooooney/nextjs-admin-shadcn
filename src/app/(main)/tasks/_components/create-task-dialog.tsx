@@ -1,12 +1,12 @@
 "use client"
 
 import * as React from "react"
+import { task, type Task } from "@/drizzle/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon } from "@radix-ui/react-icons"
 import { type Row } from "@tanstack/react-table"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-
 
 import { getErrorMessage } from "@/lib/handle-error"
 import { Button } from "@/components/ui/button"
@@ -28,7 +28,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -37,16 +36,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 
-import { label, priority, status, type Task, } from "@/drizzle/schema"
-import { CreateTaskSchema, createTaskSchema } from "@/schema/data/task"
 import { createTask } from "../_lib/actions"
+import { createTaskSchema, type CreateTaskSchema } from "../_lib/validations"
 
 interface CreateTaskDialogProps {
   prevTasks: Row<Task>[]
 }
-
-
 
 export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
   const [open, setOpen] = React.useState(false)
@@ -54,9 +51,6 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
 
   const form = useForm<CreateTaskSchema>({
     resolver: zodResolver(createTaskSchema),
-    defaultValues: {
-      title: "",
-    }
   })
 
   function onSubmit(input: CreateTaskSchema) {
@@ -80,7 +74,6 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
           },
           error: (error) => {
             setOpen(false)
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return getErrorMessage(error)
           },
         }
@@ -115,7 +108,11 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Do a kickflip" {...field} />
+                    <Textarea
+                      placeholder="Do a kickflip"
+                      className="resize-none"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -138,7 +135,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {label.enumValues.map((item) => (
+                        {task.label.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}
@@ -171,7 +168,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {status.enumValues.map((item) => (
+                        {task.status.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}
@@ -204,7 +201,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {priority.enumValues.map((item) => (
+                        {task.priority.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}
@@ -226,7 +223,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={isCreatePending}>Submit</Button>
+              <Button disabled={isCreatePending}>Submit</Button>
             </DialogFooter>
           </form>
         </Form>

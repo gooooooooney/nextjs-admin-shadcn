@@ -111,6 +111,7 @@ export const getUsers = action(getUsersSchema, async (params) => {
       per_page,
       sort,
       name,
+      email,
       emailVerified,
       role: userRole,
       operator,
@@ -136,33 +137,40 @@ export const getUsers = action(getUsersSchema, async (params) => {
     const toDay = to ? new Date(to) : undefined
 
 
-    const whereParams = () => [name
-      ? filterColumn({
-        column: user.name,
-        value: name,
-      })
-      : undefined,
-    // admin 只能查看自己创建的用户 superAdmin 可以查看所有用户
-    userinfo?.role === UserRole.enum.admin ? and(
-      eq(user.createdById, userinfo!.id),
-      isNull(user.deletedAt),
-      isNull(user.deletedById)
-    ) : undefined,
-    !!userRole
-      ? filterColumn({
-        column: role.userRole,
-        value: userRole,
-        isSelectable: true,
-      })
-      : undefined,
-    emailVerified === '1' ? isNotNull(user.emailVerified) : emailVerified === '0' ? isNull(user.emailVerified) : undefined,
-    // Filter by createdAt
-    fromDay && toDay
-      ? and(
-        gte(user.createdAt, fromDay),
-        lte(user.createdAt, toDay)
-      )
-      : undefined]
+    const whereParams = () => [
+      name
+        ? filterColumn({
+          column: user.name,
+          value: name,
+        })
+        : undefined,
+      email
+        ? filterColumn({
+          column: user.email,
+          value: email,
+        })
+        : undefined,
+      // admin 只能查看自己创建的用户 superAdmin 可以查看所有用户
+      userinfo?.role === UserRole.enum.admin ? and(
+        eq(user.createdById, userinfo!.id),
+        isNull(user.deletedAt),
+        isNull(user.deletedById)
+      ) : undefined,
+      !!userRole
+        ? filterColumn({
+          column: role.userRole,
+          value: userRole,
+          isSelectable: true,
+        })
+        : undefined,
+      emailVerified === '1' ? isNotNull(user.emailVerified) : emailVerified === '0' ? isNull(user.emailVerified) : undefined,
+      // Filter by createdAt
+      fromDay && toDay
+        ? and(
+          gte(user.createdAt, fromDay),
+          lte(user.createdAt, toDay)
+        )
+        : undefined]
     const { password, ...rest } = getTableColumns(user);
 
     const { data, total } = await db.transaction(async (tx) => {

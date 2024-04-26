@@ -1,27 +1,14 @@
 "use client"
 
 import * as React from "react"
-import type {
-  DataTableFilterableColumn,
-  DataTableSearchableColumn,
-} from "@/types/data-table"
-import {
-  ArrowDownIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  CheckCircledIcon,
-  CircleIcon,
-  CrossCircledIcon,
-  DotsHorizontalIcon,
-  QuestionMarkCircledIcon,
-  StopwatchIcon,
-} from "@radix-ui/react-icons"
+import { task, type Task } from "@/drizzle/schema"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 
 import { getErrorMessage } from "@/lib/handle-error"
 import { formatDate } from "@/lib/utils"
-import { Badge, type BadgeVariant } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -37,38 +24,12 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
 
-import { DeleteTasksDialog } from "./delete-tasks-dialog"
-import { LabelSchema, PrioritySchema, StatusSchema } from "@/schema/zod/enums"
-import { Task } from "@/drizzle/schema"
 import { updateTask } from "../_lib/actions"
-
-export const searchableColumns: DataTableSearchableColumn<Task>[] = [
-  {
-    id: "title",
-    placeholder: "Filter titles...",
-  },
-]
-
-export const filterableColumns: DataTableFilterableColumn<Task>[] = [
-  {
-    id: "status",
-    title: "Status",
-    options: StatusSchema.options.map((status) => ({
-      label: status[0]?.toUpperCase() + status.slice(1),
-      value: status,
-    })),
-  },
-  {
-    id: "priority",
-    title: "Priority",
-    options: PrioritySchema.options.map((priority) => ({
-      label: priority[0]?.toUpperCase() + priority.slice(1),
-      value: priority,
-    })),
-  },
-]
+import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
+import { DeleteTasksDialog } from "./delete-tasks-dialog"
+import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
+import { UpdateTaskSheet } from "./update-task-sheet"
 
 export function getColumns(): ColumnDef<Task>[] {
   return [
@@ -82,7 +43,7 @@ export function getColumns(): ColumnDef<Task>[] {
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
-          className="translate-y-[2px]"
+          className="translate-y-0.5"
         />
       ),
       cell: ({ row }) => (
@@ -90,7 +51,7 @@ export function getColumns(): ColumnDef<Task>[] {
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
-          className="translate-y-[2px]"
+          className="translate-y-0.5"
         />
       ),
       enableSorting: false,
@@ -101,7 +62,7 @@ export function getColumns(): ColumnDef<Task>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Task" />
       ),
-      cell: ({ row }) => <div className="w-[80px]">{row.getValue("code")}</div>,
+      cell: ({ row }) => <div className="w-20">{row.getValue("code")}</div>,
       enableSorting: false,
       enableHiding: false,
     },
@@ -111,31 +72,14 @@ export function getColumns(): ColumnDef<Task>[] {
         <DataTableColumnHeader column={column} title="Title" />
       ),
       cell: ({ row }) => {
-        const label = LabelSchema.options.find(
+        const label = task.label.enumValues.find(
           (label) => label === row.original.label
         )
-        let variant: BadgeVariant
-        switch (label) {
-          case "bug":
-            variant = "destructive"
-            break
-          case "feature":
-            variant = "success"
-            break
-          case "enhancement":
-            variant = "warning"
-            break
-          case "documentation":
-            variant = "secondary"
-            break
-          default:
-            variant = "default"
-        }
 
         return (
           <div className="flex space-x-2">
-            {label && <Badge variant={variant}>{label}</Badge>}
-            <span className="max-w-[500px] truncate font-medium">
+            {label && <Badge variant="outline">{label}</Badge>}
+            <span className="max-w-[31.25rem] truncate font-medium">
               {row.getValue("title")}
             </span>
           </div>
@@ -148,40 +92,20 @@ export function getColumns(): ColumnDef<Task>[] {
         <DataTableColumnHeader column={column} title="Status" />
       ),
       cell: ({ row }) => {
-        const status = StatusSchema.options.find(
+        const status = task.status.enumValues.find(
           (status) => status === row.original.status
         )
 
         if (!status) return null
 
+        const Icon = getStatusIcon(status)
+
         return (
-          <div className="flex w-[100px] items-center">
-            {status === "canceled" ? (
-              <CrossCircledIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : status === "done" ? (
-              <CheckCircledIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : status === "inProgress" ? (
-              <StopwatchIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : status === "todo" ? (
-              <QuestionMarkCircledIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : (
-              <CircleIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            )}
+          <div className="flex w-[6.25rem] items-center">
+            <Icon
+              className="mr-2 size-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <span className="capitalize">{status}</span>
           </div>
         )
@@ -196,35 +120,20 @@ export function getColumns(): ColumnDef<Task>[] {
         <DataTableColumnHeader column={column} title="Priority" />
       ),
       cell: ({ row }) => {
-        const priority = PrioritySchema.options.find(
+        const priority = task.priority.enumValues.find(
           (priority) => priority === row.original.priority
         )
 
         if (!priority) return null
 
+        const Icon = getPriorityIcon(priority)
+
         return (
           <div className="flex items-center">
-            {priority === "low" ? (
-              <ArrowDownIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : priority === "medium" ? (
-              <ArrowRightIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : priority === "high" ? (
-              <ArrowUpIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : (
-              <CircleIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            )}
+            <Icon
+              className="mr-2 size-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <span className="capitalize">{priority}</span>
           </div>
         )
@@ -239,17 +148,23 @@ export function getColumns(): ColumnDef<Task>[] {
         <DataTableColumnHeader column={column} title="Created At" />
       ),
       cell: ({ cell }) => formatDate(cell.getValue() as Date),
-      enableColumnFilter: false,
     },
     {
       id: "actions",
       cell: function Cell({ row }) {
         const [isUpdatePending, startUpdateTransition] = React.useTransition()
+        const [showUpdateTaskSheet, setShowUpdateTaskSheet] =
+          React.useState(false)
         const [showDeleteTaskDialog, setShowDeleteTaskDialog] =
           React.useState(false)
 
         return (
           <>
+            <UpdateTaskSheet
+              open={showUpdateTaskSheet}
+              onOpenChange={setShowUpdateTaskSheet}
+              task={row.original}
+            />
             <DeleteTasksDialog
               open={showDeleteTaskDialog}
               onOpenChange={setShowDeleteTaskDialog}
@@ -267,6 +182,9 @@ export function getColumns(): ColumnDef<Task>[] {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem onSelect={() => setShowUpdateTaskSheet(true)}>
+                  Edit
+                </DropdownMenuItem>
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>
@@ -288,7 +206,7 @@ export function getColumns(): ColumnDef<Task>[] {
                         })
                       }}
                     >
-                      {LabelSchema.options.map((label) => (
+                      {task.label.enumValues.map((label) => (
                         <DropdownMenuRadioItem
                           key={label}
                           value={label}

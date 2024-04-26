@@ -1,27 +1,34 @@
+import { type SQL } from "drizzle-orm"
 
-export type Option = {
+export interface SearchParams {
+  [key: string]: string | string[] | undefined
+}
+
+export interface Option {
   label: string
   value: string
   icon?: React.ComponentType<{ className?: string }>
+  withCount?: boolean
 }
 
-export interface DataTableSearchableColumn<TData> {
-  id: keyof TData
+export interface DataTableFilterField<TData> {
+  label: string
+  value: keyof TData
   placeholder?: string
-}
-
-export interface DataTableFilterableColumn<TData> {
-  id: keyof TData
-  title: string
-  options: Option[]
+  options?: Option[]
 }
 
 export interface DataTableFilterOption<TData> {
   id: string
   label: string
   value: keyof TData
-  items: Option[]
+  options: Option[]
   filterValues?: string[]
   filterOperator?: string
   isMulti?: boolean
 }
+
+export type DrizzleWhere<T> =
+  | SQL<unknown>
+  | ((aliases: T) => SQL<T> | undefined)
+  | undefined

@@ -6,7 +6,7 @@ import type { Table } from "@tanstack/react-table"
 
 import { dataTableConfig } from "@/config/data-table"
 import { cn } from "@/lib/utils"
-import { useDebounce } from '@/hooks/use-debounce'
+import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -60,7 +60,7 @@ export function DataTableFilterItem<TData>({
   )?.filterOperator
 
   const operators =
-    selectedOption.items.length > 0
+    selectedOption.options.length > 0
       ? dataTableConfig.selectableOperators
       : dataTableConfig.comparisonOperators
 
@@ -91,7 +91,7 @@ export function DataTableFilterItem<TData>({
 
   // Update query string
   React.useEffect(() => {
-    if (selectedOption.items.length > 0) {
+    if (selectedOption.options.length > 0) {
       // key=value1.value2.value3~operator
       const newSearchParams = createQueryString({
         [String(selectedOption.value)]:
@@ -99,7 +99,7 @@ export function DataTableFilterItem<TData>({
             ? `${filterValues.join(".")}~${selectedOperator?.value}`
             : null,
       })
-      router.push(`${pathname}?${newSearchParams}`)
+      router.push(`${pathname}?${newSearchParams}` as any)
     } else {
       // key=value~operator
       const newSearchParams = createQueryString({
@@ -108,7 +108,7 @@ export function DataTableFilterItem<TData>({
             ? `${debounceValue}~${selectedOperator?.value}`
             : null,
       })
-      router.push(`${pathname}?${newSearchParams}`)
+      router.push(`${pathname}?${newSearchParams}` as any)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,13 +126,16 @@ export function DataTableFilterItem<TData>({
           )}
         >
           <span className="font-medium capitalize">{selectedOption.label}</span>
-          {selectedOption.items.length > 0
+          {selectedOption.options.length > 0
             ? selectedValues.size > 0 && (
                 <span className="text-muted-foreground">
                   <span className="text-foreground">: </span>
                   {selectedValues.size > 2
                     ? `${selectedValues.size} selected`
-                    : filterValues.join(", ")}
+                    : selectedOption.options
+                        .filter((item) => selectedValues.has(item.value))
+                        .map((item) => item.label)
+                        .join(", ")}
                 </span>
               )
             : value.length > 0 && (
@@ -186,19 +189,19 @@ export function DataTableFilterItem<TData>({
               const newSearchParams = createQueryString({
                 [String(selectedOption.value)]: null,
               })
-              router.push(`${pathname}?${newSearchParams}`)
+              router.push(`${pathname}?${newSearchParams}` as any)
             }}
           >
             <TrashIcon className="size-4" aria-hidden="true" />
           </Button>
         </div>
-        {selectedOption.items.length > 0 ? (
+        {selectedOption.options.length > 0 ? (
           column && (
             <DataTableAdvancedFacetedFilter
               key={String(selectedOption.value)}
               column={column}
               title={selectedOption.label}
-              options={selectedOption.items}
+              options={selectedOption.options}
               selectedValues={selectedValues}
               setSelectedOptions={setSelectedOptions}
             />

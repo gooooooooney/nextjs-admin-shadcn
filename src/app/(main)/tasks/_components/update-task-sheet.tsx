@@ -1,25 +1,13 @@
 "use client"
 
 import * as React from "react"
+import { task as taskSchema, type Task } from "@/drizzle/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PlusIcon } from "@radix-ui/react-icons"
-import { type Row } from "@tanstack/react-table"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-
 import { getErrorMessage } from "@/lib/handle-error"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -28,7 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -37,50 +24,57 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
+import { Textarea } from "@/components/ui/textarea"
 
-import { label, priority, status, type Task, } from "@/drizzle/schema"
-import { CreateTaskSchema, createTaskSchema } from "@/schema/data/task"
-import { createTask } from "../_lib/actions"
+import { updateTask } from "../_lib/actions"
+import { updateTaskSchema, type UpdateTaskSchema } from "../_lib/validations"
 
-interface CreateTaskDialogProps {
-  prevTasks: Row<Task>[]
+interface UpdateTaskSheetProps
+  extends React.ComponentPropsWithRef<typeof Sheet> {
+  task: Task
 }
 
+export function UpdateTaskSheet({
+  task,
+  onOpenChange,
+  ...props
+}: UpdateTaskSheetProps) {
+  const [isUpdatePending, startUpdateTransition] = React.useTransition()
 
-
-export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
-  const [open, setOpen] = React.useState(false)
-  const [isCreatePending, startCreateTransition] = React.useTransition()
-
-  const form = useForm<CreateTaskSchema>({
-    resolver: zodResolver(createTaskSchema),
+  const form = useForm<UpdateTaskSchema>({
+    resolver: zodResolver(updateTaskSchema),
     defaultValues: {
-      title: "",
-    }
+      title: task.title ?? "",
+      label: task.label,
+      status: task.status,
+      priority: task.priority,
+    },
   })
 
-  function onSubmit(input: CreateTaskSchema) {
-    const anotherTaskId =
-      prevTasks[Math.floor(Math.random() * prevTasks.length)]?.id
-
-    if (!anotherTaskId) return
-
-    startCreateTransition(() => {
+  function onSubmit(input: UpdateTaskSchema) {
+    startUpdateTransition(() => {
       toast.promise(
-        createTask({
+        updateTask({
+          id: task.id,
           ...input,
-          anotherTaskId,
         }),
         {
-          loading: "Creating task...",
+          loading: "Updating task...",
           success: () => {
-            form.reset()
-            setOpen(false)
-            return "Task created"
+            onOpenChange?.(false)
+            return "Task updated"
           },
           error: (error) => {
-            setOpen(false)
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            onOpenChange?.(false)
             return getErrorMessage(error)
           },
         }
@@ -89,20 +83,14 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <PlusIcon className="mr-2 size-4" aria-hidden="true" />
-          New task
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create task</DialogTitle>
-          <DialogDescription>
-            Fill in the details below to create a new task.
-          </DialogDescription>
-        </DialogHeader>
+    <Sheet onOpenChange={onOpenChange} {...props}>
+      <SheetContent className="flex flex-col gap-6 sm:max-w-md">
+        <SheetHeader className="text-left">
+          <SheetTitle>Update task</SheetTitle>
+          <SheetDescription>
+            Update the task details and save the changes
+          </SheetDescription>
+        </SheetHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -115,7 +103,11 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Do a kickflip" {...field} />
+                    <Textarea
+                      placeholder="Do a kickflip"
+                      className="resize-none"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -138,7 +130,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {label.enumValues.map((item) => (
+                        {taskSchema.label.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}
@@ -171,7 +163,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {status.enumValues.map((item) => (
+                        {taskSchema.status.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}
@@ -204,7 +196,7 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {priority.enumValues.map((item) => (
+                        {taskSchema.priority.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}
@@ -220,17 +212,17 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                 </FormItem>
               )}
             />
-            <DialogFooter className="gap-2 pt-2 sm:space-x-0">
-              <DialogClose asChild>
+            <SheetFooter className="gap-2 pt-2 sm:space-x-0">
+              <SheetClose asChild>
                 <Button type="button" variant="outline">
                   Cancel
                 </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isCreatePending}>Submit</Button>
-            </DialogFooter>
+              </SheetClose>
+              <Button disabled={isUpdatePending}>Save</Button>
+            </SheetFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }
