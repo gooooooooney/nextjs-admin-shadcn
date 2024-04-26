@@ -1,14 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { task, type Task } from "@/drizzle/schema"
+import { MenuWithChildren, menu, } from "@/drizzle/schema"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 
 import { getErrorMessage } from "@/lib/handle-error"
 import { formatDate } from "@/lib/utils"
-import { Badge, BadgeVariant } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -25,13 +24,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { updateTask } from "../_lib/actions"
-import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
-import { DeleteTasksDialog } from "./delete-tasks-dialog"
+import { updateMenu } from "../_lib/actions"
+import { getStatusIcon } from "../_lib/utils"
+import { DeleteMenusDialog } from "./delete-menus-dialog"
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
-import { UpdateTaskSheet } from "./update-task-sheet"
+import { UpdateMenuSheet } from "./update-menu-sheet"
 
-export function getColumns(): ColumnDef<Task>[] {
+export function getColumns(): ColumnDef<MenuWithChildren>[] {
   return [
     {
       id: "select",
@@ -58,50 +57,13 @@ export function getColumns(): ColumnDef<Task>[] {
       enableHiding: false,
     },
     {
-      accessorKey: "code",
+      accessorKey: "label",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Task" />
+        <DataTableColumnHeader column={column} title="Label" />
       ),
-      cell: ({ row }) => <div className="w-20">{row.getValue("code")}</div>,
+      cell: ({ row }) => <div className="w-20">{row.getValue("label")}</div>,
       enableSorting: false,
       enableHiding: false,
-    },
-    {
-      accessorKey: "title",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Title" />
-      ),
-      cell: ({ row }) => {
-        const label = task.label.enumValues.find(
-          (label) => label === row.original.label
-        )
-        let variant: BadgeVariant
-        switch (label) {
-          case "bug":
-            variant = "destructive"
-            break
-          case "feature":
-            variant = "success"
-            break
-          case "enhancement":
-            variant = "warning"
-            break
-          case "documentation":
-            variant = "secondary"
-            break
-          default:
-            variant = "default"
-        }
-
-        return (
-          <div className="flex space-x-2">
-            {label && <Badge variant={variant}>{label}</Badge>}
-            <span className="max-w-[31.25rem] truncate font-medium">
-              {row.getValue("title")}
-            </span>
-          </div>
-        )
-      },
     },
     {
       accessorKey: "status",
@@ -109,7 +71,7 @@ export function getColumns(): ColumnDef<Task>[] {
         <DataTableColumnHeader column={column} title="Status" />
       ),
       cell: ({ row }) => {
-        const status = task.status.enumValues.find(
+        const status = menu.status.enumValues.find(
           (status) => status === row.original.status
         )
 
@@ -124,34 +86,6 @@ export function getColumns(): ColumnDef<Task>[] {
               aria-hidden="true"
             />
             <span className="capitalize">{status}</span>
-          </div>
-        )
-      },
-      filterFn: (row, id, value) => {
-        return Array.isArray(value) && value.includes(row.getValue(id))
-      },
-    },
-    {
-      accessorKey: "priority",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Priority" />
-      ),
-      cell: ({ row }) => {
-        const priority = task.priority.enumValues.find(
-          (priority) => priority === row.original.priority
-        )
-
-        if (!priority) return null
-
-        const Icon = getPriorityIcon(priority)
-
-        return (
-          <div className="flex items-center">
-            <Icon
-              className="mr-2 size-4 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <span className="capitalize">{priority}</span>
           </div>
         )
       },
@@ -177,15 +111,15 @@ export function getColumns(): ColumnDef<Task>[] {
 
         return (
           <>
-            <UpdateTaskSheet
+            <UpdateMenuSheet
               open={showUpdateTaskSheet}
               onOpenChange={setShowUpdateTaskSheet}
-              task={row.original}
+              menu={row.original}
             />
-            <DeleteTasksDialog
+            <DeleteMenusDialog
               open={showDeleteTaskDialog}
               onOpenChange={setShowDeleteTaskDialog}
-              tasks={[row]}
+              menus={[row]}
               showTrigger={false}
             />
             <DropdownMenu>
@@ -203,34 +137,34 @@ export function getColumns(): ColumnDef<Task>[] {
                   Edit
                 </DropdownMenuItem>
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
+                  <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>
                     <DropdownMenuRadioGroup
                       value={row.original.label}
                       onValueChange={(value) => {
                         startUpdateTransition(() => {
                           toast.promise(
-                            updateTask({
+                            updateMenu({
                               id: row.original.id,
-                              label: value as Task["label"],
+                              status: value as MenuWithChildren["status"] as any,
                             }),
                             {
                               loading: "Updating...",
-                              success: "Label updated",
+                              success: "Status updated",
                               error: (err) => getErrorMessage(err),
                             }
                           )
                         })
                       }}
                     >
-                      {task.label.enumValues.map((label) => (
+                      {menu.status.enumValues.map((status) => (
                         <DropdownMenuRadioItem
-                          key={label}
-                          value={label}
+                          key={status}
+                          value={status}
                           className="capitalize"
                           disabled={isUpdatePending}
                         >
-                          {label}
+                          {status}
                         </DropdownMenuRadioItem>
                       ))}
                     </DropdownMenuRadioGroup>
