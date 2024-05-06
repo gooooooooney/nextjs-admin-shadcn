@@ -15,9 +15,6 @@ const config = {
       }
     ]
   },
-  experimental: {
-    typedRoutes: true,
-  },
 
 };
 

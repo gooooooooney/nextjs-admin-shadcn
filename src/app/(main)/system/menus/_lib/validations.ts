@@ -22,7 +22,7 @@ export const createMenuSchema = z.object({
   path: z.string().min(1).max(20),
   status: z.enum(menu.status.enumValues),
   icon: z.string(),
-
+  type: z.enum(menu.type.enumValues),
 })
 
 export type CreateMenuSchema = z.infer<typeof createMenuSchema>

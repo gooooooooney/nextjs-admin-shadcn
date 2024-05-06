@@ -17,11 +17,11 @@ import {
 } from "@/components/ui/dialog"
 
 import { deleteMenus } from "../_lib/mutations"
-import { Menu } from "@/drizzle/schema"
+import { MenuWithChildren } from "@/drizzle/schema"
 
 interface DeleteMenusDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  menus: Row<Menu>[]
+  menus: Row<MenuWithChildren>[]
   onSuccess?: () => void
   showTrigger?: boolean
 }
@@ -33,7 +33,6 @@ export function DeleteMenusDialog({
   ...props
 }: DeleteMenusDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition()
-
   return (
     <Dialog {...props}>
       {showTrigger ? (

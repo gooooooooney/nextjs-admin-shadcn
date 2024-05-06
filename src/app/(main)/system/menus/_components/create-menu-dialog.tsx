@@ -41,34 +41,36 @@ import { Textarea } from "@/components/ui/textarea"
 import { createMenu } from "../_lib/actions"
 import { createMenuSchema, type CreateMenuSchema } from "../_lib/validations"
 
-interface CreateMenuDialogProps {
-  prevMenus: Row<Menu>[]
+interface CreateMenuDialogProps extends React.ComponentPropsWithoutRef<typeof Dialog> {
+  currentMenu?: Menu
+  children: React.ReactNode
+  showTrigger?: boolean
 }
 
-export function CreateMenuDialog({ prevMenus }: CreateMenuDialogProps) {
-  const [open, setOpen] = React.useState(false)
+export function CreateMenuDialog({ currentMenu, children, showTrigger = true, ...props }: CreateMenuDialogProps) {
   const [isCreatePending, startCreateTransition] = React.useTransition()
-
   const form = useForm<CreateMenuSchema>({
     resolver: zodResolver(createMenuSchema),
   })
 
   function onSubmit(input: CreateMenuSchema) {
-console.log(input, "input")
+    console.log(input, "input")
     startCreateTransition(() => {
       toast.promise(
         createMenu({
           ...input,
-        }),
+          path: currentMenu ? `${currentMenu.path}${input.path}` : input.path,
+        },
+          currentMenu?.id || null),
         {
           loading: "Creating menu...",
           success: () => {
             form.reset()
-            setOpen(false)
+            props.onOpenChange?.(false)
             return "Menu created"
           },
           error: (error) => {
-            setOpen(false)
+            props.onOpenChange?.(false)
             return getErrorMessage(error)
           },
         }
@@ -77,13 +79,11 @@ console.log(input, "input")
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <PlusIcon className="mr-2 size-4" aria-hidden="true" />
-          New menu
-        </Button>
+    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+      {showTrigger && <DialogTrigger asChild>
+        {children}
       </DialogTrigger>
+      }
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create menu</DialogTitle>
@@ -143,6 +143,39 @@ console.log(input, "input")
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="capitalize">
+                        <SelectValue placeholder="Select a type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        {menu.type.enumValues.map((item) => (
+                          <SelectItem
+                            key={item}
+                            value={item}
+                            className="capitalize"
+                          >
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

@@ -4,7 +4,7 @@ import { toast } from "sonner"
 import { getErrorMessage } from "@/lib/handle-error"
 
 import { deleteMenu, updateMenu } from "./actions"
-import { Menu } from "@/drizzle/schema"
+import { MenuWithChildren } from "@/drizzle/schema"
 
 
 
@@ -12,9 +12,10 @@ export function deleteMenus({
   rows,
   onSucess,
 }: {
-  rows: Row<Menu>[]
+  rows: Row<MenuWithChildren>[]
   onSucess?: () => void
 }) {
+  console.log(rows, "delete rows")
   toast.promise(
     Promise.all(
       rows.map(async (row) =>
@@ -34,6 +35,26 @@ export function deleteMenus({
   )
 }
 
+const updateMenuStatus = async ({
+  status,
+  row
+}: {
+  status?: any
+  row: MenuWithChildren
+}) => {
+  row.children?.length ? row.children.map(async (child) => {
+    await updateMenuStatus({
+      status,
+      row: child,
+    })
+  }) :
+    await updateMenu({
+      status,
+      id: row.id
+    })
+}
+
+
 export function updateMenus({
   rows,
   label,
@@ -41,10 +62,10 @@ export function updateMenus({
   path,
   onSucess,
 }: {
-  rows: Row<Menu>[]
-  label?: Menu["label"]
-  status?: Menu["status"]
-  path?: Menu["path"]
+  rows: Row<MenuWithChildren>[]
+  label?: MenuWithChildren["label"]
+  status?: MenuWithChildren["status"]
+  path?: MenuWithChildren["path"]
   onSucess?: () => void
 }) {
   toast.promise(
