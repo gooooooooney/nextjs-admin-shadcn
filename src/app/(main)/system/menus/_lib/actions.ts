@@ -7,7 +7,7 @@ import { getErrorMessage } from "@/lib/handle-error"
 
 import { db } from "@/drizzle/db"
 import type { CreateMenuSchema, UpdateMenuSchema } from "./validations"
-import { menu } from "@/drizzle/schema"
+import { MenuStatus, menu } from "@/drizzle/schema"
 import { currentUser } from "@/lib/auth"
 
 
@@ -54,7 +54,8 @@ import { currentUser } from "@/lib/auth"
 // }
 
 export async function createMenu(
-  input: CreateMenuSchema
+  input: CreateMenuSchema,
+  parentId: string | null
 ) {
   noStore()
   const userInfo = await currentUser()
@@ -64,7 +65,7 @@ export async function createMenu(
       createBy: userInfo!.id,
       updateBy: userInfo!.id,
       roleId: userInfo!.roleId,
-      parentId: null,
+      parentId,
     })
 
     revalidatePath("/system/menus")
@@ -81,6 +82,7 @@ export async function createMenu(
   }
 }
 
+
 export async function updateMenu(input: UpdateMenuSchema) {
   noStore()
   try {
@@ -91,7 +93,7 @@ export async function updateMenu(input: UpdateMenuSchema) {
         status: input.status,
         path: input.path
       })
-      .where(eq(menu.id, input.id))
+      .where(eq(menu.id, input.id)).returning()
 
     revalidatePath("/system/menus")
 

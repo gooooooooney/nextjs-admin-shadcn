@@ -20,6 +20,7 @@ export {
     Loader2,
     ChevronLeft,
     ChevronDown,
+    ChevronRight,
     User,
     Wrench,
     BellIcon,

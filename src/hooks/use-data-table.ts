@@ -4,7 +4,9 @@ import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { DataTableFilterField } from "@/types/data-table"
 import {
+  ExpandedState,
   getCoreRowModel,
+  getExpandedRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
@@ -21,7 +23,12 @@ import { z } from "zod"
 
 import { useDebounce } from "@/hooks/use-debounce"
 
-interface UseDataTableProps<TData, TValue> {
+interface HasChildren<TData> {
+  children?: TData[];
+}
+
+
+interface UseDataTableProps<TData extends HasChildren<TData>, TValue> {
   /**
    * The data for the table.
    * @default []
@@ -104,7 +111,7 @@ const schema = z.object({
   sort: z.string().optional(),
 })
 
-export function useDataTable<TData, TValue>({
+export function useDataTable<TData extends HasChildren<TData>, TValue>({
   data,
   columns,
   pageCount,
@@ -181,6 +188,7 @@ export function useDataTable<TData, TValue>({
 
   // Table states
   const [rowSelection, setRowSelection] = React.useState({})
+  const [expanded, setExpanded] = React.useState<ExpandedState>({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] =
@@ -322,7 +330,10 @@ export function useDataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       columnFilters,
+      expanded,
     },
+    onExpandedChange: setExpanded,
+    getSubRows: row => row.children,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
@@ -330,6 +341,7 @@ export function useDataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -337,6 +349,7 @@ export function useDataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
     manualPagination: true,
     manualSorting: true,
+    debugTable: true,
     manualFiltering: true,
   })
 

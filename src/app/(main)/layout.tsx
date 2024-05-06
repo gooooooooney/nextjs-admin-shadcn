@@ -2,7 +2,6 @@ import { Icons } from '@/components/icons';
 import { Header } from '@/components/layout/header'
 import { type MenuItem, Sidebar } from '@/components/layout/sidebar'
 import { UserRole } from '@/drizzle/schema';
-import { currentUser } from '@/lib/auth';
 import { auth } from '@/server/auth';
 import { getUserPermissions } from '@/server/data/permissions';
 import { LucideIcon } from 'lucide-react';
