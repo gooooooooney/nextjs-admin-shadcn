@@ -85,7 +85,6 @@ export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, as
 export const signupByAdmin = action<typeof SignupByTokenSchema, AuthResponse>(SignupByTokenSchema, async (params) => {
   const { password, username, token } = params;
   const hashedPassword = await bcrypt.hash(password, 10);
-  console.log(params, '-------------------')
 
   const existingToken = await getRegisterVerificationTokenByToken(token);
 
