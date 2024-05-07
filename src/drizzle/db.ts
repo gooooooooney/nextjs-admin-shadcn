@@ -9,7 +9,7 @@ const client = postgres(env.DATABASE_URL, { max: 1 });
 
 export const db = drizzle(client, {
   schema,
-  logger: env.NODE_ENV === "development",
+  // logger: env.NODE_ENV === "development",
 });
 
 

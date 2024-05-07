@@ -56,7 +56,7 @@ export const login = action<typeof LoginSchema, AuthResponse | undefined>(LoginS
 
 
 export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, async (params) => {
-  const { email, password, username, adminId } = params;
+  const { email, password, name, adminId } = params;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const existingUser = await getUserByEmail(email);
@@ -67,7 +67,7 @@ export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, as
 
 
   await createUser({
-    username,
+    name,
     email,
     password: hashedPassword,
     adminId,
@@ -85,6 +85,7 @@ export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, as
 export const signupByAdmin = action<typeof SignupByTokenSchema, AuthResponse>(SignupByTokenSchema, async (params) => {
   const { password, username, token } = params;
   const hashedPassword = await bcrypt.hash(password, 10);
+  console.log(params, '-------------------')
 
   const existingToken = await getRegisterVerificationTokenByToken(token);
 
@@ -97,7 +98,7 @@ export const signupByAdmin = action<typeof SignupByTokenSchema, AuthResponse>(Si
     return { error: "Email already in use!" };
   }
   await createUserByAdmin({
-    username,
+    name: username,
     email: existingToken.email,
     password: hashedPassword,
     adminId: existingToken.adminId

@@ -3,6 +3,7 @@ import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
+  publicPages,
   publicRoutes,
 } from "@/config/routes";
 import { authConfig } from "./config/auth";
@@ -24,6 +25,9 @@ export default auth((req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
+      if (publicPages.some((page) => nextUrl.pathname.startsWith(page))) {
+        return void 0;
+      }
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
     }
     return void 0;

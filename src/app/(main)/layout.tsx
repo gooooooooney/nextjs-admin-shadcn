@@ -63,7 +63,6 @@ const defaultRoutes: MenuItem[] = [
 ];
 const layout = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth();
-  console.log(111)
 
   const permissions = await getUserPermissions({ userId: session?.user?.id });
 
@@ -85,7 +84,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
       }
     }
     )
-    routes.unshift(defaultRoutes[0]!)
+    // routes.unshift(defaultRoutes[0]!)
   }
 
   return (

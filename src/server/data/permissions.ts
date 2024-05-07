@@ -1,32 +1,8 @@
 import { db } from "@/drizzle/db";
-import { Menu, menu, user } from "@/drizzle/schema";
+import { Menu, MenuWithChildren, menu, user } from "@/drizzle/schema";
 import { SQL, eq } from "drizzle-orm";
+import { getMenuHierarchy } from '@/lib/array-util'
 
-export const getNestedMenus = async (id: string) => {
-  const menus = await db.query.menu.findFirst({
-    where: eq(menu.id, id),
-    with: {
-      children: true,
-    }
-  });
-
-  if (!menus) {
-    return null;
-  }
-
-  const nestedBlock = {
-    ...menus,
-    children: [] as typeof menus['children'],
-  };
-
-  for (const childBlock of menus.children) {
-    const nestedChild = await getNestedMenus(childBlock.id);
-
-    nestedChild && nestedBlock.children.push(nestedChild);
-  }
-
-  return nestedBlock;
-}
 
 export const getUserPermissions = async ({userId, email, menusWhere}: {userId?:string, email?:string, menusWhere?: SQL}) => {
   const where = userId ? eq(user.id, userId) : email ? eq(user.email, email) : undefined
@@ -50,15 +26,11 @@ export const getUserPermissions = async ({userId, email, menusWhere}: {userId?:s
     }
   })
   if (!res?.role && !res?.role.menus) return null
-  const menus = res.role.menus.map(menu => ({
+  let menus = res.role.menus.map(menu => ({
     ...menu,
-    children: [] as Menu[]
+    children: [] as MenuWithChildren[]
   }))
-  for (const menu of menus) {
-    const nestedMenus = await getNestedMenus(menu.id);
-    if (!nestedMenus) continue;
-    menu.children = nestedMenus?.children;
-  }
+  menus = getMenuHierarchy(menus as MenuWithChildren[])
   return {
     role: {
       ...res.role,
@@ -66,3 +38,5 @@ export const getUserPermissions = async ({userId, email, menusWhere}: {userId?:s
     }
   }
 }
+
+
