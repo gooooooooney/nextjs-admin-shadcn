@@ -2,7 +2,6 @@ import { type Table } from "@tanstack/react-table"
 
 import { CreateUserDialog } from "./create-user-dialog"
 import { DeleteUsersDialog } from "./delete-users-dialog"
-import { type Task } from "@/types/model/task"
 import { User } from "@/types/model/user"
 
 interface UsersTableToolbarActionsProps {

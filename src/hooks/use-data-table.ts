@@ -28,7 +28,7 @@ interface HasChildren<TData> {
 }
 
 
-interface UseDataTableProps<TData extends HasChildren<TData>, TValue> {
+interface UseDataTableProps<TData, TValue> {
   /**
    * The data for the table.
    * @default []
@@ -111,7 +111,7 @@ const schema = z.object({
   sort: z.string().optional(),
 })
 
-export function useDataTable<TData extends HasChildren<TData>, TValue>({
+export function useDataTable<TData, TValue>({
   data,
   columns,
   pageCount,
@@ -333,7 +333,7 @@ export function useDataTable<TData extends HasChildren<TData>, TValue>({
       expanded,
     },
     onExpandedChange: setExpanded,
-    getSubRows: row => row.children,
+    getSubRows: (row: any) => row.children,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
