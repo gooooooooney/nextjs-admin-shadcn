@@ -54,7 +54,6 @@ export function CreateMenuDialog({ currentMenu, children, showTrigger = true, ..
   })
 
   function onSubmit(input: CreateMenuSchema) {
-    console.log(input, "input")
     startCreateTransition(() => {
       toast.promise(
         createMenu({

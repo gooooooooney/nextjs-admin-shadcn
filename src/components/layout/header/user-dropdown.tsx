@@ -17,7 +17,7 @@ export const UserDropdown = async () => {
           <Button variant="secondary" size="icon" className="rounded-full">
             <Avatar className="h-8 w-8">
               <AvatarImage src={user?.image ?? ""} alt="@shadcn" />
-              <AvatarFallback>{user?.name?.slice(0, 2).toLocaleUpperCase()}</AvatarFallback>
+              <AvatarFallback>{user?.name?.slice(0, 2).toLocaleUpperCase() || "NA"}</AvatarFallback>
             </Avatar>
             <span className="sr-only">Toggle user menu</span>
           </Button>

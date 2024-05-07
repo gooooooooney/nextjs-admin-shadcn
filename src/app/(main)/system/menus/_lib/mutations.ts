@@ -15,7 +15,6 @@ export function deleteMenus({
   rows: Row<MenuWithChildren>[]
   onSucess?: () => void
 }) {
-  console.log(rows, "delete rows")
   toast.promise(
     Promise.all(
       rows.map(async (row) =>

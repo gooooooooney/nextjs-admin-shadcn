@@ -149,7 +149,7 @@ export const SidebarItem = ({
   collapsed: boolean;
   item: MenuItem;
 }) => {
-  if (item.children) {
+  if (item.children?.length) {
     return collapsed ?
       <SidebarItemWithDropdown item={item} />
       :

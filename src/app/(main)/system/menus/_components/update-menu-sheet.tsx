@@ -60,7 +60,6 @@ export function UpdateMenuSheet({
   })
 
   function onSubmit(input: UpdateMenuSchema) {
-    console.log(input)
     startUpdateTransition(() => {
       toast.promise(
         updateMenu({

@@ -44,7 +44,7 @@ export const SignupForm = () => {
             email: "",
             password: "",
             confirmPassword: "",
-            username: "",
+            name: "",
         },
     })
 
@@ -80,7 +80,7 @@ export const SignupForm = () => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4" >
                     <FormField
                         control={form.control}
-                        name="username"
+                        name="name"
                         render={({ field }) => (
                             <FormItem className="grid gap-2">
                                 <FormLabel>Username</FormLabel>

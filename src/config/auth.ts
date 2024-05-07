@@ -9,7 +9,7 @@ import { MenuWithChildren, UserRole, user } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { env } from "@/env";
 import { NextResponse } from "next/server";
-import { authRoutes } from "./routes";
+import { authRoutes, publicPages } from "./routes";
 import { getMatchMenus } from "@/lib/compare";
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -57,7 +57,7 @@ export const authConfig = {
     async authorized({ auth, request }) {
       const pathname = request.nextUrl.pathname
       
-      const isPublicRoute = authRoutes.includes(pathname);
+      const isPublicRoute = publicPages.some((page) => pathname.startsWith(page))
 
       if (isPublicRoute || pathname.startsWith("/api")) return true
 
@@ -67,6 +67,7 @@ export const authConfig = {
 
       if (data.superAdmin) return true
 
+      console.log(pathname, 'pathname')
       const hasPermission = getMatchMenus(data.menus, pathname)
       if (!hasPermission) {
         return NextResponse.redirect(new URL("/not-found", request.url))

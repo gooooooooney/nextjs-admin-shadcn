@@ -138,6 +138,7 @@ export const getUsers = action(getUsersSchema, async (params) => {
 
 
     const whereParams = () => [
+      isNull(user.deletedAt),
       name
         ? filterColumn({
           column: user.name,
@@ -181,7 +182,7 @@ export const getUsers = action(getUsersSchema, async (params) => {
         .offset(offset)
         .leftJoin(role, eq(user.id, role.userId))
         .where(
-          !operator || operator === "and" ? and(...whereParams()) : or(...whereParams())
+          !operator || operator === "and" ? and(...whereParams()) : or(...whereParams()),
         )
         .orderBy(
           column && column in user
@@ -224,7 +225,7 @@ export const deleteUser = action<typeof DeleteScheme, ActionReturnValue<{ id: st
   if (err) {
     return { error: getErrorMessage(err), data: null }
   }
-  revalidatePath("/users")
+  revalidatePath("/system/users")
   return { data, error: null }
 })
 
@@ -234,6 +235,6 @@ export const deleteUsersAction = action<typeof DeleteManyScheme, ActionReturnVal
   if (err) {
     return { error: getErrorMessage(err), data: null }
   }
-  revalidatePath("/users")
+  revalidatePath("/system/users")
   return { data, error: null }
 })

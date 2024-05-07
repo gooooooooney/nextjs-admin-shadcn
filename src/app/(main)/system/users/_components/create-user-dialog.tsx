@@ -65,10 +65,12 @@ export function CreateUserDialog({ prevUsers }: CreateUserDialogProps) {
     onSuccess: (res) => {
       if (res.success) {
         if (res.link) {
-          toast.success(<Link href={res.link as any}>{res.success}</Link>, {duration: 0})
+          toast.success(<Link href={res.link as any}>{res.success}</Link>)
         } else {
           toast.success(res.success)
         }
+      } else if (res.error) {
+        toast.error(res.error)
       }
       setOpen(false)
     },
@@ -87,11 +89,6 @@ export function CreateUserDialog({ prevUsers }: CreateUserDialogProps) {
   })
 
   function onSubmit(input: CreateUser) {
-    const anotherUserId =
-      prevUsers[Math.floor(Math.random() * prevUsers.length)]?.id
-
-    if (!anotherUserId) return
-
     execute({
       email: input.email,
       username: input.name,

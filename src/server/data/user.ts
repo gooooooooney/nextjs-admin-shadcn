@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { eq, inArray } from "drizzle-orm";
-import { user, role, Theme, UserRole } from "@/drizzle/schema";
+import { user, role, Theme, UserRole, menu } from "@/drizzle/schema";
 import { currentUser } from "@/lib/auth";
 import to from "@/lib/utils";
 import { SignupSchema } from "@/schema/auth";
@@ -87,15 +87,24 @@ export const createUser = async (data: Omit<z.infer<typeof SignupSchema>, 'confi
   return to(db.transaction(async tx => {
     const result = await tx.insert(user).values({
       ...rest,
-      createdById: adminId
+      createdById: adminId,
     }).returning({ userId: user.id })
     if (!result[0]) return new Error('Failed to create user')
 
-    await tx.insert(role).values({
+    const roleResult = await tx.insert(role).values({
       // For now, by default, registration grants admin permissions, used for demonstrating the backend management system.
       userRole: UserRole.Enum.admin,
       userId: result[0].userId
     }).returning({ id: role.id })
+    if (!roleResult[0]) return new Error('Failed to create role')
+    await tx.insert(menu).values({
+      label: 'Dashboard',
+      path: '/',
+      roleId: roleResult[0].id,
+      icon: 'Home',
+      status: 'active',
+      parentId: null
+    })
     return result
   }))
 }
@@ -111,9 +120,19 @@ export const createUserByAdmin = async (data: Omit<z.infer<typeof SignupSchema>,
     }).returning({ userId: user.id })
     if (!result[0]) return new Error('Failed to create user')
 
-    await tx.insert(role).values({
+    const roleResult = await tx.insert(role).values({
       userId: result[0].userId
     }).returning({ id: role.id })
+    if (!roleResult[0]) return new Error('Failed to create role')
+
+    await tx.insert(menu).values({
+      label: 'Dashboard',
+      path: '/',
+      roleId: roleResult[0].id,
+      icon: 'Home',
+      status: 'active',
+      parentId: null
+    })
     return result
   }))
 }

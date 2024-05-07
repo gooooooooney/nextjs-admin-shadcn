@@ -10,13 +10,17 @@ export const publicRoutes = [
   "/api/get-user-permission",
 ];
 
+export const publicPages = [
+  "/not-found",
+]
+
+
 /**
  * An array of routes that are used for authentication
  * These routes will redirect logged in users to /settings
  * @type {string[]}
  */
 export const authRoutes = [
-  "/not-found",
   "/login",
   "/signup",
   "/error",
