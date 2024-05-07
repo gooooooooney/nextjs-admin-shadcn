@@ -23,8 +23,7 @@ import {
 } from "@/components/ui/tooltip"
 
 import { deleteTasks, updateTasks } from "../_lib/mutations"
-import { type Task } from "@/drizzle/schema"
-import { PrioritySchema, StatusSchema } from "@/schema/zod/enums"
+import { Priority, Status, type Task } from "@/drizzle/schema"
 import { Kbd } from "@/components/kbd"
 
 interface TasksTableFloatingBarProps {
@@ -111,7 +110,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
               </Tooltip>
               <SelectContent align="center">
                 <SelectGroup>
-                  {StatusSchema.options.map((status) => (
+                  {Status.options.map((status) => (
                     <SelectItem
                       key={status}
                       value={status}
@@ -153,7 +152,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
               </Tooltip>
               <SelectContent align="center">
                 <SelectGroup>
-                  {PrioritySchema.options.map((priority) => (
+                  {Priority.options.map((priority) => (
                     <SelectItem
                       key={priority}
                       value={priority}

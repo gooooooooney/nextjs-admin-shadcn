@@ -1,5 +1,5 @@
+import { UserSchema } from "@/drizzle/schema";
 import { z } from "zod";
-import { UserSchema } from "../zod/models";
 
 export const UpdateUsersSchema = UserSchema.pick({
   id: true,
