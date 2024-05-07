@@ -120,7 +120,7 @@ export function getColumns(): ColumnDef<MenuWithChildren>[] {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              click to copy
+              {id}
             </TooltipContent>
           </Tooltip>
         </div>
@@ -285,10 +285,11 @@ export function getColumns(): ColumnDef<MenuWithChildren>[] {
                       onValueChange={(value) => {
                         startUpdateTransition(() => {
                           toast.promise(
-                            updateMenu({
-                              id: row.original.id,
-                              status: value as MenuWithChildren["status"] as any,
-                            }),
+                            updateMenu(
+                              {
+                                status: value as MenuWithChildren["status"] as any,
+                              },
+                              row.original.id),
                             {
                               loading: "Updating...",
                               success: "Status updated",

@@ -35,25 +35,6 @@ export function deleteMenus({
   )
 }
 
-const updateMenuStatus = async ({
-  status,
-  row
-}: {
-  status?: any
-  row: MenuWithChildren
-}) => {
-  row.children?.length ? row.children.map(async (child) => {
-    await updateMenuStatus({
-      status,
-      row: child,
-    })
-  }) :
-    await updateMenu({
-      status,
-      id: row.id
-    })
-}
-
 
 export function updateMenus({
   rows,
@@ -72,12 +53,15 @@ export function updateMenus({
     Promise.all(
       rows.map(async (row) =>
         updateMenu({
-          id: row.original.id,
           label,
           status: status as any,
           path,
-        })
-      )
+        },
+          row.original.id,
+        )
+
+
+      ),
     ),
     {
       loading: "Updating...",

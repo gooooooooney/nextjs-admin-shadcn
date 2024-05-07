@@ -83,7 +83,7 @@ export async function createMenu(
 }
 
 
-export async function updateMenu(input: UpdateMenuSchema) {
+export async function updateMenu(input: UpdateMenuSchema, id: string) {
   noStore()
   try {
     await db
@@ -93,7 +93,7 @@ export async function updateMenu(input: UpdateMenuSchema) {
         status: input.status,
         path: input.path
       })
-      .where(eq(menu.id, input.id)).returning()
+      .where(eq(menu.id, id)).returning()
 
     revalidatePath("/system/menus")
 

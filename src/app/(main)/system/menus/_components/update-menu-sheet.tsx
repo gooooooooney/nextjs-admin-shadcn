@@ -60,11 +60,12 @@ export function UpdateMenuSheet({
   })
 
   function onSubmit(input: UpdateMenuSchema) {
+    console.log(input)
     startUpdateTransition(() => {
       toast.promise(
         updateMenu({
           ...input,
-        }),
+        }, menu.id),
         {
           loading: "Updating menuSchema...",
           success: () => {
@@ -116,7 +117,7 @@ export function UpdateMenuSheet({
               name="path"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Label</FormLabel>
+                  <FormLabel>Path</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Path"
@@ -167,7 +168,7 @@ export function UpdateMenuSheet({
                   Cancel
                 </Button>
               </SheetClose>
-              <Button disabled={isUpdatePending}>Save</Button>
+              <Button type="submit" disabled={isUpdatePending}>Save</Button>
             </SheetFooter>
           </form>
         </Form>
