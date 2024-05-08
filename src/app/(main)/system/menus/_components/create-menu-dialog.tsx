@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { menu, type Menu } from "@/drizzle/schema"
+import { menuTable, type Menu } from "@/drizzle/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon } from "@radix-ui/react-icons"
 import { type Row } from "@tanstack/react-table"
@@ -163,7 +163,7 @@ export function CreateMenuDialog({ currentMenu, children, showTrigger = true, ..
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {menu.type.enumValues.map((item) => (
+                        {menuTable.type.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}
@@ -196,7 +196,7 @@ export function CreateMenuDialog({ currentMenu, children, showTrigger = true, ..
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {menu.status.enumValues.map((item) => (
+                        {menuTable.status.enumValues.map((item) => (
                           <SelectItem
                             key={item}
                             value={item}

@@ -7,7 +7,7 @@ import { getErrorMessage } from "@/lib/handle-error"
 
 import { db } from "@/drizzle/db"
 import type { CreateMenuSchema, UpdateMenuSchema } from "./validations"
-import { MenuStatus, menu } from "@/drizzle/schema"
+import { menuTable } from "@/drizzle/schema"
 import { currentUser } from "@/lib/auth"
 
 
@@ -60,11 +60,10 @@ export async function createMenu(
   noStore()
   const userInfo = await currentUser()
   try {
-    await db.insert(menu).values({
+    await db.insert(menuTable).values({
       ...input,
       createBy: userInfo!.id,
       updateBy: userInfo!.id,
-      roleId: userInfo!.roleId,
       parentId,
     })
 
@@ -87,13 +86,13 @@ export async function updateMenu(input: UpdateMenuSchema, id: string) {
   noStore()
   try {
     await db
-      .update(menu)
+      .update(menuTable)
       .set({
         label: input.label,
         status: input.status,
         path: input.path
       })
-      .where(eq(menu.id, id)).returning()
+      .where(eq(menuTable.id, id)).returning()
 
     revalidatePath("/system/menus")
 
@@ -111,7 +110,7 @@ export async function updateMenu(input: UpdateMenuSchema, id: string) {
 
 export async function deleteMenu(input: { id: string }) {
   try {
-    await db.delete(menu).where(eq(menu.id, input.id))
+    await db.delete(menuTable).where(eq(menuTable.id, input.id))
 
 
     revalidatePath("/system/menus")

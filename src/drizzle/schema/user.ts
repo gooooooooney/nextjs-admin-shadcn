@@ -4,6 +4,7 @@ import { theme } from "./enum";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from 'drizzle-zod'
 import { role } from "./role";
+import { userMenuTable } from "./menu";
 
 
 export const user = pgTable("User", {
@@ -99,6 +100,7 @@ export const userRelation = relations(user, ({ one, many }) => ({
 	createdUsers: many(user, {
 		relationName: 'user_createdBy',
 	}),
+	menus: many(userMenuTable),
 
 }))
 

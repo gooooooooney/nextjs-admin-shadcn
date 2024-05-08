@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { MenuType, MenuWithChildren, menu, } from "@/drizzle/schema"
+import { MenuType, MenuWithChildren, menuTable, } from "@/drizzle/schema"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
@@ -158,7 +158,7 @@ export function getColumns(): ColumnDef<MenuWithChildren>[] {
         <DataTableColumnHeader column={column} title="Status" />
       ),
       cell: ({ row }) => {
-        const status = menu.status.enumValues.find(
+        const status = menuTable.status.enumValues.find(
           (status) => status === row.original.status
         )
 
@@ -299,7 +299,7 @@ export function getColumns(): ColumnDef<MenuWithChildren>[] {
                         })
                       }}
                     >
-                      {menu.status.enumValues.map((status) => (
+                      {menuTable.status.enumValues.map((status) => (
                         <DropdownMenuRadioItem
                           key={status}
                           value={status}

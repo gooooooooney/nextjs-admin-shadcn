@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { eq, inArray } from "drizzle-orm";
-import { user, role, Theme, UserRole, menu } from "@/drizzle/schema";
+import { user, role, Theme, UserRole } from "@/drizzle/schema";
 import { currentUser } from "@/lib/auth";
 import to from "@/lib/utils";
 import { SignupSchema } from "@/schema/auth";
@@ -10,6 +10,9 @@ export const getUserByEmail = async (email: string) => {
 
   try {
     const res = await db.query.user.findFirst({
+      with: {
+        role: {}
+      },
       where: eq(user.email, email)
     })
     return res
@@ -97,14 +100,7 @@ export const createUser = async (data: Omit<z.infer<typeof SignupSchema>, 'confi
       userId: result[0].userId
     }).returning({ id: role.id })
     if (!roleResult[0]) return new Error('Failed to create role')
-    await tx.insert(menu).values({
-      label: 'Dashboard',
-      path: '/',
-      roleId: roleResult[0].id,
-      icon: 'Home',
-      status: 'active',
-      parentId: null
-    })
+
     return result
   }))
 }
@@ -125,14 +121,6 @@ export const createUserByAdmin = async (data: Omit<z.infer<typeof SignupSchema>,
     }).returning({ id: role.id })
     if (!roleResult[0]) return new Error('Failed to create role')
 
-    await tx.insert(menu).values({
-      label: 'Dashboard',
-      path: '/',
-      roleId: roleResult[0].id,
-      icon: 'Home',
-      status: 'active',
-      parentId: null
-    })
     return result
   }))
 }

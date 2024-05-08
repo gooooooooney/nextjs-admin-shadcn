@@ -2,6 +2,7 @@ import { Icons } from '@/components/icons';
 import { Header } from '@/components/layout/header'
 import { type MenuItem, Sidebar } from '@/components/layout/sidebar'
 import { UserRole } from '@/drizzle/schema';
+import { defaultRoutes } from '@/lib/menus';
 import { auth } from '@/server/auth';
 import { getUserPermissions } from '@/server/data/permissions';
 import { LucideIcon } from 'lucide-react';
@@ -9,58 +10,7 @@ import { SessionProvider } from 'next-auth/react';
 import React from 'react'
 
 
-const defaultRoutes: MenuItem[] = [
-  {
-    path: '/',
-    label: "Dashboard",
-    icon: <Icons.Home className="size-4" />
-  },
-  {
-    path: '/tasks',
-    label: 'Tasks',
-    icon: <Icons.Package className='size-4' />,
-  },
-  {
-    path: '/settings',
-    label: 'settings',
-    icon: <Icons.Settings className='size-4' />,
-  },
-  {
-    path: '/system',
-    label: 'system',
-    icon: <Icons.Package className='size-4' />,
-    children: [
-      {
-        path: '/system/users',
-        label: "System Users",
-        icon: <Icons.Users className='size-4' />,
-      },
-      {
-        path: '/system/menus',
-        label: "System Menus",
-        icon: <Icons.Menu className='size-4' />,
-      }
-    ],
-  },
-  {
-    path: "/error",
-    label: "error pages",
-    icon: <Icons.AlertCircle className="size-4" />,
-    children: [
-      {
-        path: "/error/404",
-        label: "404",
-        icon: <Icons.AlertTriangle className="size-4" />,
 
-      },
-      {
-        path: "/error/500",
-        label: "500",
-        icon: <Icons.ShieldAlert className="size-4" />,
-      },
-    ],
-  }
-];
 const layout = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth();
 
@@ -70,8 +20,8 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
 
 
   let routes = defaultRoutes
-  if (permissions.role.userRole === UserRole.Enum.user) {
-    routes = permissions.role.menus.map(menu => {
+  if (permissions.role.userRole !== UserRole.Enum.superAdmin) {
+    routes = permissions.menus.map(menu => {
       const Icon = Icons[menu.icon as keyof typeof Icons] as LucideIcon || Icons.Package
       return {
         path: menu.path,

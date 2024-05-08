@@ -1,4 +1,4 @@
-import { menu } from "@/drizzle/schema"
+import { menuTable } from "@/drizzle/schema"
 import * as z from "zod"
 
 export const searchParamsSchema = z.object({
@@ -20,9 +20,9 @@ export type GetMenusSchema = z.infer<typeof getMenusSchema>
 export const createMenuSchema = z.object({
   label: z.string().min(3).max(50),
   path: z.string().min(1).max(20),
-  status: z.enum(menu.status.enumValues),
+  status: z.enum(menuTable.status.enumValues),
   icon: z.string(),
-  type: z.enum(menu.type.enumValues),
+  type: z.enum(menuTable.type.enumValues),
 })
 
 export type CreateMenuSchema = z.infer<typeof createMenuSchema>
@@ -30,7 +30,7 @@ export type CreateMenuSchema = z.infer<typeof createMenuSchema>
 export const updateMenuSchema = z.object({
   label: z.string().min(3).max(50).optional(),
   path: z.string().min(1).max(20).optional(),
-  status: z.enum(menu.status.enumValues).optional(),
+  status: z.enum(menuTable.status.enumValues).optional(),
 })
 
 export type UpdateMenuSchema = z.infer<typeof updateMenuSchema>

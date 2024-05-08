@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { db } from "@/drizzle/db";
 import { eq } from "drizzle-orm";
-import { UserRole, menu, role, user } from "@/drizzle/schema";
+import { UserRole, menuTable, role, user, userMenuTable } from "@/drizzle/schema";
 
 const runSuperAdmin = async () => {
   const userinfo = await db.query.user.findFirst({
@@ -45,49 +45,53 @@ const runSuperAdmin = async () => {
 
 const runAdmin = async () => {
 
-  const userinfo = await db.query.user.findFirst({
-    where: eq(user.email, "admin@test.com")
+  await db.transaction(async (tx) => {
+    const userinfo = await tx.query.user.findFirst({
+      where: eq(user.email, "admin@test.com")
+    })
+    let uid = userinfo?.id
+    if (!userinfo) {
+      console.log("⏳ Running runAdmin seed...")
+
+      const start = Date.now()
+      const insertUserResult = await tx.insert(user).values({
+        name: "admin",
+        email: "admin@test.com",
+        password: await bcrypt.hash("admin1234", 10),
+        emailVerified: new Date(),
+        createdById: process.env.SUPER_ADMIN_UUID,
+      }).returning({ userId: user.id });
+
+      const userId = insertUserResult[0]?.userId
+
+      if (!userId) return new Error('Failed to create admin')
+      uid = userId
+      const roleResult = await tx.insert(role).values({
+        userRole: UserRole.Enum.admin,
+        name: "Admin",
+        userId,
+      }).returning({ roleId: role.id });
+
+      if (!roleResult[0]) return new Error('Failed to create admin role')
+
+
+
+      const end = Date.now()
+
+      console.log(`✅ Seed runAdmin completed in ${end - start}ms`)
+    }
+    const menus = await tx.query.menuTable.findMany()
+
+    const home = menus.find((m) => m.path === "/")
+
+
+    home && await tx.insert(userMenuTable).values({
+      userId: uid!,
+      menuId: home!.id,
+    })
   })
-  if (!userinfo) {
-    console.log("⏳ Running runAdmin seed...")
+  process.exit(0)
 
-    const start = Date.now()
-    const insertUserResult = await db.insert(user).values({
-      name: "admin",
-      email: "admin@test.com",
-      password: await bcrypt.hash("admin1234", 10),
-      emailVerified: new Date(),
-      createdById: process.env.SUPER_ADMIN_UUID,
-    }).returning({ userId: user.id });
-
-    const userId = insertUserResult[0]?.userId
-
-    if (!userId) return new Error('Failed to create admin')
-
-    const roleResult = await db.insert(role).values({
-      userRole: UserRole.Enum.admin,
-      name: "Admin",
-      userId,
-    }).returning({ roleId: role.id });
-
-    if (!roleResult[0]) return new Error('Failed to create admin role')
-    
-      await db.insert(menu).values({
-        label: "Dashboard",
-        path: "/",
-        roleId: roleResult[0].roleId,
-        parentId: null,
-        status: "active",
-        createBy: userId,
-        updateBy: userId,
-      })
-
-    const end = Date.now()
-
-    console.log(`✅ Seed runAdmin completed in ${end - start}ms`)
-
-    process.exit(0)
-  }
 
 }
 

@@ -1,5 +1,5 @@
 {
-  "id": "d749471e-054e-4cce-b66e-4a15ec7ca4ad",
+  "id": "f0f0677b-2a18-43b8-bd39-f71a61948914",
   "prevId": "50bfee68-c4f7-411d-a0e8-be73323630e3",
   "version": "5",
   "dialect": "pg",
@@ -613,120 +613,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "Menu": {
-      "name": "Menu",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "label": {
-          "name": "label",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "path": {
-          "name": "path",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "roleId": {
-          "name": "roleId",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "type": {
-          "name": "type",
-          "type": "MenuType",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'menu'"
-        },
-        "status": {
-          "name": "status",
-          "type": "MenuStatus",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'active'"
-        },
-        "icon": {
-          "name": "icon",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "parentId": {
-          "name": "parentId",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "createBy": {
-          "name": "createBy",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updateBy": {
-          "name": "updateBy",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "Menu_roleId_Role_id_fk": {
-          "name": "Menu_roleId_Role_id_fk",
-          "tableFrom": "Menu",
-          "tableTo": "Role",
-          "columnsFrom": [
-            "roleId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        },
-        "Menu_parentId_fkey": {
-          "name": "Menu_parentId_fkey",
-          "tableFrom": "Menu",
-          "tableTo": "Menu",
-          "columnsFrom": [
-            "parentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "Role": {
       "name": "Role",
       "schema": "",
@@ -801,6 +687,157 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "Menu": {
+      "name": "Menu",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "path": {
+          "name": "path",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "MenuType",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'menu'"
+        },
+        "status": {
+          "name": "status",
+          "type": "MenuStatus",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'active'"
+        },
+        "icon": {
+          "name": "icon",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parentId": {
+          "name": "parentId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createBy": {
+          "name": "createBy",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updateBy": {
+          "name": "updateBy",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Menu_parentId_fkey": {
+          "name": "Menu_parentId_fkey",
+          "tableFrom": "Menu",
+          "tableTo": "Menu",
+          "columnsFrom": [
+            "parentId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "user_menu": {
+      "name": "user_menu",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "menu_id": {
+          "name": "menu_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_menu_user_id_User_id_fk": {
+          "name": "user_menu_user_id_User_id_fk",
+          "tableFrom": "user_menu",
+          "tableTo": "User",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "user_menu_menu_id_Menu_id_fk": {
+          "name": "user_menu_menu_id_Menu_id_fk",
+          "tableFrom": "user_menu",
+          "tableTo": "Menu",
+          "columnsFrom": [
+            "menu_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},

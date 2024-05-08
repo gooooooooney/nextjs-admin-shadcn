@@ -1,1 +1,0 @@
-ALTER TABLE "Menu" ALTER COLUMN "roleId" SET DATA TYPE uuid;
