@@ -14,7 +14,7 @@ import { MenusTableFloatingBar } from "./menus-table-floating-bar"
 import { useMenusTable } from "./menus-table-provider"
 import { MenusTableToolbarActions } from "./menus-table-toolbar-actions"
 import { getMenus } from "../_lib/queries"
-import { MenuWithChildren, menu } from "@/drizzle/schema"
+import { MenuWithChildren, menuTable } from "@/drizzle/schema"
 import { DataTableFilterField } from "@/types/data-table"
 import { getStatusIcon } from "../_lib/utils"
 
@@ -55,7 +55,7 @@ export function MenusTable({ tasksPromise }: MenusTableProps) {
     {
       label: "Status",
       value: "status",
-      options: menu.status.enumValues.map((status) => ({
+      options: menuTable.status.enumValues.map((status) => ({
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
         icon: getStatusIcon(status),

@@ -1,5 +1,5 @@
-import { currentUser } from "@/lib/auth";
-import { getUserPermissions } from "@/server/data/permissions";
+import { getMenusByUserId } from "@/server/data/menu";
+import { getUserByEmail } from "@/server/data/user";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -10,12 +10,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Email is required' }, { status: 400 });
   }
 
-  const permissions = await getUserPermissions({ email });
-  if (!permissions) {
+  const userinfo = await getUserByEmail(email);
+  if (!userinfo) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
+  const menus = await getMenusByUserId(userinfo.id);
 
-  return NextResponse.json({ menus: permissions?.role.menus, role: permissions?.role.userRole, superAdmin: permissions?.role.superAdmin});
+  return NextResponse.json({ menus, role: userinfo?.role.userRole, superAdmin: userinfo?.role.superAdmin});
 
 
 }

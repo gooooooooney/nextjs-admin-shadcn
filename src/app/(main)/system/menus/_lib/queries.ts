@@ -6,8 +6,7 @@ import { and, asc, count, desc, eq, gte, lte, or } from "drizzle-orm"
 import { db } from "@/drizzle/db"
 import { filterColumn } from "@/lib/filter-column"
 import { GetMenusSchema } from "@/schema/data/menus"
-import { Menu, MenuWithChildren, menu } from "@/drizzle/schema"
-import { currentUser } from "@/lib/auth"
+import { Menu, MenuWithChildren, menuTable } from "@/drizzle/schema"
 import { getMenuHierarchy } from '@/lib/array-util'
 
 
@@ -36,28 +35,25 @@ export async function getMenus(input: GetMenusSchema) {
     const fromDay = from ? new Date(from) : undefined
     const toDay = to ? new Date(to) : undefined
 
-    const userinfo = await currentUser()
-    if (!userinfo) return { data: [], pageCount: 0 }
 
     const { data, total } = await db.transaction(async (tx) => {
       const where = () => [
-        eq(menu.roleId, userinfo.roleId),
         label
           ? filterColumn({
-            column: menu.label,
+            column: menuTable.label,
             value: label,
           })
           : undefined,
         // Filter by createdAt
         fromDay && toDay
           ? and(
-            gte(menu.createdAt, fromDay),
-            lte(menu.createdAt, toDay)
+            gte(menuTable.createdAt, fromDay),
+            lte(menuTable.createdAt, toDay)
           )
           : undefined]
       const data = await tx
         .select()
-        .from(menu)
+        .from(menuTable)
         .limit(per_page)
         .offset(offset)
         .where(
@@ -66,11 +62,11 @@ export async function getMenus(input: GetMenusSchema) {
             : or(...where())
         )
         .orderBy(
-          column && column in menu
+          column && column in menuTable
             ? order === "asc"
-              ? asc(menu[column])
-              : desc(menu[column])
-            : desc(menu.id)
+              ? asc(menuTable[column])
+              : desc(menuTable[column])
+            : desc(menuTable.id)
         )
 
       let menus = data.map(menu => ({
@@ -82,7 +78,7 @@ export async function getMenus(input: GetMenusSchema) {
         .select({
           count: count(),
         })
-        .from(menu)
+        .from(menuTable)
         .where(
           !operator || operator === "and"
             ? and(...where())

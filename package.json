@@ -15,6 +15,7 @@
     "db:check": "drizzle-kit check:pg",
     "dev": "next dev",
     "seed:tasks": "dotenv tsx src/server/seed/tasks.ts",
+    "seed:menus": "dotenv tsx src/server/seed/menus.ts",
     "seed:admin": "dotenv tsx src/server/seed/admin.ts",
     "seed:users": "dotenv tsx src/server/seed/users.ts",
     "lint": "next lint",

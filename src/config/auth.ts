@@ -64,10 +64,10 @@ export const authConfig = {
       if (!auth?.user) return false
       const res = await fetch(`${env.NEXT_PUBLIC_APP_URL}/api/get-user-permission?email=${auth?.user.email}`)
       const data = await res.json() as { menus: MenuWithChildren[], role: UserRole, superAdmin: boolean }
+      console.log(data.menus, 'menus')
 
       if (data.superAdmin) return true
 
-      console.log(data.menus, 'menus')
       const hasPermission = getMatchMenus(data.menus, pathname)
 
       if (!hasPermission) {
