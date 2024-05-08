@@ -1,6 +1,6 @@
 
 import { pgTable, timestamp, varchar, integer, uniqueIndex, foreignKey, uuid } from "drizzle-orm/pg-core"
-import { theme } from "./enum";
+import { theme, userStatus } from "./enum";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from 'drizzle-zod'
 import { role } from "./role";
@@ -15,6 +15,7 @@ export const user = pgTable("User", {
 	password: varchar("password").notNull(),
 	image: varchar("image"),
 	theme: theme("theme").default('system'),
+	status: userStatus("status").default('active'),
 	createdAt: timestamp("createdAt").defaultNow().notNull(),
 	updatedAt: timestamp("updatedAt"),
 	deletedAt: timestamp("deletedAt"),

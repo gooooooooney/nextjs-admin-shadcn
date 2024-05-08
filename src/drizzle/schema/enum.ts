@@ -14,6 +14,7 @@ export const label = pgEnum("Label", ['bug', 'feature', 'enhancement', 'document
 export const priority = pgEnum("Priority", ['low', 'medium', 'high'])
 export const userRole = pgEnum("UserRole", ['user', 'admin', 'superAdmin'])
 export const menuStatus = pgEnum("MenuStatus", ['active', 'inactive'])
+export const userStatus = pgEnum("MenuStatus", ['active', 'inactive'])
 export const menuType = pgEnum("MenuType", ['menu', 'button', 'dir'])
 export const theme = pgEnum("Theme", ['light', 'dark', 'system'])
 
@@ -29,6 +30,9 @@ export type MenuType = z.infer<typeof MenuType>
 
 export const MenuStatus = z.enum(menuStatus.enumValues)
 export type MenuStatus = z.infer<typeof MenuStatus>
+
+export const UserStatus = z.enum(userStatus.enumValues)
+export type UserStatus = z.infer<typeof UserStatus>
 
 export const Priority = z.enum(priority.enumValues)
 export type Priority = z.infer<typeof Priority>

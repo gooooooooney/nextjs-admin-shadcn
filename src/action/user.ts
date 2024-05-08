@@ -7,7 +7,7 @@ import { action } from "@/lib/safe-action"
 import { generateNewEmailVerificationToken, generateVerificationToken } from "@/lib/tokens"
 import { DeleteManyScheme, getUsersSchema } from "@/schema/data/users"
 import { AppearanceSchema, EmailSchema, ProfileSchema } from "@/schema/settings"
-import { UserSchema, user, role, UserRole } from "@/drizzle/schema"
+import { UserSchema, user, role, UserRole, userMenuTable, menuTable } from "@/drizzle/schema"
 import { deleteUserById, deleteUsersByIds, getUserByEmail, updateUser } from "@/server/data/user"
 import { sendVerificationEmail } from "@/server/mail/send-email"
 import { ActionReturnValue, AuthResponse } from "@/types/actions"
@@ -17,7 +17,10 @@ import { revalidatePath } from "next/cache"
 import { db } from "@/drizzle/db"
 import { and, asc, count, desc, eq, getTableColumns, gte, isNotNull, isNull, lte, not, or } from "drizzle-orm"
 import { filterColumn } from "@/lib/filter-column"
+import { getMenuHierarchy } from "@/lib/array-util"
 
+
+export { updateUser }
 
 export const updateProfile = action(ProfileSchema, async (params) => {
   const { username, image } = params
@@ -176,7 +179,7 @@ export const getUsers = action(getUsersSchema, async (params) => {
 
     const { data, total } = await db.transaction(async (tx) => {
       const data = await tx
-        .select({ ...rest, role })
+        .select({ ...rest, role, menu: menuTable})
         .from(user)
         .limit(per_page)
         .offset(offset)

@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { eq, inArray } from "drizzle-orm";
-import { user, role, Theme, UserRole } from "@/drizzle/schema";
+import { user, role, Theme, UserRole, UserStatus } from "@/drizzle/schema";
 import { currentUser } from "@/lib/auth";
 import to from "@/lib/utils";
 import { SignupSchema } from "@/schema/auth";
@@ -44,7 +44,7 @@ export const getUserById = async (id: string) => {
   }
 };
 
-export const updateUser = async (id: string, data: { name?: string; email?: string; image?: string, theme?: Theme }) => {
+export const updateUser = async (id: string, data: { status?: UserStatus, name?: string; email?: string; image?: string, theme?: Theme }) => {
   try {
     return await db.update(user).set(data).where(eq(user.id, id)).returning({ id: user.id })
   } catch (error) {
