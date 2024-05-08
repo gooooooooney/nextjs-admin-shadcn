@@ -25,7 +25,7 @@ export async function seedTasks(
     for (let i = 0; i < input.count; i++) {
       allTasks.push({
         id: generateUUID(),
-        code: `TASK-${customAlphabet("0123456789", 4)()}`,
+        code: `TASK-${generateUUID().slice(0, 4)}`,
         title: faker.hacker
           .phrase()
           .replace(/^./, (letter) => letter.toUpperCase()),
