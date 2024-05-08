@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { db } from "@/drizzle/db";
 import { eq } from "drizzle-orm";
-import { UserRole, role, user } from "@/drizzle/schema";
+import { UserRole, menu, role, user } from "@/drizzle/schema";
 
 const runSuperAdmin = async () => {
   const userinfo = await db.query.user.findFirst({
@@ -64,11 +64,23 @@ const runAdmin = async () => {
 
     if (!userId) return new Error('Failed to create admin')
 
-    await db.insert(role).values({
+    const roleResult = await db.insert(role).values({
       userRole: UserRole.Enum.admin,
       name: "Admin",
       userId,
-    })
+    }).returning({ roleId: role.id });
+
+    if (!roleResult[0]) return new Error('Failed to create admin role')
+    
+      await db.insert(menu).values({
+        label: "Dashboard",
+        path: "/",
+        roleId: roleResult[0].roleId,
+        parentId: null,
+        status: "active",
+        createBy: userId,
+        updateBy: userId,
+      })
 
     const end = Date.now()
 

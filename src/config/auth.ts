@@ -67,8 +67,9 @@ export const authConfig = {
 
       if (data.superAdmin) return true
 
-      console.log(pathname, 'pathname')
+      console.log(data.menus, 'menus')
       const hasPermission = getMatchMenus(data.menus, pathname)
+
       if (!hasPermission) {
         return NextResponse.redirect(new URL("/not-found", request.url))
       }
