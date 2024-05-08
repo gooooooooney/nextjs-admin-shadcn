@@ -21,6 +21,7 @@ import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-col
 import { User } from "@/types/model/user"
 import { format } from "date-fns"
 import { DeleteUsersDialog } from "./delete-users-dialog"
+import { UpdateUserSheet } from "./update-user-sheet"
 
 export function getColumns(): ColumnDef<User>[] {
   return [
@@ -131,14 +132,21 @@ export function getColumns(): ColumnDef<User>[] {
       id: "actions",
       cell: function Cell({ row }) {
         const [isUpdatePending, startUpdateTransition] = React.useTransition()
-        const [showDeleteTaskDialog, setShowDeleteTaskDialog] =
+        const [showDeleteUserDialog, setShowDeleteUserDialog] =
+          React.useState(false)
+        const [showUpdateUserDialog, setShowUpdateUserDialog] =
           React.useState(false)
 
         return (
           <>
+            <UpdateUserSheet
+              open={showUpdateUserDialog}
+              onOpenChange={setShowUpdateUserDialog}
+              user={row.original}
+            />
             <DeleteUsersDialog
-              open={showDeleteTaskDialog}
-              onOpenChange={setShowDeleteTaskDialog}
+              open={showDeleteUserDialog}
+              onOpenChange={setShowDeleteUserDialog}
               users={[row]}
               showTrigger={false}
             />
@@ -154,7 +162,12 @@ export function getColumns(): ColumnDef<User>[] {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
                 <DropdownMenuItem
-                  onSelect={() => setShowDeleteTaskDialog(true)}
+                  onSelect={() => setShowUpdateUserDialog(true)}
+                >
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => setShowDeleteUserDialog(true)}
                 >
                   Delete
                   <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>

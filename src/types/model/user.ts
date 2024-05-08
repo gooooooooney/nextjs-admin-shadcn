@@ -1,8 +1,9 @@
 
-import { NewUser, Role, User as UserType } from '@/drizzle/schema'
+import { MenuWithChildren, NewUser, Role, User as UserType } from '@/drizzle/schema'
 
 export type UserCreate = NewUser
 
 export interface User extends UserType {
-  role: Role
+  role: Role,
+  menus: MenuWithChildren[]
 }

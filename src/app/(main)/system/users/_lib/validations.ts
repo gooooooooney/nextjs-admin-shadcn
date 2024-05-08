@@ -1,13 +1,10 @@
+import { UserStatus } from "@/drizzle/schema";
 import { UserSchema } from "@/drizzle/schema/user";
 import { z } from "zod";
 
-export const UpdateUsersSchema = UserSchema.pick({
-  id: true,
-  name: true,
-  email: true,
-}).partial({
-  name: true,
-  email: true,
+export const UpdateUsersSchema = z.object({
+  name: z.string().optional(),
+  status: UserStatus.optional(),
 })
 
 
