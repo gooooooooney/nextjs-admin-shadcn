@@ -1,8 +1,7 @@
 import { db } from "@/drizzle/db"
 import { menuTable, userMenuTable } from "@/drizzle/schema"
-import { defaultRoutes } from "@/lib/menus"
 
-
+const superAdminId = process.env.SUPER_ADMIN_UUID as string
 const menus = [
   {
     path: '/',
@@ -10,7 +9,7 @@ const menus = [
     icon: "Home",
     parentId: null,
     status: "active",
-    createBy: "e318bd66-9582-445a-935a-9339090ec66d",
+    createBy: superAdminId,
     type: 'menu',
   },
   {
@@ -19,7 +18,7 @@ const menus = [
     icon: "Package",
     parentId: null,
     status: "active",
-    createBy: "e318bd66-9582-445a-935a-9339090ec66d",
+    createBy: superAdminId,
     type: 'menu',
   },
   {
@@ -28,7 +27,7 @@ const menus = [
     icon: "Settings",
     parentId: null,
     status: "active",
-    createBy: "e318bd66-9582-445a-935a-9339090ec66d",
+    createBy: superAdminId,
     type: 'menu',
   },
   {
@@ -37,7 +36,7 @@ const menus = [
     icon: "Package",
     parentId: null,
     status: "active",
-    createBy: "e318bd66-9582-445a-935a-9339090ec66d",
+    createBy: superAdminId,
     type: 'dir',
     children: [
       {
@@ -58,7 +57,7 @@ const menus = [
     icon: "AlertCircle",
     parentId: null,
     status: "active",
-    createBy: "e318bd66-9582-445a-935a-9339090ec66d",
+    createBy: superAdminId,
     type: 'dir',
     children: [
       {
@@ -66,7 +65,7 @@ const menus = [
         label: "404",
         icon: "AlertTriangle",
         status: "active",
-        createBy: "e318bd66-9582-445a-935a-9339090ec66d",
+        createBy: superAdminId,
         type: 'menu',
       },
       {
@@ -74,7 +73,7 @@ const menus = [
         label: "500",
         icon: "ShieldAlert",
         status: "active",
-        createBy: "e318bd66-9582-445a-935a-9339090ec66d",
+        createBy: superAdminId,
         type: 'menu',
       },
     ],
@@ -96,14 +95,14 @@ async function runSeed() {
       return menu.children?.map((child) => ({
         ...child,
         parentId: parent?.id,
-        createBy: "e318bd66-9582-445a-935a-9339090ec66d",
+        createBy: superAdminId,
         type: 'menu',
       }))
     })
     const resultMenus = await tx.insert(menuTable).values(childrenMenus.flat() as any).returning()
 
     await tx.insert(userMenuTable).values([...resultMenus, ...result].map((menu) => ({
-      userId: "e318bd66-9582-445a-935a-9339090ec66d",
+      userId: superAdminId,
       menuId: menu.id,
     })))
   }

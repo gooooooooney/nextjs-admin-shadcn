@@ -1,10 +1,12 @@
 import { db } from "@/drizzle/db";
 import { eq, inArray } from "drizzle-orm";
-import { user, role, Theme, UserRole, UserStatus } from "@/drizzle/schema";
+import { user, role, Theme, UserRole, UserStatus, userMenuTable } from "@/drizzle/schema";
 import { currentUser } from "@/lib/auth";
 import to from "@/lib/utils";
 import { SignupSchema } from "@/schema/auth";
 import { z } from "zod";
+import { assignMenusToUser, getMenuList } from "./menu";
+import { env } from "@/env";
 
 export const getUserByEmail = async (email: string) => {
 
@@ -86,12 +88,13 @@ export const deleteUsersByIds = async (ids: string[]) => {
 }
 
 export const createUser = async (data: Omit<z.infer<typeof SignupSchema>, 'confirmPassword'>) => {
-  const { adminId, ...rest } = data
-  return to(db.transaction(async tx => {
+  return await (db.transaction(async tx => {
+
     const result = await tx.insert(user).values({
-      ...rest,
-      createdById: adminId,
+      ...data,
+      createdById: env.SUPER_ADMIN_UUID
     }).returning({ userId: user.id })
+
     if (!result[0]) return new Error('Failed to create user')
 
     const roleResult = await tx.insert(role).values({
@@ -99,7 +102,16 @@ export const createUser = async (data: Omit<z.infer<typeof SignupSchema>, 'confi
       userRole: UserRole.Enum.admin,
       userId: result[0].userId
     }).returning({ id: role.id })
+
     if (!roleResult[0]) return new Error('Failed to create role')
+    /**------------------- For now, give all permissions to the admin user------------------------- */
+    const menu = await tx.query.menuTable.findMany()
+    const userMenuRecords = menu.map((menu) => ({
+      userId: result[0]!.userId,
+      menuId: menu.id,
+    }));
+    await tx.insert(userMenuTable).values(userMenuRecords).returning({ id: userMenuTable.id });
+    /**-------------------------------------------- */
 
     return result
   }))

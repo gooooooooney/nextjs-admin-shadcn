@@ -1,29 +1,58 @@
 # Create T3 App
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
-## What's next? How do I make an app with this?
+### default router
+```tsx
+export const defaultRoutes: MenuItem[] = [
+  {
+    path: '/',
+    label: "Dashboard",
+    icon: <Icons.Home className="size-4" />
+  },
+  {
+    path: '/tasks',
+    label: 'Tasks',
+    icon: <Icons.Package className='size-4' />,
+  },
+  {
+    path: '/settings',
+    label: 'settings',
+    icon: <Icons.Settings className='size-4' />,
+  },
+  {
+    path: '/system',
+    label: 'system',
+    icon: <Icons.Package className='size-4' />,
+    children: [
+      {
+        path: '/system/users',
+        label: "System Users",
+        icon: <Icons.Users className='size-4' />,
+      },
+      {
+        path: '/system/menus',
+        label: "System Menus",
+        icon: <Icons.Menu className='size-4' />,
+      }
+    ],
+  },
+  {
+    path: "/error",
+    label: "error pages",
+    icon: <Icons.AlertCircle className="size-4" />,
+    children: [
+      {
+        path: "/error/404",
+        label: "404",
+        icon: <Icons.AlertTriangle className="size-4" />,
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
-
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
-
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
-
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+      },
+      {
+        path: "/error/500",
+        label: "500",
+        icon: <Icons.ShieldAlert className="size-4" />,
+      },
+    ],
+  }
+];
+```

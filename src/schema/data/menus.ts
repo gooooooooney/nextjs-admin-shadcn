@@ -14,6 +14,12 @@ export const getMenusSchema = searchParamsSchema
 
 export type GetMenusSchema = z.infer<typeof getMenusSchema>
 
+export const getMenusByUserIdSchema = z.object({
+  userId: z.string(),
+})
+
+export type GetMenusByUserIdSchema = z.infer<typeof getMenusByUserIdSchema>
+
 export const assignMenusToUserSchema = z.object({
   userId: z.string(),
   menuIds: z.array(z.string()),

@@ -7,7 +7,7 @@ import { action } from "@/lib/safe-action"
 import { generateNewEmailVerificationToken } from "@/lib/tokens"
 import { DeleteManyScheme, getUsersSchema } from "@/schema/data/users"
 import { AppearanceSchema, EmailSchema, ProfileSchema } from "@/schema/settings"
-import { UserSchema, user, role, UserRole } from "@/drizzle/schema"
+import { UserSchema, user, role, UserRole, userRelation } from "@/drizzle/schema"
 import { deleteUserById, deleteUsersByIds, getUserByEmail, updateUser } from "@/server/data/user"
 import { sendVerificationEmail } from "@/server/mail/send-email"
 import { ActionReturnValue, AuthResponse } from "@/types/actions"
@@ -178,7 +178,7 @@ export const getUsers = action(getUsersSchema, async (params) => {
 
     const { data, total } = await db.transaction(async (tx) => {
       const data = await tx
-        .select({ ...rest, role, createdBy: user})
+        .select({ ...rest, role })
         .from(user)
         .limit(per_page)
         .offset(offset)
