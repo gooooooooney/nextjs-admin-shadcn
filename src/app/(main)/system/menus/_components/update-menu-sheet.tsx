@@ -37,6 +37,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 import { updateMenu } from "../_lib/actions"
 import { updateMenuSchema, type UpdateMenuSchema } from "../_lib/validations"
+import { Input } from "@/components/ui/input"
 
 interface UpdateTaskSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
@@ -56,6 +57,7 @@ export function UpdateMenuSheet({
       label: menu.label,
       path: menu.path,
       status: menu.status!,
+      icon: menu.icon!,
     },
   })
 
@@ -121,6 +123,22 @@ export function UpdateMenuSheet({
                     <Textarea
                       placeholder="Path"
                       className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="icon"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Icon</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Icon"
                       {...field}
                     />
                   </FormControl>

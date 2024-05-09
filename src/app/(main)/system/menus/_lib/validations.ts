@@ -31,6 +31,7 @@ export const updateMenuSchema = z.object({
   label: z.string().min(3).max(50).optional(),
   path: z.string().min(1).max(20).optional(),
   status: z.enum(menuTable.status.enumValues).optional(),
+  icon: z.string().optional(),
 })
 
 export type UpdateMenuSchema = z.infer<typeof updateMenuSchema>

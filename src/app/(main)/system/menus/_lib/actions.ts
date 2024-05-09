@@ -88,9 +88,7 @@ export async function updateMenu(input: UpdateMenuSchema, id: string) {
     await db
       .update(menuTable)
       .set({
-        label: input.label,
-        status: input.status,
-        path: input.path
+        ...input,
       })
       .where(eq(menuTable.id, id)).returning()
 

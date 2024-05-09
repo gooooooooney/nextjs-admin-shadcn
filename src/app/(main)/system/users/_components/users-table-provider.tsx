@@ -4,6 +4,7 @@ import * as React from "react"
 import { DataTableConfig, dataTableConfig } from "@/config/data-table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { MenuWithValue } from "@/types/model/menu"
 
 type FeatureFlagValue = DataTableConfig["featureFlags"][number]["value"]
 
@@ -11,11 +12,15 @@ type FeatureFlagValue = DataTableConfig["featureFlags"][number]["value"]
 interface UsersTableContextProps {
   featureFlags: FeatureFlagValue[]
   setFeatureFlags: React.Dispatch<React.SetStateAction<FeatureFlagValue[]>>
+  menus: MenuWithValue[],
+  setMenus: React.Dispatch<React.SetStateAction<MenuWithValue[]>>
 }
 
 const UsersTableContext = React.createContext<UsersTableContextProps>({
   featureFlags: [],
   setFeatureFlags: () => { },
+  menus: [],
+  setMenus: () => { },
 })
 
 export function useUsersTable() {
@@ -28,6 +33,7 @@ export function useUsersTable() {
 
 export function UsersTableProvider({ children }: React.PropsWithChildren) {
   const [featureFlags, setFeatureFlags] = React.useState<FeatureFlagValue[]>([])
+  const [menus, setMenus] = React.useState<MenuWithValue[]>([])
 
 
   return (
@@ -35,6 +41,8 @@ export function UsersTableProvider({ children }: React.PropsWithChildren) {
       value={{
         featureFlags,
         setFeatureFlags,
+        menus,
+        setMenus,
       }}
     >
       <div className="w-full overflow-x-auto">
