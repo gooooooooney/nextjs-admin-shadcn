@@ -12,7 +12,7 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Button, LoadingButton } from "@/components/ui/button"
+import { LoadingButton } from "@/components/ui/button"
 import { useRouter, useSearchParams } from "next/navigation"
 import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-succcess"
@@ -29,7 +29,6 @@ export const SignupForm = () => {
 
     const [isPending, startTransition] = useTransition()
     const searchParams = useSearchParams();
-    const router = useRouter()
     // const callbackUrl = searchParams.get("callbackUrl");
 
     const urlError = searchParams.get("error") === "OAuthAccountNotLinked"
@@ -54,6 +53,7 @@ export const SignupForm = () => {
         setSuccess("");
 
         startTransition(() => {
+            console.log(values)
             signup(values)
                 .then((res) => {
                     if (res.data?.error) {

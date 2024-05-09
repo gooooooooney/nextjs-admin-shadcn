@@ -23,8 +23,13 @@ import { format } from "date-fns"
 import { DeleteUsersDialog } from "./delete-users-dialog"
 import { UpdateUserSheet } from "./update-user-sheet"
 import { MenuWithChildren } from "@/drizzle/schema"
-import { getUserMenus } from "@/action/menu"
+import { getMenusByUserIdAction, getUserMenus } from "@/action/menu"
 import { MenuWithValue } from "@/types/model/menu"
+import { useAction } from "next-safe-action/hooks"
+import { isExecuting } from "next-safe-action/status"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useCopyToClipboard } from "usehooks-ts"
+import { toast } from "sonner"
 
 export function getColumns(): ColumnDef<User>[] {
   return [
@@ -58,6 +63,37 @@ export function getColumns(): ColumnDef<User>[] {
         <DataTableColumnHeader column={column} className="w-24 text-center" title="Index" />
       ),
       cell: ({ row }) => <div className="w-24 text-center">{row.index + 1}</div>,
+    },
+    {
+      accessorKey: "id",
+      header: ({ column }) => (
+        <p>UID</p>
+      ),
+      cell: ({ row }) => {
+        const [copiedText, copy] = useCopyToClipboard()
+        const id = row.getValue("id") as string
+        const handleCopy = (text: string) => () => {
+          copy(text)
+            .then(() => {
+              toast.success("Copied to clipboard")
+            })
+            .catch(error => {
+              toast.error("Failed to copy to clipboard")
+            })
+        }
+        if (!id) return "System"
+        return <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="pure" className="p-0" onClick={handleCopy(id)}>
+              {id.slice(0, 8) + "..."}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {id}
+          </TooltipContent>
+        </Tooltip>
+      },
+      enableColumnFilter: false,
     },
     {
       accessorKey: "name",
@@ -109,13 +145,33 @@ export function getColumns(): ColumnDef<User>[] {
       enableColumnFilter: false,
     },
     {
-      accessorKey: "createdBy",
+      accessorKey: "createdById",
       header: ({ column }) => (
         <p>Created By</p>
       ),
       cell: ({ row }) => {
-        const createdBy: User = row.getValue("createdBy") || { name: "System" }
-        return <Badge className="truncate" variant={createdBy.name == 'System' ? 'success' : 'secondary'} >{createdBy.name}</Badge>
+        const [copiedText, copy] = useCopyToClipboard()
+        const id = row.getValue("createdById") as string
+        const handleCopy = (text: string) => () => {
+          copy(text)
+            .then(() => {
+              toast.success("Copied to clipboard")
+            })
+            .catch(error => {
+              toast.error("Failed to copy to clipboard")
+            })
+        }
+        if (!id) return "System"
+        return <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="pure" className="p-0" onClick={handleCopy(id)}>
+              {id.slice(0, 8) + "..."}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {id}
+          </TooltipContent>
+        </Tooltip>
       },
       enableColumnFilter: false,
     },
@@ -138,8 +194,15 @@ export function getColumns(): ColumnDef<User>[] {
           React.useState(false)
         const [showUpdateUserDialog, setShowUpdateUserDialog] =
           React.useState(false)
+
         const [menus, setMenus] = React.useState<MenuWithValue[]>([])
 
+        const { status, execute } = useAction(getMenusByUserIdAction, {
+          onSuccess: (data) => {
+            setMenus(data)
+          }
+        })
+        const isPending = isExecuting(status)
         return (
           <>
             <UpdateUserSheet
@@ -158,11 +221,8 @@ export function getColumns(): ColumnDef<User>[] {
               <DropdownMenuTrigger asChild>
                 <Button
                   onMouseOver={(e) => {
-                    if (menus.length) return
-                    getUserMenus(row.original.id).then((data) => {
-                      console.log(data)
-                      setMenus(data)
-                    })
+                    if (menus.length || isPending) return
+                    execute({ userId: row.original.id })
                   }}
                   aria-label="Open menu"
                   variant="ghost"

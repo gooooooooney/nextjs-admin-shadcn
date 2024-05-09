@@ -56,7 +56,7 @@ export const login = action<typeof LoginSchema, AuthResponse | undefined>(LoginS
 
 
 export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, async (params) => {
-  const { email, password, name, adminId } = params;
+  const { email, password, name } = params;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const existingUser = await getUserByEmail(email);
@@ -65,12 +65,10 @@ export const signup = action<typeof SignupSchema, AuthResponse>(SignupSchema, as
     return { error: "Email already in use!" };
   }
 
-
   await createUser({
     name,
     email,
     password: hashedPassword,
-    adminId,
   })
 
   const verificationToken = await generateVerificationToken(email);

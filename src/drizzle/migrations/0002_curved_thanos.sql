@@ -1,0 +1,1 @@
+ALTER TABLE "User" ADD COLUMN "status" "MenuStatus" DEFAULT 'active';
