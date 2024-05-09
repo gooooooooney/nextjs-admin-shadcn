@@ -1,0 +1,10 @@
+.rct-collapse *, .rct-checkbox *, .rct-node-icon * {
+    display: inline-block;
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    color: #16a34a
+}
+.rct-title{
+  text-transform: capitalize;
+}

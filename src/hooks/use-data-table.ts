@@ -349,7 +349,6 @@ export function useDataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
     manualPagination: true,
     manualSorting: true,
-    debugTable: true,
     manualFiltering: true,
   })
 

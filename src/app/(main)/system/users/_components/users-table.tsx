@@ -16,14 +16,24 @@ import { UsersTableToolbarActions } from "./users-table-toolbar-actions"
 import { getUsers } from "@/action/user"
 import { User } from "@/types/model/user"
 import { DataTableFilterField } from "@/types/data-table"
+import { MenuWithValue } from "@/types/model/menu"
+import { Menu } from "@/drizzle/schema"
 
 interface TasksTableProps {
-  usersPromise: ReturnType<typeof getUsers>
+  usersPromise: ReturnType<typeof getUsers>,
+  menus: Menu[]
 }
 
-export function UsersTable({ usersPromise }: TasksTableProps) {
+export function UsersTable({ usersPromise, menus }: TasksTableProps) {
 
-  const { featureFlags } = useUsersTable()
+  const { featureFlags, setMenus } = useUsersTable()
+
+  React.useEffect(() => {
+    setMenus(menus.map((menu) => {
+      const { icon, ...rest } = menu
+      return { ...rest, value: menu.id }
+    }))
+  }, [menus])
 
   // Learn more about React.use here: https://react.dev/reference/react/use
   const { data } = React.use(usersPromise)

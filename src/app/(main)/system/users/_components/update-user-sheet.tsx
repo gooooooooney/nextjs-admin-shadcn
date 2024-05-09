@@ -1,13 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { User, } from "@/drizzle/schema"
+import { MenuWithChildren, User, } from "@/drizzle/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 import { getErrorMessage } from "@/lib/handle-error"
-import { Button } from "@/components/ui/button"
+import { Button, LoadingButton } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -31,19 +31,45 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { updateUser } from "@/action/user"
 import { Credenza, CredenzaBody, CredenzaClose, CredenzaContent, CredenzaDescription, CredenzaFooter, CredenzaHeader, CredenzaTitle, CredenzaTrigger } from "@/components/ui/credenza"
 import { PermissionTree } from "./permission-tree"
+import { MenuWithValue } from "@/types/model/menu"
+import { useAction } from "next-safe-action/hooks"
+import { assignMenusToUserAction } from "@/action/menu"
+import { isExecuting } from "next-safe-action/status"
 
 
 interface UpdateTaskSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
   user: User
+  menus: MenuWithValue[]
 }
 
 export function UpdateUserSheet({
   user,
+  menus,
   onOpenChange,
   ...props
 }: UpdateTaskSheetProps) {
-  console.log(user, '---------')
+
+
+  const [checked, setChecked] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    setChecked(menus.map(node => node.value))
+
+  }, [menus])
+
+  const { status, execute } = useAction(assignMenusToUserAction, {
+    onSuccess: (res) => {
+      toast.success(res.message)
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage(error))
+    },
+
+  })
+
+  const isSaveMenuPending = isExecuting(status)
+
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
 
   const form = useForm<UpdateUsers>({
@@ -77,6 +103,17 @@ export function UpdateUserSheet({
       )
     })
   }
+
+  const handleSave = () => {
+    const menuIds: string[] = [...checked]
+    checked.forEach(id => {
+      const menu = menus.find(menu => menu.id === id)
+      if (menu?.parentId && !menuIds.includes(menu.parentId)) {
+        menuIds.push(menu.parentId)
+      }
+    })
+    execute({userId: user.id, menuIds})
+  };
 
   return (
     <Sheet onOpenChange={onOpenChange} {...props}>
@@ -166,11 +203,12 @@ export function UpdateUserSheet({
               </CredenzaDescription>
             </CredenzaHeader>
             <CredenzaBody>
-              <PermissionTree />
+              <PermissionTree checked={checked} setChecked={setChecked} nodes={menus} />
             </CredenzaBody>
             <CredenzaFooter>
+              <LoadingButton isPending={isSaveMenuPending} onClick={handleSave} variant="shine">Save</LoadingButton>
               <CredenzaClose asChild>
-                <button>Close</button>
+                <Button variant="secondary">Cancel</Button>
               </CredenzaClose>
             </CredenzaFooter>
           </CredenzaContent>

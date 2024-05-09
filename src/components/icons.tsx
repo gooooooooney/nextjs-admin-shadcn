@@ -38,6 +38,9 @@ export {
     AlertCircle,
     AlertTriangle,
     ShieldAlert,
+    Square,
+    SquareCheck,
+    SquareMinus,
 } from 'lucide-react'
 
 export const Github = (props: IconProps) => (

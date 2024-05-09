@@ -22,6 +22,9 @@ import { User } from "@/types/model/user"
 import { format } from "date-fns"
 import { DeleteUsersDialog } from "./delete-users-dialog"
 import { UpdateUserSheet } from "./update-user-sheet"
+import { MenuWithChildren } from "@/drizzle/schema"
+import { getUserMenus } from "@/action/menu"
+import { MenuWithValue } from "@/types/model/menu"
 
 export function getColumns(): ColumnDef<User>[] {
   return [
@@ -124,18 +127,18 @@ export function getColumns(): ColumnDef<User>[] {
       cell: ({ row }) => {
         const deletedBy: User = row.getValue("deletedBy")
 
-        return deletedBy && <Badge className="truncate" variant="destructive" >{deletedBy.name}</Badge>
+        return deletedBy ? <Badge className="truncate" variant="destructive" >{deletedBy.name}</Badge> : "N/A"
       },
       enableColumnFilter: false,
     },
     {
       id: "actions",
       cell: function Cell({ row }) {
-        const [isUpdatePending, startUpdateTransition] = React.useTransition()
         const [showDeleteUserDialog, setShowDeleteUserDialog] =
           React.useState(false)
         const [showUpdateUserDialog, setShowUpdateUserDialog] =
           React.useState(false)
+        const [menus, setMenus] = React.useState<MenuWithValue[]>([])
 
         return (
           <>
@@ -143,6 +146,7 @@ export function getColumns(): ColumnDef<User>[] {
               open={showUpdateUserDialog}
               onOpenChange={setShowUpdateUserDialog}
               user={row.original}
+              menus={menus}
             />
             <DeleteUsersDialog
               open={showDeleteUserDialog}
@@ -153,6 +157,13 @@ export function getColumns(): ColumnDef<User>[] {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
+                  onMouseOver={(e) => {
+                    if (menus.length) return
+                    getUserMenus(row.original.id).then((data) => {
+                      console.log(data)
+                      setMenus(data)
+                    })
+                  }}
                   aria-label="Open menu"
                   variant="ghost"
                   className="flex size-8 p-0 data-[state=open]:bg-muted"

@@ -7,7 +7,7 @@ const menus = [
   {
     path: '/',
     label: "Dashboard",
-    icon: "home",
+    icon: "Home",
     parentId: null,
     status: "active",
     createBy: "e318bd66-9582-445a-935a-9339090ec66d",
@@ -16,7 +16,7 @@ const menus = [
   {
     path: '/tasks',
     label: 'Tasks',
-    icon: "home",
+    icon: "Package",
     parentId: null,
     status: "active",
     createBy: "e318bd66-9582-445a-935a-9339090ec66d",
@@ -25,7 +25,7 @@ const menus = [
   {
     path: '/settings',
     label: 'settings',
-    icon: "home",
+    icon: "Settings",
     parentId: null,
     status: "active",
     createBy: "e318bd66-9582-445a-935a-9339090ec66d",
@@ -34,7 +34,7 @@ const menus = [
   {
     path: '/system',
     label: 'system',
-    icon: "home",
+    icon: "Package",
     parentId: null,
     status: "active",
     createBy: "e318bd66-9582-445a-935a-9339090ec66d",
@@ -43,19 +43,19 @@ const menus = [
       {
         path: '/system/users',
         label: "System Users",
-        icon: "home",
+        icon: "Users",
       },
       {
         path: '/system/menus',
         label: "System Menus",
-        icon: "home",
+        icon: "Menu",
       }
     ],
   },
   {
     path: "/error",
     label: "error pages",
-    icon: "home",
+    icon: "AlertCircle",
     parentId: null,
     status: "active",
     createBy: "e318bd66-9582-445a-935a-9339090ec66d",
@@ -64,7 +64,7 @@ const menus = [
       {
         path: "/error/404",
         label: "404",
-        icon: "home",
+        icon: "AlertTriangle",
         status: "active",
         createBy: "e318bd66-9582-445a-935a-9339090ec66d",
         type: 'menu',
@@ -72,7 +72,7 @@ const menus = [
       {
         path: "/error/500",
         label: "500",
-        icon: "home",
+        icon: "ShieldAlert",
         status: "active",
         createBy: "e318bd66-9582-445a-935a-9339090ec66d",
         type: 'menu',

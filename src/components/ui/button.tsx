@@ -121,9 +121,9 @@ const ButtonPlain = React.forwardRef<HTMLButtonElement, ButtonProps>(
 ButtonPlain.displayName = "Button"
 
 
-type LoadingButtonProps = {
+interface LoadingButtonProps extends ButtonProps{
   children: React.ReactNode
-  isPending: boolean
+  isPending?: boolean
   className?: string
   type?: ButtonProps['type']
 }
@@ -131,11 +131,13 @@ type LoadingButtonProps = {
 const LoadingButton = ({
   isPending,
   children,
-  type = 'submit',
-  className
+  type,
+  className,
+  disabled,
+  ...props
 }: LoadingButtonProps) => {
   return (
-    <Button type={type} disabled={isPending}
+    <Button type={type} {...props} disabled={isPending}
       className={className}>
       {isPending && <Icons.Loader className="mr-2 h-4 w-4 animate-spin" />}
       {children}

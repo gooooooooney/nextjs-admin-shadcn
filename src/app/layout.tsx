@@ -28,9 +28,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <body vaul-drawer-wrapper="" className={`font-sans ${inter.variable}`}>
         <HolyLoader />
           <Provider>
-            {/* <NextSSRPlugin
-            routerConfig={extractRouterConfig(ourFileRouter)}
-          /> */}
             {children}
             <TailwindIndicator />
             <Toaster richColors />

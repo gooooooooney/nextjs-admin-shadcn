@@ -34,6 +34,7 @@ import { CreateMenuDialog } from "./create-menu-dialog"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useCopyToClipboard } from "usehooks-ts"
 import { Badge } from "@/components/ui/badge"
+import { LucideIcon } from "lucide-react"
 
 
 export function getColumns(): ColumnDef<MenuWithChildren>[] {
@@ -149,6 +150,18 @@ export function getColumns(): ColumnDef<MenuWithChildren>[] {
         <DataTableColumnHeader column={column} title="Label" />
       ),
       cell: ({ row }) => <div>{row.getValue("label")}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "icon",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Icon" />
+      ),
+      cell: ({ row }) => {
+        const Icon = Icons[row.original.icon as keyof typeof Icons] as LucideIcon || Icons.Package
+        return <Icon className="size-5 text-muted-foreground" />
+      },
       enableSorting: false,
       enableHiding: false,
     },

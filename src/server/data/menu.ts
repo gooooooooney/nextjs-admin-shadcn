@@ -1,5 +1,4 @@
 import { db } from "@/drizzle/db"
-import { userRelation, user as userTable } from "@/drizzle/schema"
 import { menuTable, userMenuTable } from "@/drizzle/schema/menu"
 import { eq } from "drizzle-orm"
 
@@ -10,9 +9,12 @@ export const getMenusByUserId = async (userId: string) => {
     })
     .from(userMenuTable)
     .where(eq(userMenuTable.userId, userId))
-    .innerJoin(menuTable, eq(menuTable.id, userMenuTable.menuId))
-
+    .innerJoin(menuTable, eq(menuTable.id, userMenuTable.menuId));
   return result.map((r) => r.menu)
+}
+
+export const getMenuList = async () => {
+  return await db.query.menuTable.findMany()
 }
 
 export async function assignMenusToUser(userId: string, menuIds: string[]) {
@@ -20,6 +22,10 @@ export async function assignMenusToUser(userId: string, menuIds: string[]) {
     userId,
     menuId,
   }));
+  return await db.transaction(async (tx) => {
+    await tx.delete(userMenuTable).where(eq(userMenuTable.userId, userId));
+    return await tx.insert(userMenuTable).values(userMenuRecords).returning({ id: userMenuTable.id });
+  }
+  );
 
-  await db.insert(userMenuTable).values(userMenuRecords);
 }
