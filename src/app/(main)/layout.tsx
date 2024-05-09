@@ -21,7 +21,6 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
 
   let routes = defaultRoutes
   if (permissions.role.userRole !== UserRole.Enum.superAdmin) {
-    console.log(permissions.menus)
     routes = permissions.menus.map(menu => {
       const Icon = Icons[menu.icon as keyof typeof Icons] as LucideIcon || Icons.Package
       return {
