@@ -194,6 +194,7 @@ export function getColumns(): ColumnDef<User>[] {
           React.useState(false)
         const [showUpdateUserDialog, setShowUpdateUserDialog] =
           React.useState(false)
+
         const [menus, setMenus] = React.useState<MenuWithValue[]>([])
 
         const { status, execute } = useAction(getMenusByUserIdAction, {

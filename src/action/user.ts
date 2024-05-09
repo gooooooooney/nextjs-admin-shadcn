@@ -178,7 +178,7 @@ export const getUsers = action(getUsersSchema, async (params) => {
 
     const { data, total } = await db.transaction(async (tx) => {
       const data = await tx
-        .select({ ...rest, role })
+        .select({ ...rest, role, createdBy: user})
         .from(user)
         .limit(per_page)
         .offset(offset)

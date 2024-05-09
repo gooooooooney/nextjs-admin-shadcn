@@ -112,7 +112,6 @@ export const createUser = async (data: Omit<z.infer<typeof SignupSchema>, 'confi
     }));
     await tx.insert(userMenuTable).values(userMenuRecords).returning({ id: userMenuTable.id });
     /**-------------------------------------------- */
-
     return result
   }))
 }
