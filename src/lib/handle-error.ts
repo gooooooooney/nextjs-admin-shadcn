@@ -4,7 +4,6 @@ import { z } from "zod"
 
 export function getErrorMessage(err: unknown) {
   const unknownError = "Something went wrong, please try again later."
-
   if (err instanceof z.ZodError) {
     const errors = err.issues.map((issue) => {
       return issue.message
@@ -14,9 +13,10 @@ export function getErrorMessage(err: unknown) {
     return err.message
   } else if (isRedirectError(err)) {
     throw err
-  } else {
-    return unknownError
+  } else if (typeof err === "string") {
+    return err
   }
+  return unknownError
 }
 
 export function showErrorToast(err: unknown) {

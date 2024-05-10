@@ -1,7 +1,7 @@
 "use server"
 
 import { unstable_noStore as noStore, revalidatePath } from "next/cache"
-import { eq } from "drizzle-orm"
+import { eq, inArray } from "drizzle-orm"
 
 import { getErrorMessage } from "@/lib/handle-error"
 
@@ -106,9 +106,17 @@ export async function updateMenu(input: UpdateMenuSchema, id: string) {
   }
 }
 
-export async function deleteMenu(input: { id: string }) {
+export async function deleteMenusAction(input: { ids: string[] }) {
   try {
-    await db.delete(menuTable).where(eq(menuTable.id, input.id))
+    const userInfo = await currentUser()
+    // for now only super admin can delete menu
+    if (!userInfo?.superAdmin) {
+      return {
+        data: null,
+        message: "You are not authorized to delete this menu",
+      }
+    }
+    await db.delete(menuTable).where(inArray(menuTable.id, input.ids))
 
 
     revalidatePath("/system/menus")
