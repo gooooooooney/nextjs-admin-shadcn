@@ -3,7 +3,7 @@ import { toast } from "sonner"
 
 import { getErrorMessage } from "@/lib/handle-error"
 
-import { deleteMenu, updateMenu } from "./actions"
+import { deleteMenusAction, updateMenu } from "./actions"
 import { MenuWithChildren } from "@/drizzle/schema"
 
 
@@ -15,21 +15,24 @@ export function deleteMenus({
   rows: Row<MenuWithChildren>[]
   onSucess?: () => void
 }) {
-  toast.promise(
-    Promise.all(
-      rows.map(async (row) =>
-        deleteMenu({
-          id: row.original.id,
-        })
-      )
-    ),
+
+  toast.promise(new Promise<string>(async (resolve, reject) => {
+    deleteMenusAction({
+      ids: rows.map((row) => row.original.id),
+    }).then((res) => {
+      if (res?.message) {
+        reject(res.message)
+      }
+      resolve("Menus deleted")
+    }).catch(reject)
+  }),
     {
       loading: "Deleting...",
-      success: () => {
+      success: (message) => {
         onSucess?.()
-        return "Menus deleted"
+        return message
       },
-      error: (err) => getErrorMessage(err),
+      error: (err: any) => getErrorMessage(err),
     }
   )
 }
