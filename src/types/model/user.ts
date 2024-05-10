@@ -5,5 +5,6 @@ export type UserCreate = NewUser
 
 export interface User extends UserType {
   role: Role,
+  createdBy: User,
   menus: MenuWithChildren[]
 }
