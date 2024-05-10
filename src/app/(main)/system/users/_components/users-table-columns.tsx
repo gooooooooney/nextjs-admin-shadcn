@@ -145,13 +145,13 @@ export function getColumns(): ColumnDef<User>[] {
       enableColumnFilter: false,
     },
     {
-      accessorKey: "createdById",
+      accessorKey: "createdBy",
       header: ({ column }) => (
         <p>Created By</p>
       ),
       cell: ({ row }) => {
         const [copiedText, copy] = useCopyToClipboard()
-        const id = row.getValue("createdById") as string
+        const createdBy = row.getValue("createdBy") as User
         const handleCopy = (text: string) => () => {
           copy(text)
             .then(() => {
@@ -161,15 +161,15 @@ export function getColumns(): ColumnDef<User>[] {
               toast.error("Failed to copy to clipboard")
             })
         }
-        if (!id) return "System"
+        if (!createdBy) return <Badge className="truncate capitalize">System</Badge>
         return <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="pure" className="p-0" onClick={handleCopy(id)}>
-              {id.slice(0, 8) + "..."}
+            <Button variant="pure" className="p-0" onClick={handleCopy(createdBy.id)}>
+              <Badge variant="success" className="truncate capitalize">{createdBy.name}</Badge>
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            {id}
+            {createdBy.id}
           </TooltipContent>
         </Tooltip>
       },

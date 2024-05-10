@@ -17,6 +17,7 @@ import { revalidatePath } from "next/cache"
 import { db } from "@/drizzle/db"
 import { and, asc, count, desc, eq, getTableColumns, gte, isNotNull, isNull, lte, or } from "drizzle-orm"
 import { filterColumn } from "@/lib/filter-column"
+import { alias } from "drizzle-orm/pg-core"
 
 
 export { updateUser }
@@ -175,14 +176,17 @@ export const getUsers = action(getUsersSchema, async (params) => {
         )
         : undefined]
     const { password, ...rest } = getTableColumns(user);
-
+ 
+    // this is the parent user table to get the createdBy user
+    const parent = alias(user, "parent")
     const { data, total } = await db.transaction(async (tx) => {
       const data = await tx
-        .select({ ...rest, role, createdBy: user})
+        .select({ ...rest, role, createdBy: parent })
         .from(user)
         .limit(per_page)
         .offset(offset)
         .leftJoin(role, eq(user.id, role.userId))
+        .leftJoin(parent, eq(parent.id, user.createdById))
         .where(
           !operator || operator === "and" ? and(...whereParams()) : or(...whereParams()),
         )

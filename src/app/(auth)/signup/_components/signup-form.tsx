@@ -53,7 +53,6 @@ export const SignupForm = () => {
         setSuccess("");
 
         startTransition(() => {
-            console.log(values)
             signup(values)
                 .then((res) => {
                     if (res.data?.error) {
