@@ -1,58 +1,38 @@
-# Create T3 App
+# nextjs-admin-shadcn
 
+[中文版本](./README.zh.md)
 
-### default router
-```tsx
-export const defaultRoutes: MenuItem[] = [
-  {
-    path: '/',
-    label: "Dashboard",
-    icon: <Icons.Home className="size-4" />
-  },
-  {
-    path: '/tasks',
-    label: 'Tasks',
-    icon: <Icons.Package className='size-4' />,
-  },
-  {
-    path: '/settings',
-    label: 'settings',
-    icon: <Icons.Settings className='size-4' />,
-  },
-  {
-    path: '/system',
-    label: 'system',
-    icon: <Icons.Package className='size-4' />,
-    children: [
-      {
-        path: '/system/users',
-        label: "System Users",
-        icon: <Icons.Users className='size-4' />,
-      },
-      {
-        path: '/system/menus',
-        label: "System Menus",
-        icon: <Icons.Menu className='size-4' />,
-      }
-    ],
-  },
-  {
-    path: "/error",
-    label: "error pages",
-    icon: <Icons.AlertCircle className="size-4" />,
-    children: [
-      {
-        path: "/error/404",
-        label: "404",
-        icon: <Icons.AlertTriangle className="size-4" />,
+## Introduction
 
-      },
-      {
-        path: "/error/500",
-        label: "500",
-        icon: <Icons.ShieldAlert className="size-4" />,
-      },
-    ],
-  }
-];
-```
+`nextjs-admin-shadcn` is a backend management system built with Next.js and Shadcn. 
+
+## Tech Stack
+
+- **Next.js 14**: Framework for building server-rendered React applications.
+- **Shadcn-UI**: UI components library.
+- **Next-auth v5**: Authentication library for Next.js.
+- **Drizzle**: ORM for database management.
+- **Resend**: Service for sending emails.
+- **Uploadthing**: Service for image uploads.
+
+## Features
+
+- **Sidebar**
+- **System User Management**
+  - Three roles: `Super Admin`, `Admin`, `User`
+  - Users registered via the registration page are given `Admin` permissions by default and have access to all menus.
+  - `Admins` can invite users to register by adding their email and name via the "New User" button.
+  - `Admins` can assign menus to users.
+  - `Admins` can only see users they have invited or created.
+  - `Super Admins` have all permissions.
+  - User permissions are assigned by `Admin` or `Super Admin`.
+- **System Menu Management**
+  - `Admins` can create menus (deletion not currently supported, but you can set delete permissions yourself).
+- **Personal Information Management**
+  - Upload avatar
+  - Change email
+  - Set appearance
+- **Error Pages**
+  - 404 Page
+  - 500 Page
+
