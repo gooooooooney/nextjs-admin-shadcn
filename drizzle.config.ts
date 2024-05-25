@@ -2,12 +2,14 @@ import { env } from '@/env';
 import 'dotenv/config'; // make sure to install dotenv package
 import type { Config } from 'drizzle-kit';
 
+
+
 export default {
-  driver: 'pg',
+  dialect: "postgresql",
   out: './src/drizzle/migrations',
   schema: './src/drizzle/schema/index.ts',
   dbCredentials: {
-    connectionString: env.DATABASE_URL
+    url: env.DATABASE_URL
   },
   // Print all statements
   verbose: true,
