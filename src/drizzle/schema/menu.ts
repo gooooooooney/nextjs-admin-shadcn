@@ -37,7 +37,9 @@ export const menuRelations = relations(menuTable, ({ many, one }) => ({
     references: [menuTable.id],
     relationName: "menu_parent",
   }),
-  users: many(user)
+  users: many(userMenuTable, {
+    relationName: 'user_menu_m',
+  })
 }))
 
 export const userMenuTable = pgTable('user_menu', {
@@ -45,6 +47,18 @@ export const userMenuTable = pgTable('user_menu', {
   userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   menuId: uuid('menu_id').notNull().references(() => menuTable.id, { onDelete: 'cascade' }),
 });
+
+export const userMenuTableRelations = relations(userMenuTable, ({ many, one }) => ({
+  user: one(user, {
+    fields: [userMenuTable.userId],
+    references: [user.id],
+    relationName: 'user_menu_u',
+  }),
+  menu: one(menuTable, {
+    fields: [userMenuTable.menuId],
+    references: [menuTable.id],
+    relationName: 'user_menu_m',
+})}))
 
 
 export type Menu = typeof menuTable.$inferSelect

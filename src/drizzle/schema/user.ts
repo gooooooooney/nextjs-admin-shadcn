@@ -101,7 +101,10 @@ export const userRelation = relations(user, ({ one, many }) => ({
 	createdUsers: many(user, {
 		relationName: 'user_createdBy',
 	}),
-	menus: many(userMenuTable),
+	menus: many(userMenuTable, {
+		relationName: 'user_menu_u',
+
+	}),
 
 }))
 
