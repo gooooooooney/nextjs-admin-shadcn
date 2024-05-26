@@ -1,5 +1,6 @@
 import React from "react"
 import { useMediaQuery } from 'usehooks-ts'
+import { useControllableState } from '@radix-ui/react-use-controllable-state';
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -26,11 +27,20 @@ type DrawerDialogProps = React.PropsWithChildren<{
   trigger?: React.ReactNode
   title?: React.ReactNode
   description?: React.ReactNode
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
 }>
 
-export function DrawerDialog({ title, trigger, description, children }: DrawerDialogProps) {
-  const [open, setOpen] = React.useState(false)
+export function DrawerDialog({ title, trigger, description, children, open: openProp, defaultOpen, onOpenChange }: DrawerDialogProps) {
+  // const [open, setOpen] = React.useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
+
+  const [open = false, setOpen] = useControllableState({
+    prop: openProp,
+    defaultProp: defaultOpen,
+    onChange: onOpenChange,
+  });
 
   if (isDesktop) {
     return (

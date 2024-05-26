@@ -41,6 +41,7 @@
     "@radix-ui/react-toggle": "^1.0.3",
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@radix-ui/react-use-controllable-state": "^1.0.1",
     "@react-email/components": "0.0.17",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-table": "^8.16.0",
