@@ -22,6 +22,8 @@ export default function UserCard({ src, onChange }: UserCardProps) {
 
   const [imageSrc, setImageSrc] = React.useState(src);
 
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+
   const [isPending, startTransition] = useTransition()
   const onDeleteFile = () => {
     const image = extractFilename(src);
@@ -45,6 +47,7 @@ export default function UserCard({ src, onChange }: UserCardProps) {
   const onUploadCompleted = (src: string) => {
     setImageSrc(src);
     onChange(src);
+    setDrawerOpen(false);
   }
 
   const onUsePreviousAvatar = () => {
@@ -72,6 +75,8 @@ export default function UserCard({ src, onChange }: UserCardProps) {
           </div>
           <div className=" flex items-center justify-normal gap-x-3">
             <DrawerDialog
+              open={drawerOpen}
+              onOpenChange={setDrawerOpen}
               trigger={<Button>Upload image</Button>}
               title='Upload image'
               description='Upload an image to be displayed on your profile.'

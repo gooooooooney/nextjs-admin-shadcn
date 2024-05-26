@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Icons } from "@/components/icons";
 import { useUploadThing } from "@/lib/uploadthing";
 import ProgressBar from "./progress-bar";
+import { LoadingButton } from "../button";
 interface FileUploadProgress {
   progress: number;
   File: File;
@@ -52,7 +53,7 @@ export function ImageUpload({ onChange }: ImageUploadProps) {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [filesToUpload, setFilesToUpload] = useState<FileUploadProgress[]>([]);
 
-  const { startUpload } = useUploadThing("imageUploader", {
+  const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: (res) => {
       if (res) {
         res[0] && onChange(res[0].url);
@@ -146,7 +147,7 @@ export function ImageUpload({ onChange }: ImageUploadProps) {
   });
 
   return (
-    <div>
+    <div className="relative">
       <div>
         <label
           htmlFor="dropzone-file"
@@ -255,6 +256,15 @@ export function ImageUpload({ onChange }: ImageUploadProps) {
           </div>
         </div>
       )}
+      {
+        isUploading && (
+          <div className="absolute bg-black/50 inset-0 flex justify-center items-center">
+            <div className="flex justify-center items-center text-white">
+              Uploading...
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 }
