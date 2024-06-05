@@ -19,9 +19,9 @@ const config = {
       }
     ]
   },
-  experimental: {
-    reactCompiler: isProd,
-  },
+  // experimental: {
+  //   reactCompiler: isProd,
+  // },
 
 };
 
