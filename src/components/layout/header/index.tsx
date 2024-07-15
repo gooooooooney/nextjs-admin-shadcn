@@ -1,8 +1,7 @@
-import React from 'react'
-import { Button } from '@/components/ui/button'
+import React, { Suspense } from 'react'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet'
-import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import ThemeToggle from '@/components/theme-toggle'
@@ -10,6 +9,11 @@ import { UserDropdown } from './user-dropdown'
 import { Icons } from '@/components/icons'
 import { HeaderBreadcrumb } from './breadcrumb'
 import { getLatestUser } from '@/lib/auth'
+import { cn } from '@/lib/utils'
+import { getGithubStar } from '@/server/other'
+import { Skeleton } from '@/components/ui/skeleton'
+
+
 
 export const Header = async () => {
 
@@ -96,13 +100,36 @@ export const Header = async () => {
       <div className="w-full flex-1">
         <HeaderBreadcrumb />
       </div>
-      <Button variant="link" size="icon">
-        <Link href="https://github.com/gooooooooney/nextjs-admin-shadcn">
-          <Icons.Github className="h-6 w-6" />
-        </Link>
-      </Button>
+      <Link href="https://github.com/gooooooooney/nextjs-admin-shadcn"
+        className={cn(buttonVariants({
+          variant: 'ghost',
+        }),
+          'space-x-2'
+        )}
+      >
+        <Icons.Star className="size-4" />
+        <span className='text-base'>Star on Github</span>
+        <Suspense fallback={<Skeleton className='w-6 h-4' />}>
+          <GithubStar />
+        </Suspense>
+      </Link>
+
       <ThemeToggle theme={user?.theme!} />
       <UserDropdown />
     </header>
+  )
+}
+
+
+export const GithubStar = async () => {
+  const star = await getGithubStar()
+  return (
+    <span className='text-base bg-primary/10 px-1  rounded-sm'>{star}</span>
+  )
+}
+
+export const HeaderSkeleton = () => {
+  return (
+    <Skeleton className="h-[var(--header-height)] w-full" />
   )
 }

@@ -34,13 +34,14 @@ export {
     Video,
     X,
     Mail,
-    Trash, 
+    Trash,
     AlertCircle,
     AlertTriangle,
     ShieldAlert,
     Square,
     SquareCheck,
     SquareMinus,
+    Star,
 } from 'lucide-react'
 
 export { GitHubLogoIcon as Github } from "@radix-ui/react-icons"
