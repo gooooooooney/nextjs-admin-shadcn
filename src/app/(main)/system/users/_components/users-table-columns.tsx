@@ -13,7 +13,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
@@ -22,7 +21,6 @@ import { User } from "@/types/model/user"
 import { format } from "date-fns"
 import { DeleteUsersDialog } from "./delete-users-dialog"
 import { UpdateUserSheet } from "./update-user-sheet"
-import { MenuWithChildren } from "@/drizzle/schema"
 import { getMenusByUserIdAction, getUserMenus } from "@/action/menu"
 import { MenuWithValue } from "@/types/model/menu"
 import { useAction } from "next-safe-action/hooks"

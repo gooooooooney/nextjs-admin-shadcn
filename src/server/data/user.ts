@@ -1,11 +1,46 @@
 import { db } from "@/drizzle/db";
-import { eq, inArray } from "drizzle-orm";
+import { format, toDate } from "date-fns"
+import { eq, inArray, isNotNull } from "drizzle-orm";
 import { user, role, Theme, UserRole, UserStatus, userMenuTable } from "@/drizzle/schema";
 import { currentUser } from "@/lib/auth";
 import to from "@/lib/utils";
 import { SignupSchema } from "@/schema/auth";
 import { z } from "zod";
 import { env } from "@/env";
+
+
+export interface MonthCount {
+  month: string;
+  count: number;
+}
+
+
+export const getUsers = async () => {
+  const res = await db.query.user.findMany({
+    where: isNotNull(user.emailVerified),
+    columns: {
+      createdAt: true,
+    }
+  })
+  const result: Record<string, MonthCount[]> = {};
+  res.forEach(user => {
+    const date = toDate(user.createdAt)
+
+    const year = format(date, 'yyyy')
+    const month = format(date, 'MMMM')
+
+    if (!result[year]) {
+      result[year] = [];
+    }
+    const monthCount = result[year]?.find(mc => mc.month === month);
+    if (monthCount) {
+      monthCount.count++;
+    } else {
+      result[year]?.push({ month, count: 1 });
+    }
+  })
+  return result
+}
 
 export const getUserByEmail = async (email: string) => {
 
