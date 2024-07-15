@@ -5,7 +5,6 @@ import { currentUser } from "@/lib/auth";
 import to from "@/lib/utils";
 import { SignupSchema } from "@/schema/auth";
 import { z } from "zod";
-import { assignMenusToUser, getMenuList } from "./menu";
 import { env } from "@/env";
 
 export const getUserByEmail = async (email: string) => {
