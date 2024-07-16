@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { MenuItem } from "@/components/layout/sidebar";
+import { MenuItem } from "@/components/layout/sidebar/sidebar-container";
 
 export const defaultRoutes: MenuItem[] = [
   {

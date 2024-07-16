@@ -1,10 +1,10 @@
 'use client';
 import { usePathname } from 'next/navigation';
 
-import { type MenuItem } from '.';
 import { SidebarMenu } from './sidebar-menu';
 
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { MenuItem } from './sidebar-container';
 
 export function MobileSidebar({
   routes,

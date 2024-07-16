@@ -1,9 +1,8 @@
 "use client"
 import { Icons } from "@/components/icons"
-import { MenuItem } from "@/components/layout/sidebar"
+import { MenuItem } from "@/components/layout/sidebar/sidebar-container"
 import { ItemLink } from "@/components/layout/sidebar/sidebar-item"
 import { usePathname } from "next/navigation"
-import { Fragment } from "react"
 
 export const Sidebar = () => {
   const pathname = usePathname()

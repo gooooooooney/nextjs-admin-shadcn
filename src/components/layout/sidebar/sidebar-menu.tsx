@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { type MenuItem } from '.';
 import { SidebarItem } from './sidebar-item';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { MenuItem } from './sidebar-container';
 
 type SidebarMenuProps = {
   routes: MenuItem[];

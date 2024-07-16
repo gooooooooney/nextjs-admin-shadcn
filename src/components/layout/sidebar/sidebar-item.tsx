@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { type MenuItem } from '.';
 
 import {
   Accordion,
@@ -14,6 +13,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Dropdown } from './dropdown';
 import { Icons } from '@/components/icons';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { MenuItem } from './sidebar-container';
 
 
 type SidebarItemProps = {
