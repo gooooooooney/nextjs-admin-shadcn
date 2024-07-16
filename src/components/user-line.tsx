@@ -1,6 +1,5 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import {
@@ -17,7 +16,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select"
 const chartData = [
   { month: "January", count: 0 },
@@ -51,7 +50,7 @@ export function UserLine({ data }: {
 
   const [year, setYear] = useState(years[0])
 
-  const setChartData = () => {
+  const userData = useMemo(() => {
     years.forEach(year => {
       data[year]?.forEach((user) => {
         const month = chartData.find(v => v.month === user.month)
@@ -60,13 +59,12 @@ export function UserLine({ data }: {
         }
       })
     })
-  }
+    return chartData
+  }, [year])
 
-  setChartData()
 
   const onYearChange = (year: string) => {
     setYear(year)
-    setChartData()
 
   }
 
@@ -96,7 +94,7 @@ export function UserLine({ data }: {
         <ChartContainer config={chartConfig}>
           <LineChart
             accessibilityLayer
-            data={chartData}
+            data={userData}
             margin={{
               left: 12,
               right: 12,
@@ -124,14 +122,11 @@ export function UserLine({ data }: {
           </LineChart>
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
+      <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing total user registrations for the year
         </div>
-      </CardFooter> */}
+      </CardFooter>
     </Card>
   )
 }
